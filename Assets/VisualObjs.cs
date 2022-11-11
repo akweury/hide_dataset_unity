@@ -9,6 +9,16 @@ using Pngcs.Unity;
 public class VisualObjs : MonoBehaviour
 {
 
+    static int OBJ_NUM = 3;
+
+    int MAX_NUM_TRIES = 50;
+    float TABLE_WIDTH = 1;
+    float TABLE_LENGTH = 1;
+    float TABLE_HEIGHT = (float)0.2;
+    float UNIFY_RADIUS = (float)0.5;
+    float MINIMUM_OBJ_DIST = (float)0.001;
+
+
     public class DepthMap
     {
         public Color[] depths;
@@ -41,6 +51,19 @@ public class VisualObjs : MonoBehaviour
         }
     }
 
+    public struct Point3D
+    {
+        public float x;
+        public float y;
+        public float z;
+    }
+
+    public struct Obj3D
+    {
+        public Point3D p;
+        public float radius;
+    }
+
     public int single_idx = 1;
     public List<GameObject> train_models;
     public List<GameObject> test_models;
@@ -61,12 +84,13 @@ public class VisualObjs : MonoBehaviour
 
 
     Camera cam;
-    List<GameObject> modelInsts = new List<GameObject>( new GameObject[3]);
+    
+    List<GameObject> modelInsts = new List<GameObject>( new GameObject[OBJ_NUM]);
     GameObject tableInst;
 
     private int frames = 0;
     int lightSceneNum = 1;
-    int OBJ_NUM = 3;
+
     int fileCounter = 0;
     int maxFileCounter = 3000;
 
@@ -159,19 +183,11 @@ public class VisualObjs : MonoBehaviour
             int envIdx = new System.Random().Next(0, environments.Count);
             if (frames % 5 == 0) modelIdx = (modelIdx + 1) % models.Count;
 
-
-
-
-
-
             // instantiate the table
             Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
                 UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
-            Vector3 scale = new Vector3(UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)1,
-                                        (float)0.2,
-                                        UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)1
-            );
+            Vector3 scale = new Vector3(TABLE_LENGTH, TABLE_HEIGHT,TABLE_WIDTH);
             // Vector3 position = new Vector3(
             //UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)1.5,
             //                                (float)-4,
@@ -183,13 +199,7 @@ public class VisualObjs : MonoBehaviour
 
 
             // instantiate the objects on the table
-            for (int i=0; i< OBJ_NUM; i++)
-            {
-                modelInsts[i] = NewObjectInstantiate((float)0.1);
-                modelInsts[i].GetComponent<Renderer>().material = materials[i];
-
-            }
-            
+            modelInsts = addRandomObjs();           
 
             newScene = true;
         }
@@ -203,22 +213,73 @@ public class VisualObjs : MonoBehaviour
 
     }
 
+    List<GameObject> addRandomObjs()
+    {
+        List<GameObject> objInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
 
-    GameObject NewObjectInstantiate(float base_height)
+        List<Obj3D> obj3Ds = new List<Obj3D>();
+
+        for (int i = 0; i < OBJ_NUM; i++)
+        {
+            int num_tries = 0;
+            float new_scale;
+            Obj3D new_obj_3D;
+            while (true)
+            {
+                num_tries += 1;
+                // exceed the maximum trying time
+                if (num_tries > MAX_NUM_TRIES) return addRandomObjs();
+                // choose new size and position
+                new_scale = UnityEngine.Random.Range((float)0.1, (float)0.3);
+                
+                new_obj_3D.p.x = 1.5f + UnityEngine.Random.Range(-(float)(TABLE_WIDTH / 2), (float)(TABLE_WIDTH / 2));
+                new_obj_3D.p.y = (float)-4 + (float)0.1 + (float)0.5 * new_scale;
+                new_obj_3D.p.z = 18f + UnityEngine.Random.Range(-(float)(TABLE_LENGTH / 2), (float)(TABLE_LENGTH / 2));
+                new_obj_3D.radius = new_scale * UNIFY_RADIUS;
+
+                // check for overlapping
+                bool dists_good = true;
+                // bool margins_good = true;
+                for (int j = 0; j < obj3Ds.Count; j++)
+                {
+                    float dx = new_obj_3D.p.x - obj3Ds[j].p.x;
+                    float dz = new_obj_3D.p.z - obj3Ds[j].p.z;
+                    float dist = (float)Math.Sqrt(dx * dx + dz * dz);
+                    if (dist - new_obj_3D.radius - obj3Ds[j].radius < MINIMUM_OBJ_DIST)
+                    {
+                        dists_good = false;
+                        break;
+                    }
+
+                }
+                if (dists_good) break;
+            }
+            // choose random material and shape
+            int objIdx = UnityEngine.Random.Range(0, models.Count);
+            objInsts[i] = NewObjectInstantiate(new_scale, new_obj_3D.p, objIdx);
+            objInsts[i].GetComponent<Renderer>().material = materials[i];
+
+            // for cubes, adjust its radius
+            if (objInsts[i].name == "Cube") new_obj_3D.radius = new_obj_3D.radius / (float)Math.Sqrt(2);
+
+
+            // record the data about the object in the scene data structure
+            obj3Ds.Add(new_obj_3D);
+        }
+
+        return objInsts;
+    }
+
+    GameObject NewObjectInstantiate(float scale, Point3D newPoint, int objIdx)
     {
         Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
-        float scale = UnityEngine.Random.Range((float)0.1, (float)0.3);
-
         // random place the object on the table
-        Vector3 position = new Vector3(
-                                        UnityEngine.Random.Range((float)-0.5+scale, (float)0.5-scale) + (float)1.5,
-                                        (float)-4 + base_height + (float)0.5*scale,
-                                        UnityEngine.Random.Range((float)-0.5+scale, (float)0.5-scale) + (float)18
-                                       );
-        GameObject objInst = Instantiate(models[modelIdx], position, rotation);
-        objInst.name = models[modelIdx].name;
+        Vector3 position = new Vector3(newPoint.x, newPoint.y, newPoint.z);
+        GameObject objInst = Instantiate(models[objIdx], position, rotation);
+        // GameObject objInst = Instantiate(models[objIdx], new Vector3(1.5f, -4f, 18f), rotation);
+        objInst.name = models[objIdx].name;
         objInst.transform.localScale *= scale;
 
         return objInst;
