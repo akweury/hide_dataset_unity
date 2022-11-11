@@ -44,7 +44,8 @@ public class VisualObjs : MonoBehaviour
     public int single_idx = 1;
     public List<GameObject> train_models;
     public List<GameObject> test_models;
-    public GameObject turnCube;
+    public List<Material> materials;
+    public GameObject table;
     public Material environmentMap;
     public Cubemap blackEnvironment;
     public List<Cubemap> environments;
@@ -60,13 +61,16 @@ public class VisualObjs : MonoBehaviour
 
 
     Camera cam;
-    GameObject modelInst;
+    List<GameObject> modelInsts = new List<GameObject>( new GameObject[3]);
+    GameObject tableInst;
 
     private int frames = 0;
     int lightSceneNum = 1;
+    int OBJ_NUM = 3;
     int fileCounter = 0;
     int maxFileCounter = 3000;
 
+   
     int train_end_idx = 2500;
     int validation_end_idx = 2750;
     int test_end_idx = 3000;
@@ -87,6 +91,7 @@ public class VisualObjs : MonoBehaviour
         cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         cam.targetTexture = texture;
         RenderSettings.ambientLight = UnityEngine.Color.gray;
+        // table.GetComponent<GameObject>().enabled = true;
 
 
         System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/data_synthetic");
@@ -97,14 +102,14 @@ public class VisualObjs : MonoBehaviour
         root_path = Application.dataPath + "/../CapturedData/data_synthetic/";
         // file_type = "synthetic";
         models = train_models;
-            
+
     }
 
     // Update is called once per frame
     void Update()
     {
         // change train/eval/test models
-        if(fileCounter >= validation_end_idx)
+        if (fileCounter >= validation_end_idx)
         {
             saved_path = root_path + "test/";
             models = test_models;
@@ -113,7 +118,8 @@ public class VisualObjs : MonoBehaviour
         {
             models = test_models;
             saved_path = root_path + "val/";
-        }else if (fileCounter >= 0)
+        }
+        else if (fileCounter >= 0)
         {
             saved_path = root_path + "train/";
         }
@@ -131,29 +137,60 @@ public class VisualObjs : MonoBehaviour
                 CaptureScene("image" + i.ToString());
             }
             CaptureScene("image");
-            writeDataFileOneView("data0", modelInst.name, camera0, depthMap0, projectors);
+            // writeDataFileOneView("data0", modelInsts.name, camera0, depthMap0, projectors);
             // environmentMap.SetTexture("_Tex", blackEnvironment);
             newScene = false;
             fileCounter++;
         }
 
         // render the scene
-        
+
+
+
         if (frames % 5 == 0 && fileCounter < maxFileCounter)
         {
-            if (modelInst != null) Destroy(modelInst);
+            for (int i=0; i< OBJ_NUM; i++)
+            {
+                if (modelInsts[i] != null) Destroy(modelInsts[i]);
+            }
+            
+            if (tableInst != null) Destroy(tableInst);
+
             int envIdx = new System.Random().Next(0, environments.Count);
             if (frames % 5 == 0) modelIdx = (modelIdx + 1) % models.Count;
-            Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
-                UnityEngine.Random.Range((float)-180, (float)180), UnityEngine.Random.Range((float)-20, (float)20));
-            Vector3 position = new Vector3(UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)1.5, 
-                (float)-4, 
-                UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)18);
-            float scale = UnityEngine.Random.Range((float)0.3, (float)0.8);
 
-            modelInst = Instantiate(models[modelIdx], position, rotation);
-            modelInst.name = models[modelIdx].name;
-            modelInst.transform.localScale *= scale;
+
+
+
+
+
+            // instantiate the table
+            Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
+                UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
+
+            Vector3 scale = new Vector3(UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)1,
+                                        (float)0.2,
+                                        UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)1
+            );
+            // Vector3 position = new Vector3(
+            //UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)1.5,
+            //                                (float)-4,
+            //                                UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)18
+            //                               );
+            // tableInst = Instantiate(models[modelIdx], position, rotation);
+            // tableInst.name = models[modelIdx].name;
+            table.transform.localScale = scale;
+
+
+            // instantiate the objects on the table
+            for (int i=0; i< OBJ_NUM; i++)
+            {
+                modelInsts[i] = NewObjectInstantiate((float)0.1);
+                modelInsts[i].GetComponent<Renderer>().material = materials[i];
+
+            }
+            
+
             newScene = true;
         }
         frames++;
@@ -165,6 +202,29 @@ public class VisualObjs : MonoBehaviour
         }
 
     }
+
+
+    GameObject NewObjectInstantiate(float base_height)
+    {
+        Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
+            UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
+
+        float scale = UnityEngine.Random.Range((float)0.1, (float)0.3);
+
+        // random place the object on the table
+        Vector3 position = new Vector3(
+                                        UnityEngine.Random.Range((float)-0.5+scale, (float)0.5-scale) + (float)1.5,
+                                        (float)-4 + base_height + (float)0.5*scale,
+                                        UnityEngine.Random.Range((float)-0.5+scale, (float)0.5-scale) + (float)18
+                                       );
+        GameObject objInst = Instantiate(models[modelIdx], position, rotation);
+        objInst.name = models[modelIdx].name;
+        objInst.transform.localScale *= scale;
+
+        return objInst;
+
+    }
+
     void CaptureScene(string name)
     {
         RenderTexture.active = cam.targetTexture;
@@ -189,7 +249,7 @@ public class VisualObjs : MonoBehaviour
                 imageRGB[i * w + j] = new UnityEngine.Color(c.r, c.g, c.b, 0);
             }
         }
-        PNG.Write(imageGray, w, h, 8, false, true, saved_path + fileCounter.ToString("D5") + "." + name + ".png");
+        PNG.Write(imageRGB, w, h, 8, false, false, saved_path + fileCounter.ToString("D5") + "." + name + ".png");
         //PNG.Write(imageRGB, w, h, 8, false, true, saved_path + fileCounter.ToString("D5") + "." + name + "RGB.png");
         Destroy(currentTexture);
     }
@@ -206,12 +266,22 @@ public class VisualObjs : MonoBehaviour
         image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         image.Apply();
 
-        modelInst.SetActive(false);
+        for (int i=0; i< OBJ_NUM; i++)
+        {
+            modelInsts[i].SetActive(false);
+        }
+        
+        
+
         cam.RenderWithShader(depthShader, "RenderType");
         Texture2D spinCubeImage = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat, false);
         spinCubeImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         spinCubeImage.Apply();
-        modelInst.SetActive(true);
+        
+        for (int i = 0; i < OBJ_NUM; i++)
+        {
+            modelInsts[i].SetActive(true);
+        }
 
         // environmentMap.SetTexture("_Tex", env);
 
@@ -268,12 +338,18 @@ public class VisualObjs : MonoBehaviour
         image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         image.Apply();
 
-        modelInst.SetActive(false);
+        for (int i = 0; i < OBJ_NUM; i++)
+        {
+            modelInsts[i].SetActive(false);
+        }
         cam.RenderWithShader(normalShader, "RenderType");
         Texture2D cubeImage = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat, false);
         cubeImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         cubeImage.Apply();
-        modelInst.SetActive(true);
+        for (int i = 0; i < OBJ_NUM; i++)
+        {
+            modelInsts[i].SetActive(true);
+        }
 
         // environmentMap.SetTexture("_Tex", env);
         Color[] normalMap = new Color[cam.targetTexture.width * cam.targetTexture.height];
@@ -377,6 +453,7 @@ public class VisualObjs : MonoBehaviour
         //    model_name+"\"" + "}");
         //writer.Close();
     }
+    
     Calibration getCameraMatrix()
     {
         Matrix4x4 R = Matrix4x4.Rotate(Quaternion.Inverse(cam.transform.rotation));
