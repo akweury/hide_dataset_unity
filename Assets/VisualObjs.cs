@@ -8,13 +8,12 @@ using Pngcs.Unity;
 
 public class VisualObjs : MonoBehaviour
 {
-
     static int OBJ_NUM = 3;
 
     int MAX_NUM_TRIES = 50;
-    float TABLE_WIDTH = 1;
-    float TABLE_LENGTH = 1;
-    float TABLE_HEIGHT = (float)0.2;
+    float TABLE_WIDTH_BASE = 1;
+    float TABLE_LENGTH_BASE = 1;
+    float TABLE_HEIGHT_BASE = (float)0.1;
     float UNIFY_RADIUS = (float)0.5;
     float MINIMUM_OBJ_DIST = (float)0.001;
 
@@ -72,33 +71,37 @@ public class VisualObjs : MonoBehaviour
     public Material environmentMap;
     public Cubemap blackEnvironment;
     public List<Cubemap> environments;
+
     public RenderTexture texture;
+
     // public Light dirLight;
     public Light projector;
+
     // public Texture2D phaseH;
     // public Texture2D phaseV;
     // public Texture2D white;
     public Shader depthShader;
+
     // public Shader phaseShader;
     public Shader normalShader;
 
 
-    Camera cam;
-    
-    List<GameObject> modelInsts = new List<GameObject>( new GameObject[OBJ_NUM]);
+    private Camera cam;
+    List<GameObject> modelInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
     GameObject tableInst;
 
     private int frames = 0;
     int lightSceneNum = 1;
-
+    float table_length;
+    float table_width;
+    float table_height;
     int fileCounter = 0;
     int maxFileCounter = 3000;
-
-   
     int train_end_idx = 2500;
     int validation_end_idx = 2750;
     int test_end_idx = 3000;
     int modelIdx = -1;
+    float scale_factor = 1;
 
     string file_type;
     bool newScene;
@@ -108,16 +111,15 @@ public class VisualObjs : MonoBehaviour
     List<GameObject> models;
 
 
-
     // Start is called before the first frame update
     void Start()
     {
         cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         cam.targetTexture = texture;
+
+
         RenderSettings.ambientLight = UnityEngine.Color.gray;
         // table.GetComponent<GameObject>().enabled = true;
-
-
         System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/data_synthetic");
         System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/data_synthetic/train");
         System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/data_synthetic/val");
@@ -127,6 +129,11 @@ public class VisualObjs : MonoBehaviour
         // file_type = "synthetic";
         models = train_models;
 
+        // adjust table size based on camera sensor size
+        scale_factor = (float)(((cam.sensorSize[0] + cam.sensorSize[1]) / 2) / 128);
+        table_length = TABLE_LENGTH_BASE * scale_factor;
+        table_width = TABLE_WIDTH_BASE * scale_factor;
+        table_height = TABLE_HEIGHT_BASE * scale_factor;
     }
 
     // Update is called once per frame
@@ -154,12 +161,13 @@ public class VisualObjs : MonoBehaviour
             Calibration camera0 = getCameraMatrix();
             DepthMap depthMap0 = CaptureDepth("depth0");
             CaptureNormal("normal0", camera0.R);
-            Calibration[] projectors = new Calibration[10];
-            for (int i = 0; i < lightSceneNum; i++)
-            {
-                projectors[i] = getProjectorMatrix();
-                CaptureScene("image" + i.ToString());
-            }
+            // Calibration[] projectors = new Calibration[10];
+            // for (int i = 0; i < lightSceneNum; i++)
+            // {
+            //     projectors[i] = getProjectorMatrix();
+            //     CaptureScene("image" + i.ToString());
+            // }
+
             CaptureScene("image");
             // writeDataFileOneView("data0", modelInsts.name, camera0, depthMap0, projectors);
             // environmentMap.SetTexture("_Tex", blackEnvironment);
@@ -170,14 +178,13 @@ public class VisualObjs : MonoBehaviour
         // render the scene
 
 
-
         if (frames % 5 == 0 && fileCounter < maxFileCounter)
         {
-            for (int i=0; i< OBJ_NUM; i++)
+            for (int i = 0; i < OBJ_NUM; i++)
             {
                 if (modelInsts[i] != null) Destroy(modelInsts[i]);
             }
-            
+
             if (tableInst != null) Destroy(tableInst);
 
             int envIdx = new System.Random().Next(0, environments.Count);
@@ -187,22 +194,16 @@ public class VisualObjs : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
                 UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
-            Vector3 scale = new Vector3(TABLE_LENGTH, TABLE_HEIGHT,TABLE_WIDTH);
-            // Vector3 position = new Vector3(
-            //UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)1.5,
-            //                                (float)-4,
-            //                                UnityEngine.Random.Range((float)-0.002, (float)0.002) + (float)18
-            //                               );
-            // tableInst = Instantiate(models[modelIdx], position, rotation);
-            // tableInst.name = models[modelIdx].name;
+            Vector3 scale = new Vector3(table_length, table_height, table_width);
             table.transform.localScale = scale;
 
 
             // instantiate the objects on the table
-            modelInsts = addRandomObjs();           
+            modelInsts = addRandomObjs();
 
             newScene = true;
         }
+
         frames++;
 
         // stop rendering when file number exceeded the threshold
@@ -210,7 +211,6 @@ public class VisualObjs : MonoBehaviour
         {
             UnityEditor.EditorApplication.isPlaying = false;
         }
-
     }
 
     List<GameObject> addRandomObjs()
@@ -218,7 +218,6 @@ public class VisualObjs : MonoBehaviour
         List<GameObject> objInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
 
         List<Obj3D> obj3Ds = new List<Obj3D>();
-
         for (int i = 0; i < OBJ_NUM; i++)
         {
             int num_tries = 0;
@@ -230,11 +229,11 @@ public class VisualObjs : MonoBehaviour
                 // exceed the maximum trying time
                 if (num_tries > MAX_NUM_TRIES) return addRandomObjs();
                 // choose new size and position
-                new_scale = UnityEngine.Random.Range((float)0.1, (float)0.3);
-                
-                new_obj_3D.p.x = 1.5f + UnityEngine.Random.Range(-(float)(TABLE_WIDTH / 2), (float)(TABLE_WIDTH / 2));
-                new_obj_3D.p.y = (float)-4 + (float)0.1 + (float)0.5 * new_scale;
-                new_obj_3D.p.z = 18f + UnityEngine.Random.Range(-(float)(TABLE_LENGTH / 2), (float)(TABLE_LENGTH / 2));
+                new_scale = UnityEngine.Random.Range((float)0.1, (float)0.3) * scale_factor;
+
+                new_obj_3D.p.x = 1.5f + UnityEngine.Random.Range(-(float)(table_width / 2), (float)(table_width / 2));
+                new_obj_3D.p.y = -4f + table_height * 0.5f + 0.5f * new_scale;
+                new_obj_3D.p.z = 18f + UnityEngine.Random.Range(-(float)(table_length / 2), (float)(table_length / 2));
                 new_obj_3D.radius = new_scale * UNIFY_RADIUS;
 
                 // check for overlapping
@@ -250,10 +249,11 @@ public class VisualObjs : MonoBehaviour
                         dists_good = false;
                         break;
                     }
-
                 }
+
                 if (dists_good) break;
             }
+
             // choose random material and shape
             int objIdx = UnityEngine.Random.Range(0, models.Count);
             objInsts[i] = NewObjectInstantiate(new_scale, new_obj_3D.p, objIdx);
@@ -283,7 +283,6 @@ public class VisualObjs : MonoBehaviour
         objInst.transform.localScale *= scale;
 
         return objInst;
-
     }
 
     void CaptureScene(string name)
@@ -292,7 +291,8 @@ public class VisualObjs : MonoBehaviour
         // projector.cookie = white;
 
         cam.Render();
-        Texture2D currentTexture = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGB24, false);
+        Texture2D currentTexture =
+            new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGB24, false);
         currentTexture.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         currentTexture.Apply();
 
@@ -310,6 +310,7 @@ public class VisualObjs : MonoBehaviour
                 imageRGB[i * w + j] = new UnityEngine.Color(c.r, c.g, c.b, 0);
             }
         }
+
         PNG.Write(imageRGB, w, h, 8, false, false, saved_path + fileCounter.ToString("D5") + "." + name + ".png");
         //PNG.Write(imageRGB, w, h, 8, false, true, saved_path + fileCounter.ToString("D5") + "." + name + "RGB.png");
         Destroy(currentTexture);
@@ -323,22 +324,23 @@ public class VisualObjs : MonoBehaviour
         // environmentMap.SetTexture("_Tex", blackEnvironment);
 
         cam.RenderWithShader(depthShader, "RenderType");
-        Texture2D image = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat, false);
+        Texture2D image = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat,
+            false);
         image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         image.Apply();
 
-        for (int i=0; i< OBJ_NUM; i++)
+        for (int i = 0; i < OBJ_NUM; i++)
         {
             modelInsts[i].SetActive(false);
         }
-        
-        
+
 
         cam.RenderWithShader(depthShader, "RenderType");
-        Texture2D spinCubeImage = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat, false);
+        Texture2D spinCubeImage = new Texture2D(cam.targetTexture.width, cam.targetTexture.height,
+            TextureFormat.RGBAFloat, false);
         spinCubeImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         spinCubeImage.Apply();
-        
+
         for (int i = 0; i < OBJ_NUM; i++)
         {
             modelInsts[i].SetActive(true);
@@ -374,13 +376,17 @@ public class VisualObjs : MonoBehaviour
                 }
             }
         }
+
         for (int i = 0; i < h * w; i++)
         {
             if (depthMap.depths[i].r != 0)
-                depthMap.depths[i].r = (depthMap.depths[i].r - depthMap.minDepth) / (depthMap.maxDepth - depthMap.minDepth); // normalise all the R-channel values in range [0,1]
+                depthMap.depths[i].r =
+                    (depthMap.depths[i].r - depthMap.minDepth) /
+                    (depthMap.maxDepth - depthMap.minDepth); // normalise all the R-channel values in range [0,1]
         }
 
-        PNG.Write(depthMap.depths, w, h, 16, false, true, saved_path + fileCounter.ToString("D5") + "." + name + ".png");
+        PNG.Write(depthMap.depths, w, h, 16, false, true,
+            saved_path + fileCounter.ToString("D5") + "." + name + ".png");
 
         Destroy(image);
         Destroy(spinCubeImage);
@@ -395,7 +401,8 @@ public class VisualObjs : MonoBehaviour
         // environmentMap.SetTexture("_Tex", blackEnvironment);
 
         cam.RenderWithShader(normalShader, "RenderType");
-        Texture2D image = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat, false);
+        Texture2D image = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat,
+            false);
         image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         image.Apply();
 
@@ -403,8 +410,10 @@ public class VisualObjs : MonoBehaviour
         {
             modelInsts[i].SetActive(false);
         }
+
         cam.RenderWithShader(normalShader, "RenderType");
-        Texture2D cubeImage = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat, false);
+        Texture2D cubeImage = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGBAFloat,
+            false);
         cubeImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         cubeImage.Apply();
         for (int i = 0; i < OBJ_NUM; i++)
@@ -431,43 +440,46 @@ public class VisualObjs : MonoBehaviour
                     c.g = 0;
                     c.b = 0;
                 }
+
                 if (c.a != 0)
                     c.g = 1 - c.g;
 
                 normalMap[i * w + j] = c;
             }
         }
+
         PNG.Write(normalMap, w, h, 8, false, false, saved_path + fileCounter.ToString("D5") + "." + name + ".png");
 
         Destroy(image);
         Destroy(cubeImage);
-
     }
 
-    void writeDataFileOneView(string name, string model_name, Calibration camera, DepthMap depthMap, Calibration[] projectors)
+    void writeDataFileOneView(string name, string model_name, Calibration camera, DepthMap depthMap,
+        Calibration[] projectors)
     {
         StreamWriter writer = new StreamWriter(saved_path + fileCounter.ToString("D5") + "." + name + ".json", false);
 
 
         String data1 = "{" + "\"K\":[[" +
-            camera.K[0, 0] + "," + 0 + "," +
-            camera.K[0, 2].ToString().Replace(',', '.') + "],[" + 0 + "," +
-            camera.K[1, 1] + "," +
-            camera.K[0, 2].ToString().Replace(',', '.') + "],[" + 0 + "," + 0 + "," + 1 + "]]" + "," + "\"R\":[[" +
-            camera.R[0, 0].ToString().Replace(',', '.') + "," +
-            camera.R[0, 1].ToString().Replace(',', '.') + "," +
-            camera.R[0, 2].ToString().Replace(',', '.') + "],[" +
-            camera.R[1, 0].ToString().Replace(',', '.') + "," +
-            camera.R[1, 1].ToString().Replace(',', '.') + "," +
-            camera.R[1, 2].ToString().Replace(',', '.') + "],[" +
-            camera.R[2, 0].ToString().Replace(',', '.') + "," +
-            camera.R[2, 1].ToString().Replace(',', '.') + "," +
-            camera.R[2, 2].ToString().Replace(',', '.') + "]]" + "," + "\"t\":[" +
-            camera.t[0].ToString().Replace(',', '.') + "," +
-            camera.t[1].ToString().Replace(',', '.') + "," +
-            camera.t[2].ToString().Replace(',', '.') + "]" + "," + "\"minDepth\":" +
-            depthMap.minDepth.ToString().Replace(',', '.') + "," + "\"maxDepth\":" +
-            depthMap.maxDepth.ToString().Replace(',', '.') + ",";
+                       camera.K[0, 0] + "," + 0 + "," +
+                       camera.K[0, 2].ToString().Replace(',', '.') + "],[" + 0 + "," +
+                       camera.K[1, 1] + "," +
+                       camera.K[0, 2].ToString().Replace(',', '.') + "],[" + 0 + "," + 0 + "," + 1 + "]]" + "," +
+                       "\"R\":[[" +
+                       camera.R[0, 0].ToString().Replace(',', '.') + "," +
+                       camera.R[0, 1].ToString().Replace(',', '.') + "," +
+                       camera.R[0, 2].ToString().Replace(',', '.') + "],[" +
+                       camera.R[1, 0].ToString().Replace(',', '.') + "," +
+                       camera.R[1, 1].ToString().Replace(',', '.') + "," +
+                       camera.R[1, 2].ToString().Replace(',', '.') + "],[" +
+                       camera.R[2, 0].ToString().Replace(',', '.') + "," +
+                       camera.R[2, 1].ToString().Replace(',', '.') + "," +
+                       camera.R[2, 2].ToString().Replace(',', '.') + "]]" + "," + "\"t\":[" +
+                       camera.t[0].ToString().Replace(',', '.') + "," +
+                       camera.t[1].ToString().Replace(',', '.') + "," +
+                       camera.t[2].ToString().Replace(',', '.') + "]" + "," + "\"minDepth\":" +
+                       depthMap.minDepth.ToString().Replace(',', '.') + "," + "\"maxDepth\":" +
+                       depthMap.maxDepth.ToString().Replace(',', '.') + ",";
 
 
         String data2 = "";
@@ -477,11 +489,9 @@ public class VisualObjs : MonoBehaviour
             Vector3 projectorPos = projectors[i].t;
 
             data2 += "\"lightPos" + i + "\":[" + projectorPos[0].ToString().Replace(',', '.') + "," +
-            projectorPos[1].ToString().Replace(',', '.') + "," +
-            projectorPos[2].ToString().Replace(',', '.') + "]" + ",";
-
+                     projectorPos[1].ToString().Replace(',', '.') + "," +
+                     projectorPos[2].ToString().Replace(',', '.') + "]" + ",";
         }
-
 
 
         String data3 = "\"name\":\"" + model_name + "\"" + "}";
@@ -514,7 +524,7 @@ public class VisualObjs : MonoBehaviour
         //    model_name+"\"" + "}");
         //writer.Close();
     }
-    
+
     Calibration getCameraMatrix()
     {
         Matrix4x4 R = Matrix4x4.Rotate(Quaternion.Inverse(cam.transform.rotation));
@@ -539,15 +549,18 @@ public class VisualObjs : MonoBehaviour
     Calibration getProjectorMatrix()
     {
         Matrix4x4 R = Matrix4x4.Rotate(Quaternion.Inverse(projector.transform.rotation));
-        R[1, 0] = -R[1, 0]; R[1, 1] = -R[1, 1]; R[1, 2] = -R[1, 2];
+        R[1, 0] = -R[1, 0];
+        R[1, 1] = -R[1, 1];
+        R[1, 2] = -R[1, 2];
         // Vector3 t = R * -cam.transform.position;
         Vector3 t = projector.transform.position;
-        R[0, 2] = -R[0, 2]; R[1, 2] = -R[1, 2]; R[2, 2] = -R[2, 2];
+        R[0, 2] = -R[0, 2];
+        R[1, 2] = -R[1, 2];
+        R[2, 2] = -R[2, 2];
         Matrix4x4 K = Matrix4x4.identity;
 
         Calibration projectorCalibration = new Calibration(K, R, t);
 
         return projectorCalibration;
     }
-
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1775786, g: 0.22232208, b: 0.30451748, a: 1}
+  m_IndirectSpecularColor: {r: 0.17757855, g: 0.22232187, b: 0.30451763, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -388,7 +388,7 @@ Camera:
   m_projectionMatrixMode: 2
   m_GateFitMode: 2
   m_FOVAxisMode: 0
-  m_SensorSize: {x: 128, y: 128}
+  m_SensorSize: {x: 512, y: 512}
   m_LensShift: {x: 0, y: 0}
   m_FocalLength: 1645
   m_NormalizedViewPortRect:
@@ -399,7 +399,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 26.77
-  field of view: 4.4560256
+  field of view: 17.691185
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
