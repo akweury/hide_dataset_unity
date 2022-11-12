@@ -159,11 +159,9 @@ MonoBehaviour:
   train_models:
   - {fileID: 6644190339493067324, guid: 8d2e53e8a192ee3449fe05348517d7a5, type: 3}
   - {fileID: 676844843337561410, guid: 3f5466456a0b0064782ea837459bd944, type: 3}
-  - {fileID: 9216868360519680560, guid: 3abafd08796b53c41926ebf9dd355e19, type: 3}
   test_models:
   - {fileID: 6644190339493067324, guid: 8d2e53e8a192ee3449fe05348517d7a5, type: 3}
   - {fileID: 676844843337561410, guid: 3f5466456a0b0064782ea837459bd944, type: 3}
-  - {fileID: 9216868360519680560, guid: 3abafd08796b53c41926ebf9dd355e19, type: 3}
   materials:
   - {fileID: 2100000, guid: 91a5af3e167f9af43bfbeaaa9c5c8235, type: 2}
   - {fileID: 2100000, guid: f38025ec656c69a44af1391b0f51fe2c, type: 2}
