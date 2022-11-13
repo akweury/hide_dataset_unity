@@ -282,7 +282,6 @@ public class VisualObjs : MonoBehaviour
             int objIdx = UnityEngine.Random.Range(0, models.Count);
             objInsts[i] = NewObjectInstantiate(new_scale, new_obj_3D.p, objIdx);
             objInsts[i].GetComponent<Renderer>().material = materials[i];
-            
 
             // for cubes, adjust its radius
             if (objInsts[i].name == "Cube") new_obj_3D.radius = new_obj_3D.radius / (float)Math.Sqrt(2);
