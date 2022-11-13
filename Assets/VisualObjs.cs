@@ -63,10 +63,41 @@ public class VisualObjs : MonoBehaviour
         public float radius;
     }
 
+    public struct ObjectStruct
+    {
+        public string Shape;
+        public float Size;
+        public string Color;
+    }
+
+    public struct DirectionStruct
+    {
+        public Vector3 Behind;
+        public Vector3 Front;
+        public Vector3 Left;
+        public Vector3 Right;
+        public Vector3 Above;
+        public Vector3 Below;
+    }
+
+    public class SceneStruct
+    {
+        public int ImageIndex;
+        public List<ObjectStruct> Objects;
+        public DirectionStruct Directions;
+
+        public SceneStruct(int objNum, int imageIndex)
+        {
+            Objects = new List<ObjectStruct>(new ObjectStruct[objNum]);
+            ImageIndex = imageIndex;
+        }
+    }
+
     public int single_idx = 1;
     public List<GameObject> train_models;
     public List<GameObject> test_models;
     public List<Material> materials;
+    public SceneStruct SceneData;
     public GameObject table;
     public Material environmentMap;
     public Cubemap blackEnvironment;
@@ -91,7 +122,8 @@ public class VisualObjs : MonoBehaviour
     GameObject tableInst;
 
     private int frames = 0;
-    int lightSceneNum = 1;
+
+    // int lightSceneNum = 1;
     float table_length;
     float table_width;
     float table_height;
@@ -161,25 +193,19 @@ public class VisualObjs : MonoBehaviour
             Calibration camera0 = getCameraMatrix();
             DepthMap depthMap0 = CaptureDepth("depth0");
             CaptureNormal("normal0", camera0.R);
-            // Calibration[] projectors = new Calibration[10];
-            // for (int i = 0; i < lightSceneNum; i++)
-            // {
-            //     projectors[i] = getProjectorMatrix();
-            //     CaptureScene("image" + i.ToString());
-            // }
-
             CaptureScene("image");
-            // writeDataFileOneView("data0", modelInsts.name, camera0, depthMap0, projectors);
+            writeDataFileOneView("data0", modelInsts, camera0, depthMap0);
             // environmentMap.SetTexture("_Tex", blackEnvironment);
             newScene = false;
             fileCounter++;
         }
 
         // render the scene
-
-
         if (frames % 5 == 0 && fileCounter < maxFileCounter)
         {
+            // change configurations if necessary
+            SceneData = new SceneStruct(OBJ_NUM, fileCounter);
+
             for (int i = 0; i < OBJ_NUM; i++)
             {
                 if (modelInsts[i] != null) Destroy(modelInsts[i]);
@@ -196,8 +222,6 @@ public class VisualObjs : MonoBehaviour
 
             Vector3 scale = new Vector3(table_length, table_height, table_width);
             table.transform.localScale = scale;
-
-
             // instantiate the objects on the table
             modelInsts = addRandomObjs();
 
@@ -265,6 +289,12 @@ public class VisualObjs : MonoBehaviour
 
             // record the data about the object in the scene data structure
             obj3Ds.Add(new_obj_3D);
+            ObjectStruct objData;
+            objData.Color = materials[i].name;
+            objData.Shape = models[objIdx].name;
+            objData.Size = new_scale;
+            
+            SceneData.Objects.Add(objData);
         }
 
         return objInsts;
@@ -454,12 +484,9 @@ public class VisualObjs : MonoBehaviour
         Destroy(cubeImage);
     }
 
-    void writeDataFileOneView(string name, string model_name, Calibration camera, DepthMap depthMap,
-        Calibration[] projectors)
+    void writeDataFileOneView(string name, List<GameObject> models, Calibration camera, DepthMap depthMap)
     {
         StreamWriter writer = new StreamWriter(saved_path + fileCounter.ToString("D5") + "." + name + ".json", false);
-
-
         String data1 = "{" + "\"K\":[[" +
                        camera.K[0, 0] + "," + 0 + "," +
                        camera.K[0, 2].ToString().Replace(',', '.') + "],[" + 0 + "," +
@@ -482,21 +509,23 @@ public class VisualObjs : MonoBehaviour
                        depthMap.maxDepth.ToString().Replace(',', '.') + ",";
 
 
-        String data2 = "";
-        for (int i = 0; i < lightSceneNum; i++)
+        String objectData = "\"objects\":[";
+        for (int i = 0; i < OBJ_NUM; i++)
         {
-            // Vector3 projectorPos = projectors[i].R.transpose * -projectors[i].t;
-            Vector3 projectorPos = projectors[i].t;
-
-            data2 += "\"lightPos" + i + "\":[" + projectorPos[0].ToString().Replace(',', '.') + "," +
-                     projectorPos[1].ToString().Replace(',', '.') + "," +
-                     projectorPos[2].ToString().Replace(',', '.') + "]" + ",";
+            objectData += "[" +
+                          SceneData.Objects[i].Color + "," +
+                          SceneData.Objects[i].Shape + "," +
+                          SceneData.Objects[i].Size + "," +
+                          "]";
+            if (i != OBJ_NUM - 1)
+            {
+                objectData += ",";
+            }
         }
 
+        objectData += "]";
 
-        String data3 = "\"name\":\"" + model_name + "\"" + "}";
-
-        writer.Write(data1 + data2 + data3);
+        writer.Write(data1 + objectData + "}");
         writer.Close();
 
         //writer.Write("{" + "\"K\":[[" +
