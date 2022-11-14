@@ -5,100 +5,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Pngcs.Unity;
+using Object = UnityEngine.Object;
 
-public class VisualObjs : MonoBehaviour
+public partial class VisualObjs : MonoBehaviour
 {
-    static int OBJ_NUM = 3;
-
+    static int OBJ_NUM = 8;
     int MAX_NUM_TRIES = 50;
     float TABLE_WIDTH_BASE = 1;
     float TABLE_LENGTH_BASE = 1;
-    float TABLE_HEIGHT_BASE = (float)0.1;
+    float TABLE_HEIGHT_BASE = 0.1F;
     float UNIFY_RADIUS = (float)0.5;
-    float MINIMUM_OBJ_DIST = (float)0.001;
-
-
-    public class DepthMap
-    {
-        public Color[] depths;
-        public int width;
-        public int height;
-        public float minDepth;
-        public float maxDepth;
-
-        public DepthMap(int w, int h)
-        {
-            depths = new Color[w * h];
-            width = w;
-            height = h;
-            minDepth = (float)Mathf.Infinity;
-            maxDepth = (float)0.0;
-        }
-    }
-
-    public class Calibration
-    {
-        public Matrix4x4 K;
-        public Matrix4x4 R;
-        public Vector3 t;
-
-        public Calibration(Matrix4x4 KK, Matrix4x4 RR, Vector3 tt)
-        {
-            K = KK;
-            R = RR;
-            t = tt;
-        }
-    }
-
-    public struct Point3D
-    {
-        public float x;
-        public float y;
-        public float z;
-    }
-
-    public struct Obj3D
-    {
-        public Point3D p;
-        public float radius;
-    }
-
-    public struct ObjectStruct
-    {
-        public string Shape;
-        public float Size;
-        public string Color;
-    }
-
-    public struct DirectionStruct
-    {
-        public Vector3 Behind;
-        public Vector3 Front;
-        public Vector3 Left;
-        public Vector3 Right;
-        public Vector3 Above;
-        public Vector3 Below;
-    }
-
-    public class SceneStruct
-    {
-        public int ImageIndex;
-        public List<ObjectStruct> Objects;
-        public DirectionStruct Directions;
-
-        public SceneStruct(int objNum, int imageIndex)
-        {
-            Objects = new List<ObjectStruct>(new ObjectStruct[objNum]);
-            ImageIndex = imageIndex;
-        }
-    }
+    float MINIMUM_OBJ_DIST = (float)0.1;
+    private float MINIMUM_SCALE_RANGE = 0.02F;
+    private float MAXIMUM_SCALE_RANGE = 0.2F;
 
     public int single_idx = 1;
     public List<GameObject> train_models;
     public List<GameObject> test_models;
     public List<Material> materials;
     public SceneStruct SceneData;
-    public GameObject table;
+    public GameObject table; // https://www.cgtrader.com/items/1875799/download-page
     public Material environmentMap;
     public Cubemap blackEnvironment;
     public List<Cubemap> environments;
@@ -118,8 +44,11 @@ public class VisualObjs : MonoBehaviour
 
 
     private Camera cam;
+    public GameObject tableModel;
+
     List<GameObject> modelInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
     GameObject tableInst;
+
 
     private int frames = 0;
 
@@ -162,7 +91,7 @@ public class VisualObjs : MonoBehaviour
         models = train_models;
 
         // adjust table size based on camera sensor size
-        scale_factor = (float)(((cam.sensorSize[0] + cam.sensorSize[1]) / 2) / 128);
+        scale_factor = 4F;
         table_length = TABLE_LENGTH_BASE * scale_factor;
         table_width = TABLE_WIDTH_BASE * scale_factor;
         table_height = TABLE_HEIGHT_BASE * scale_factor;
@@ -221,6 +150,7 @@ public class VisualObjs : MonoBehaviour
                 UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
             Vector3 scale = new Vector3(table_length, table_height, table_width);
+            // tableInst = Instantiate(tableModel, table.transform.position, rotation);
             table.transform.localScale = scale;
             // instantiate the objects on the table
             modelInsts = addRandomObjs();
@@ -253,11 +183,13 @@ public class VisualObjs : MonoBehaviour
                 // exceed the maximum trying time
                 if (num_tries > MAX_NUM_TRIES) return addRandomObjs();
                 // choose new size and position
-                new_scale = UnityEngine.Random.Range((float)0.1, (float)0.3) * scale_factor;
+                new_scale = UnityEngine.Random.Range(MINIMUM_SCALE_RANGE, MAXIMUM_SCALE_RANGE) * scale_factor;
 
-                new_obj_3D.p.x = 1.5f + UnityEngine.Random.Range(-(float)(table_width / 2), (float)(table_width / 2));
-                new_obj_3D.p.y = -4f + table_height * 0.5f + 0.5f * new_scale;
-                new_obj_3D.p.z = 18f + UnityEngine.Random.Range(-(float)(table_length / 2), (float)(table_length / 2));
+                new_obj_3D.p.x = table.transform.position[0] + UnityEngine.Random.Range(
+                    -(float)(table_width / 2) + new_scale, (float)(table_width / 2) - new_scale);
+                new_obj_3D.p.y = table.transform.position[1] + table_height * 0.5F + 0.5f * new_scale;
+                new_obj_3D.p.z = table.transform.position[2] + UnityEngine.Random.Range(
+                    -(float)(table_length / 2) + new_scale, (float)(table_length / 2) - new_scale);
                 new_obj_3D.radius = new_scale * UNIFY_RADIUS;
 
                 // check for overlapping
@@ -281,7 +213,7 @@ public class VisualObjs : MonoBehaviour
             // choose random material and shape
             int objIdx = UnityEngine.Random.Range(0, models.Count);
             objInsts[i] = NewObjectInstantiate(new_scale, new_obj_3D.p, objIdx);
-            objInsts[i].GetComponent<Renderer>().material = materials[i];
+            objInsts[i].GetComponent<Renderer>().material = materials[i % 3];
 
             // for cubes, adjust its radius
             if (objInsts[i].name == "Cube") new_obj_3D.radius = new_obj_3D.radius / (float)Math.Sqrt(2);
@@ -290,11 +222,10 @@ public class VisualObjs : MonoBehaviour
             // record the data about the object in the scene data structure
             obj3Ds.Add(new_obj_3D);
             ObjectStruct objData;
-            objData.Color = materials[i].name;
+            objData.Color = materials[i%3].name;
             objData.Shape = models[objIdx].name;
             objData.Size = new_scale;
-            
-            SceneData.Objects.Add(objData);
+            SceneData.Objects[i] = objData;
         }
 
         return objInsts;
@@ -513,9 +444,9 @@ public class VisualObjs : MonoBehaviour
         for (int i = 0; i < OBJ_NUM; i++)
         {
             objectData += "[" +
-                          SceneData.Objects[i].Color + "," +
-                          SceneData.Objects[i].Shape + "," +
-                          SceneData.Objects[i].Size + "," +
+                          "\"" + SceneData.Objects[i].Color + "\"" + "," +
+                          "\"" + SceneData.Objects[i].Shape + "\"" + "," +
+                          "\"" + SceneData.Objects[i].Size + "\"" + "," +
                           "]";
             if (i != OBJ_NUM - 1)
             {
