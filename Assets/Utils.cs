@@ -3,6 +3,19 @@ using UnityEngine;
 
 public partial class VisualObjs
 {
+    public struct Obj3D
+    {
+        public Point3D p;
+        public float radius;
+    }
+    
+    public struct ObjectStruct
+    {
+        public string Shape;
+        public float Size;
+        public string Color;
+        public Vector3 Position;
+    }
     public class SceneStruct
     {
         public int ImageIndex;
@@ -65,18 +78,9 @@ public partial class VisualObjs
         public float z;
     }
 
-    public struct Obj3D
-    {
-        public Point3D p;
-        public float radius;
-    }
 
-    public struct ObjectStruct
-    {
-        public string Shape;
-        public float Size;
-        public string Color;
-    }
+
+
 }
 //
 // public class Utils

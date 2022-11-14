@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 1bc413d599c0f9b41a7626966e5bf158, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1775786, g: 0.22232208, b: 0.30451748, a: 1}
+  m_IndirectSpecularColor: {r: 0.80208576, g: 0.7643097, b: 0.7532346, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -148,12 +148,13 @@ MonoBehaviour:
   - {fileID: 676844843337561410, guid: 3f5466456a0b0064782ea837459bd944, type: 3}
   - {fileID: 6644190339493067324, guid: 8d2e53e8a192ee3449fe05348517d7a5, type: 3}
   materials:
-  - {fileID: 2100000, guid: 91a5af3e167f9af43bfbeaaa9c5c8235, type: 2}
-  - {fileID: 2100000, guid: f38025ec656c69a44af1391b0f51fe2c, type: 2}
-  - {fileID: 2100000, guid: e517a8205190a524bbaa76897e402a45, type: 2}
+  - {fileID: 2100000, guid: e11c86de96e9c8a4fb2a7040d1b4ccb0, type: 2}
+  - {fileID: 2100000, guid: 5b7ab2ea1de372c4691a4eb418847979, type: 2}
+  - {fileID: 2100000, guid: c67bb83f8b18a6a42a3b72c37106948f, type: 2}
+  - {fileID: 2100000, guid: 2d4b09935ad19ee42a24ed4d5addfa88, type: 2}
   table: {fileID: 116067713}
-  environmentMap: {fileID: 0}
-  blackEnvironment: {fileID: 0}
+  environmentMap: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  danceRoomEnvironment: {fileID: 8900000, guid: a7f9c5490e1998d44bad7ad3421fc76d, type: 3}
   environments: []
   texture: {fileID: 8400000, guid: aa7fdeb48b6d0fa4ca01a48066cf471d, type: 2}
   projector: {fileID: 946805290}
@@ -231,6 +232,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9072541118093659896, guid: 3f5466456a0b0064782ea837459bd944, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2d4b09935ad19ee42a24ed4d5addfa88, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f5466456a0b0064782ea837459bd944, type: 3}
 --- !u!1 &946805289
@@ -263,9 +268,9 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0.8
-  m_Range: 8.73
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Range: 2.07
+  m_SpotAngle: 37.1
+  m_InnerSpotAngle: 1
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0

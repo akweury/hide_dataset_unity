@@ -26,7 +26,7 @@ public partial class VisualObjs : MonoBehaviour
     public SceneStruct SceneData;
     public GameObject table; // https://www.cgtrader.com/items/1875799/download-page
     public Material environmentMap;
-    public Cubemap blackEnvironment;
+    public Cubemap danceRoomEnvironment;
     public List<Cubemap> environments;
 
     public RenderTexture texture;
@@ -124,7 +124,7 @@ public partial class VisualObjs : MonoBehaviour
             CaptureNormal("normal0", camera0.R);
             CaptureScene("image");
             writeDataFileOneView("data0", modelInsts, camera0, depthMap0);
-            // environmentMap.SetTexture("_Tex", blackEnvironment);
+            environmentMap.SetTexture("_Tex", danceRoomEnvironment);
             newScene = false;
             fileCounter++;
         }
@@ -143,6 +143,7 @@ public partial class VisualObjs : MonoBehaviour
             if (tableInst != null) Destroy(tableInst);
 
             int envIdx = new System.Random().Next(0, environments.Count);
+            environmentMap.SetTexture("_Tex", danceRoomEnvironment);
             if (frames % 5 == 0) modelIdx = (modelIdx + 1) % models.Count;
 
             // instantiate the table
@@ -152,6 +153,7 @@ public partial class VisualObjs : MonoBehaviour
             Vector3 scale = new Vector3(table_length, table_height, table_width);
             // tableInst = Instantiate(tableModel, table.transform.position, rotation);
             table.transform.localScale = scale;
+            table.GetComponent<Renderer>().material = materials[3];
             // instantiate the objects on the table
             modelInsts = addRandomObjs();
 
@@ -222,9 +224,10 @@ public partial class VisualObjs : MonoBehaviour
             // record the data about the object in the scene data structure
             obj3Ds.Add(new_obj_3D);
             ObjectStruct objData;
-            objData.Color = materials[i%3].name;
+            objData.Color = materials[i % 3].name;
             objData.Shape = models[objIdx].name;
             objData.Size = new_scale;
+            objData.Position = objInsts[i].transform.position;
             SceneData.Objects[i] = objData;
         }
 
@@ -443,11 +446,16 @@ public partial class VisualObjs : MonoBehaviour
         String objectData = "\"objects\":[";
         for (int i = 0; i < OBJ_NUM; i++)
         {
-            objectData += "[" +
-                          "\"" + SceneData.Objects[i].Color + "\"" + "," +
-                          "\"" + SceneData.Objects[i].Shape + "\"" + "," +
-                          "\"" + SceneData.Objects[i].Size + "\"" + "," +
-                          "]";
+            objectData += "{" +
+                          "\"color\":\"" + SceneData.Objects[i].Color + "\"" + "," +
+                          "\"shape\":\"" + SceneData.Objects[i].Shape + "\"" + "," +
+                          "\"size\":\"" + SceneData.Objects[i].Size + "\"" + "," +
+                          "\"position\":[" +
+                          (float)SceneData.Objects[i].Position[0] + "," +
+                          (float)SceneData.Objects[i].Position[1] + "," +
+                          (float)SceneData.Objects[i].Position[2] + "," +
+                          "]" +
+                          "}";
             if (i != OBJ_NUM - 1)
             {
                 objectData += ",";
