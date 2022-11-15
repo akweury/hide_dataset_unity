@@ -9,15 +9,15 @@ using Object = UnityEngine.Object;
 
 public partial class VisualObjs : MonoBehaviour
 {
-    static int OBJ_NUM = 8;
+    static int OBJ_NUM = 4;
     int MAX_NUM_TRIES = 50;
-    float TABLE_WIDTH_BASE = 1;
-    float TABLE_LENGTH_BASE = 1;
+    float TABLE_WIDTH_BASE = 1.5F;
+    float TABLE_LENGTH_BASE = 1.5F;
     float TABLE_HEIGHT_BASE = 0.1F;
     float UNIFY_RADIUS = (float)0.5;
-    float MINIMUM_OBJ_DIST = (float)0.1;
-    private float MINIMUM_SCALE_RANGE = 0.02F;
-    private float MAXIMUM_SCALE_RANGE = 0.2F;
+    float MINIMUM_OBJ_DIST = (float)0.05;
+    private float MINIMUM_SCALE_RANGE = 0.2F;
+    private float MAXIMUM_SCALE_RANGE = 0.5F;
 
     public int single_idx = 1;
     public List<GameObject> train_models;
@@ -153,7 +153,9 @@ public partial class VisualObjs : MonoBehaviour
             Vector3 scale = new Vector3(table_length, table_height, table_width);
             // tableInst = Instantiate(tableModel, table.transform.position, rotation);
             table.transform.localScale = scale;
-            table.GetComponent<Renderer>().material = materials[3];
+
+            // table.GetComponent<MeshRenderer>().material = materials[3];
+
             // instantiate the objects on the table
             modelInsts = addRandomObjs();
 
@@ -186,13 +188,14 @@ public partial class VisualObjs : MonoBehaviour
                 if (num_tries > MAX_NUM_TRIES) return addRandomObjs();
                 // choose new size and position
                 new_scale = UnityEngine.Random.Range(MINIMUM_SCALE_RANGE, MAXIMUM_SCALE_RANGE) * scale_factor;
+                new_obj_3D.radius = new_scale * UNIFY_RADIUS;
 
                 new_obj_3D.p.x = table.transform.position[0] + UnityEngine.Random.Range(
-                    -(float)(table_width / 2) + new_scale, (float)(table_width / 2) - new_scale);
-                new_obj_3D.p.y = table.transform.position[1] + table_height * 0.5F + 0.5f * new_scale;
+                    -(float)(table_width / 2) + new_obj_3D.radius, (float)(table_width / 2) - new_obj_3D.radius);
+                new_obj_3D.p.y = table.transform.position[1] + table_height * 0.5F + 0.5f * new_obj_3D.radius;
                 new_obj_3D.p.z = table.transform.position[2] + UnityEngine.Random.Range(
-                    -(float)(table_length / 2) + new_scale, (float)(table_length / 2) - new_scale);
-                new_obj_3D.radius = new_scale * UNIFY_RADIUS;
+                    -(float)(table_length / 2) + new_obj_3D.radius, (float)(table_length / 2) - new_obj_3D.radius);
+
 
                 // check for overlapping
                 bool dists_good = true;
@@ -214,19 +217,19 @@ public partial class VisualObjs : MonoBehaviour
 
             // choose random material and shape
             int objIdx = UnityEngine.Random.Range(0, models.Count);
-            objInsts[i] = NewObjectInstantiate(new_scale, new_obj_3D.p, objIdx);
-            objInsts[i].GetComponent<Renderer>().material = materials[i % 3];
 
+
+            objInsts[i] = NewObjectInstantiate(new_obj_3D.radius, new_obj_3D.p, objIdx);
+            // objInsts[i].GetComponent<Renderer>().material = materials[i % 3];
             // for cubes, adjust its radius
-            if (objInsts[i].name == "Cube") new_obj_3D.radius = new_obj_3D.radius / (float)Math.Sqrt(2);
-
+            if (objInsts[i].name == "Cube") new_obj_3D.radius *= (float)Math.Sqrt(2);
 
             // record the data about the object in the scene data structure
             obj3Ds.Add(new_obj_3D);
             ObjectStruct objData;
             objData.Color = materials[i % 3].name;
             objData.Shape = models[objIdx].name;
-            objData.Size = new_scale;
+            objData.Size = new_obj_3D.radius;
             objData.Position = objInsts[i].transform.position;
             SceneData.Objects[i] = objData;
         }
