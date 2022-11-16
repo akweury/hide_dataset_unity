@@ -11,9 +11,9 @@ public partial class VisualObjs
     
     public struct ObjectStruct
     {
+        public int Id;
         public string Shape;
         public float Size;
-        public string Color;
         public Vector3 Position;
     }
     public class SceneStruct

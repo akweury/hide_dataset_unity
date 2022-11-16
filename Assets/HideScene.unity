@@ -241,14 +241,11 @@ MonoBehaviour:
   - {fileID: 919132149155446097, guid: b5809dc727ff44741a643c01d273f1a0, type: 3}
   - {fileID: 919132149155446097, guid: 551936952ba69ce42935723eb31d8522, type: 3}
   - {fileID: 919132149155446097, guid: 34db7c14cb31cf24da2f52edc5abdd4a, type: 3}
+  - {fileID: 919132149155446097, guid: 4c94dde561c388d488678bc3939e75d6, type: 3}
   test_models:
   - {fileID: 919132149155446097, guid: b5809dc727ff44741a643c01d273f1a0, type: 3}
   - {fileID: 919132149155446097, guid: 34db7c14cb31cf24da2f52edc5abdd4a, type: 3}
-  materials:
-  - {fileID: 2100000, guid: a595a0cdb55a06e4d81931a5a48a11fa, type: 2}
-  - {fileID: 8177313192987151348, guid: 9dba7f61ef44dd34e9f33e53585ce8fa, type: 3}
-  - {fileID: 2100000, guid: 38f730a77d209af49a1e268f07159ccc, type: 2}
-  - {fileID: 2100000, guid: 91a5af3e167f9af43bfbeaaa9c5c8235, type: 2}
+  materials: []
   table: {fileID: 956746069}
   environmentMap: {fileID: 2100000, guid: 51863ebce0c47ed40938f023db4a3d00, type: 2}
   danceRoomEnvironment: {fileID: 8900000, guid: 34887efb6cabe84489da6d49fd465d71, type: 3}
@@ -532,7 +529,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b5809dc727ff44741a643c01d273f1a0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.6
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b5809dc727ff44741a643c01d273f1a0, type: 3}
       propertyPath: m_LocalScale.z
