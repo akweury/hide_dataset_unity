@@ -6,17 +6,139 @@ using UnityEngine;
 
 public class Cursor : MonoBehaviour
 {
+    static int OBJ_NUM = 7;
+    
+    public List<GameObject> train_models;
+    public List<GameObject> test_models;
+    public List<Material> materials;
+    
     public Transform groundCheckTransform;
     private bool jumpKeyWasPressed;
     private float horizontalInput;
     private float verticalInput;
     private Rigidbody rigidbodyComponent;
     private bool isGrounded;
+    
+    
+    public struct Obj3D
+    {
+        public Vector3 p;
+        public float radius;
+    }
+    
+    public struct ObjectStruct
+    {
+        public int Id;
+        public string Shape;
+        public float Size;
+        public Vector3 Position;
+    }
+    public class SceneStruct
+    {
+        public int ImageIndex;
+        public List<ObjectStruct> Objects;
 
+        public SceneStruct(int objNum, int imageIndex)
+        {
+            Objects = new List<ObjectStruct>(new ObjectStruct[objNum]);
+            ImageIndex = imageIndex;
+        }
+    }
+    
+    
+    // List<GameObject> addRandomObjs()
+    // {
+    //     List<GameObject> objInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
+    //
+    //     List<Obj3D> obj3Ds = new List<Obj3D>();
+    //     for (int i = 0; i < OBJ_NUM; i++)
+    //     {
+    //         int num_tries = 0;
+    //         float new_scale;
+    //         Obj3D new_obj_3D;
+    //
+    //         // choose a random new model
+    //         int objIdx = UnityEngine.Random.Range(0, OBJ_NUM);
+    //         GameObject new_model = models[objIdx];
+    //
+    //         // find a 3D position for the new object
+    //         while (true)
+    //         {
+    //             num_tries += 1;
+    //             // exceed the maximum trying time
+    //             if (num_tries > MAX_NUM_TRIES) return addRandomObjs();
+    //             // choose new size and position
+    //             new_scale = UnityEngine.Random.Range(MINIMUM_SCALE_RANGE, MAXIMUM_SCALE_RANGE) * scale_factor;
+    //             new_obj_3D.radius = new_scale * UNIFY_RADIUS;
+    //
+    //             new_obj_3D.p.x = table.transform.position[0] + UnityEngine.Random.Range(
+    //                 -(float)(table_width / 2) + new_obj_3D.radius, (float)(table_width / 2) - new_obj_3D.radius);
+    //             new_obj_3D.p.y = table.transform.position[1] + table_height * 0.5F + new_obj_3D.radius;
+    //             new_obj_3D.p.z = table.transform.position[2] + UnityEngine.Random.Range(
+    //                 -(float)(table_length / 2) + new_obj_3D.radius, (float)(table_length / 2) - new_obj_3D.radius);
+    //
+    //             // check for overlapping
+    //             bool dists_good = true;
+    //             // bool margins_good = true;
+    //             for (int j = 0; j < obj3Ds.Count; j++)
+    //             {
+    //                 float dx = new_obj_3D.p.x - obj3Ds[j].p.x;
+    //                 float dz = new_obj_3D.p.z - obj3Ds[j].p.z;
+    //                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
+    //                 if (dist - new_obj_3D.radius - obj3Ds[j].radius < MINIMUM_OBJ_DIST)
+    //                 {
+    //                     dists_good = false;
+    //                     break;
+    //                 }
+    //             }
+    //
+    //             if (dists_good) break;
+    //         }
+    //
+    //         // create the new object
+    //         objInsts[i] = NewObjectInstantiate(new_obj_3D.radius * 2, new_obj_3D.p, new_model);
+    //
+    //         // for cubes, adjust its radius
+    //         if (objInsts[i].name == "Cube") new_obj_3D.radius *= (float)Math.Sqrt(2);
+    //
+    //         // record the object data
+    //         obj3Ds.Add(new_obj_3D);
+    //         ObjectStruct objData;
+    //         objData.Id = i;
+    //         objData.Shape = new_model.name;
+    //         objData.Size = new_obj_3D.radius;
+    //         objData.Position = objInsts[i].transform.position;
+    //         SceneData.Objects[i] = objData;
+    //     }
+    //
+    //     return objInsts;
+    // }
+    //
+    // GameObject NewObjectInstantiate(float scale, Point3D newPoint, GameObject new_model)
+    // {
+    //     Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
+    //         UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
+    //
+    //     // random place the object on the table
+    //     Vector3 position = new Vector3(newPoint.x, newPoint.y, newPoint.z);
+    //     GameObject objInst = Instantiate(new_model, position, rotation);
+    //     // GameObject objInst = Instantiate(models[objIdx], new Vector3(1.5f, -4f, 18f), rotation);
+    //     objInst.name = new_model.name;
+    //     objInst.transform.localScale = new Vector3(scale, scale, scale);
+    //
+    //     return objInst;
+    // }
+    //
+    //
+    //
+    
+    
     // Start is called before the first frame update
     void Start()
     {
         rigidbodyComponent = GetComponent<Rigidbody>();
+        // generate a set of objects (cubes, spheres)
+        // modelInsts = addRandomObjs();
     }
 
     // Update is called once per frame
