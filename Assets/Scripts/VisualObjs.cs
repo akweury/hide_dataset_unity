@@ -28,8 +28,8 @@ public partial class VisualObjs : MonoBehaviour
     public Material environmentMap;
     public Cubemap danceRoomEnvironment;
     public List<Cubemap> environments;
-
     public RenderTexture texture;
+    public GameObject cursor;
 
     // public Light dirLight;
     public Light projector;
@@ -176,6 +176,11 @@ public partial class VisualObjs : MonoBehaviour
         List<GameObject> objInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
 
         List<Obj3D> obj3Ds = new List<Obj3D>();
+        // add capsule to the list
+        Obj3D capsule3D;
+        capsule3D.p = cursor.transform.position;
+        capsule3D.radius = cursor.transform.localScale.x;
+        obj3Ds.Add(capsule3D);
         for (int i = 0; i < OBJ_NUM; i++)
         {
             int num_tries = 0;
@@ -183,8 +188,7 @@ public partial class VisualObjs : MonoBehaviour
             Obj3D new_obj_3D;
 
             // choose a random new model
-            int objIdx = UnityEngine.Random.Range(0, models.Count);
-            GameObject new_model = models[objIdx];
+            GameObject new_model = models[UnityEngine.Random.Range(0, models.Count)];
 
             // find a 3D position for the new object
             while (true)
@@ -230,16 +234,17 @@ public partial class VisualObjs : MonoBehaviour
             obj3Ds.Add(new_obj_3D);
             ObjectStruct objData;
             objData.Id = i;
-            objData.Shape = new_model.name;
+            objData.Shape = objInsts[i].name;
             objData.Size = new_obj_3D.radius;
             objData.Position = objInsts[i].transform.position;
+            objData.Material = objInsts[i].GetComponent<MeshRenderer>().material.name.Replace(" (Instance)","");
             SceneData.Objects[i] = objData;
         }
 
         return objInsts;
     }
 
-    GameObject NewObjectInstantiate(float scale, Point3D newPoint, GameObject new_model)
+    GameObject NewObjectInstantiate(float scale, Vector3 newPoint, GameObject new_model)
     {
         Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
@@ -247,10 +252,15 @@ public partial class VisualObjs : MonoBehaviour
         // random place the object on the table
         Vector3 position = new Vector3(newPoint.x, newPoint.y, newPoint.z);
         GameObject objInst = Instantiate(new_model, position, rotation);
-        // GameObject objInst = Instantiate(models[objIdx], new Vector3(1.5f, -4f, 18f), rotation);
+        Renderer[] children = objInst.GetComponentsInChildren<MeshRenderer>();
+        foreach (Renderer rend in children)
+        {
+            rend.material = materials[UnityEngine.Random.Range(0, materials.Count)];
+        }
+
         objInst.name = new_model.name;
         objInst.transform.localScale = new Vector3(scale, scale, scale);
-
+        
         return objInst;
     }
 
@@ -455,6 +465,7 @@ public partial class VisualObjs : MonoBehaviour
                           "\"id\":" + SceneData.Objects[i].Id + "," +
                           "\"shape\":\"" + SceneData.Objects[i].Shape + "\"" + "," +
                           "\"size\":\"" + SceneData.Objects[i].Size + "\"" + "," +
+                          "\"material\":\"" + SceneData.Objects[i].Material + "\"" + "," +
                           "\"position\":[" +
                           (float)SceneData.Objects[i].Position[0] + "," +
                           (float)SceneData.Objects[i].Position[1] + "," +

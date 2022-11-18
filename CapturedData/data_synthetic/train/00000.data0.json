@@ -1,0 +1,122 @@
+{
+  "K": [
+    [
+      557,
+      0,
+      256.5
+    ],
+    [
+      0,
+      557,
+      256.5
+    ],
+    [
+      0,
+      0,
+      1
+    ]
+  ],
+  "R": [
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      -0.8678522,
+      0.4968225
+    ],
+    [
+      0,
+      -0.4968225,
+      -0.8678522
+    ]
+  ],
+  "t": [
+    -1.42,
+    0.3200484,
+    7.039226
+  ],
+  "minDepth": 4.018438,
+  "maxDepth": 8.352662,
+  "objects": [
+    {
+      "id": 0,
+      "shape": "cube_model",
+      "size": "0.3600777",
+      "material": "matt_pink",
+      "position": [
+        0.1822284,
+        0.6100777,
+        -0.354544
+      ]
+    },
+    {
+      "id": 1,
+      "shape": "cube_model",
+      "size": "0.3708045",
+      "material": "smooth_blue",
+      "position": [
+        2.240093,
+        0.6208045,
+        1.40697
+      ]
+    },
+    {
+      "id": 2,
+      "shape": "cube_model",
+      "size": "0.3251752",
+      "material": "smooth_green",
+      "position": [
+        0.9743067,
+        0.5751752,
+        1.582996
+      ]
+    },
+    {
+      "id": 3,
+      "shape": "cube_model",
+      "size": "0.3120158",
+      "material": "matt_green",
+      "position": [
+        3.818279,
+        0.5620158,
+        -1.149484
+      ]
+    },
+    {
+      "id": 4,
+      "shape": "sphere_model",
+      "size": "0.7910729",
+      "material": "matt_blue",
+      "position": [
+        3.232449,
+        1.041073,
+        -2.432984
+      ]
+    },
+    {
+      "id": 5,
+      "shape": "sphere_model",
+      "size": "0.3464041",
+      "material": "matt_green",
+      "position": [
+        0.5240275,
+        0.5964041,
+        -3.010553
+      ]
+    },
+    {
+      "id": 6,
+      "shape": "cube_model",
+      "size": "0.4267831",
+      "material": "smooth_green",
+      "position": [
+        0.7479343,
+        0.6767831,
+        0.4240251
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ public partial class VisualObjs
 {
     public struct Obj3D
     {
-        public Point3D p;
+        public Vector3 p;
         public float radius;
     }
     
@@ -13,6 +13,7 @@ public partial class VisualObjs
     {
         public int Id;
         public string Shape;
+        public string Material;
         public float Size;
         public Vector3 Position;
     }
