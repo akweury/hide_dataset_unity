@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Cursor : MonoBehaviour
 {
-    static int OBJ_NUM = 7;
+    static int OBJ_NUM = 3;
     int MAX_NUM_TRIES = 50;
     float TABLE_WIDTH_BASE = 1.5F;
     float TABLE_LENGTH_BASE = 1.5F;

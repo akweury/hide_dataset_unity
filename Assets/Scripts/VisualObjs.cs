@@ -9,7 +9,8 @@ using Object = UnityEngine.Object;
 
 public partial class VisualObjs : MonoBehaviour
 {
-    static int OBJ_NUM = 7;
+    static int RANDOM_OBJ_NUM = 3;
+    private static int FRAMELOOP = 10;
     int MAX_NUM_TRIES = 50;
     float TABLE_WIDTH_BASE = 1.5F;
     float TABLE_LENGTH_BASE = 1.5F;
@@ -46,8 +47,11 @@ public partial class VisualObjs : MonoBehaviour
     private Camera cam;
     public GameObject tableModel;
 
-    List<GameObject> modelInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
-    GameObject tableInst;
+    // List<GameObject> modelInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
+    List<GameObject> randomInsts = new List<GameObject>(new GameObject[RANDOM_OBJ_NUM]);
+    List<GameObject> ruleInsts = new List<GameObject>(new GameObject[RANDOM_OBJ_NUM]);
+    private GameObject targetInst;
+    private GameObject tableInst;
 
 
     private int frames = 0;
@@ -70,7 +74,7 @@ public partial class VisualObjs : MonoBehaviour
     string root_path;
 
     List<GameObject> models;
-
+    List<Obj3D> obj3Ds = new List<Obj3D>();
 
     // Start is called before the first frame update
     void Start()
@@ -117,48 +121,50 @@ public partial class VisualObjs : MonoBehaviour
         }
 
         // save the scene data if it is a new scene
-        if (newScene == true)
+        if (frames % FRAMELOOP == FRAMELOOP - 1 && newScene)
         {
             Calibration camera0 = getCameraMatrix();
             DepthMap depthMap0 = CaptureDepth("depth0");
             CaptureNormal("normal0", camera0.R);
             CaptureScene("image");
-            writeDataFileOneView("data0", modelInsts, camera0, depthMap0);
+            writeDataFileOneView("data0", randomInsts, camera0, depthMap0);
             environmentMap.SetTexture("_Tex", danceRoomEnvironment);
             newScene = false;
             fileCounter++;
         }
 
         // render the scene
-        if (frames % 5 == 0 && fileCounter < maxFileCounter)
+        if (frames % FRAMELOOP == 0 && fileCounter < maxFileCounter)
         {
             // change configurations if necessary
-            SceneData = new SceneStruct(OBJ_NUM, fileCounter);
+            SceneData = new SceneStruct(RANDOM_OBJ_NUM, fileCounter);
 
-            for (int i = 0; i < OBJ_NUM; i++)
+            if (targetInst != null) Destroy(targetInst);
+            for (int i = 0; i < RANDOM_OBJ_NUM; i++)
             {
-                if (modelInsts[i] != null) Destroy(modelInsts[i]);
+                if (ruleInsts[i] != null) Destroy(ruleInsts[i]);
+            }
+
+            for (int i = 0; i < RANDOM_OBJ_NUM; i++)
+            {
+                if (randomInsts[i] != null) Destroy(randomInsts[i]);
             }
 
             if (tableInst != null) Destroy(tableInst);
 
             int envIdx = new System.Random().Next(0, environments.Count);
             environmentMap.SetTexture("_Tex", danceRoomEnvironment);
-            if (frames % 5 == 0) modelIdx = (modelIdx + 1) % models.Count;
+            if (frames % FRAMELOOP == 0) modelIdx = (modelIdx + 1) % models.Count;
 
             // instantiate the table
             Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
                 UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
             Vector3 scale = new Vector3(table_length, table_height, table_width);
-            // tableInst = Instantiate(tableModel, table.transform.position, rotation);
             table.transform.localScale = scale;
 
-            // table.GetComponent<MeshRenderer>().material = materials[3];
-
             // instantiate the objects on the table
-            modelInsts = addRandomObjs();
-
+            renderObjsRandomly();
             newScene = true;
         }
 
@@ -171,22 +177,21 @@ public partial class VisualObjs : MonoBehaviour
         }
     }
 
+    void renderObjsRandomly()
+    {
+        // ruleInsts = addRuleObjs();
+        randomInsts = addRandomObjs();
+    }
+
     List<GameObject> addRandomObjs()
     {
-        List<GameObject> objInsts = new List<GameObject>(new GameObject[OBJ_NUM]);
-
+        List<GameObject> objInsts = new List<GameObject>(new GameObject[RANDOM_OBJ_NUM]);
         List<Obj3D> obj3Ds = new List<Obj3D>();
-        // add capsule to the list
-        Obj3D capsule3D;
-        capsule3D.p = cursor.transform.position;
-        capsule3D.radius = cursor.transform.localScale.x;
-        obj3Ds.Add(capsule3D);
-        for (int i = 0; i < OBJ_NUM; i++)
+        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
         {
             int num_tries = 0;
             float new_scale;
             Obj3D new_obj_3D;
-
             // choose a random new model
             GameObject new_model = models[UnityEngine.Random.Range(0, models.Count)];
 
@@ -195,7 +200,7 @@ public partial class VisualObjs : MonoBehaviour
             {
                 num_tries += 1;
                 // exceed the maximum trying time
-                if (num_tries > MAX_NUM_TRIES) return addRandomObjs();
+                if (num_tries > MAX_NUM_TRIES) renderObjsRandomly();
                 // choose new size and position
                 new_scale = UnityEngine.Random.Range(MINIMUM_SCALE_RANGE, MAXIMUM_SCALE_RANGE) * scale_factor;
                 new_obj_3D.radius = new_scale * UNIFY_RADIUS;
@@ -237,7 +242,7 @@ public partial class VisualObjs : MonoBehaviour
             objData.Shape = objInsts[i].name;
             objData.Size = new_obj_3D.radius;
             objData.Position = objInsts[i].transform.position;
-            objData.Material = objInsts[i].GetComponent<MeshRenderer>().material.name.Replace(" (Instance)","");
+            objData.Material = objInsts[i].GetComponent<MeshRenderer>().material.name.Replace(" (Instance)", "");
             SceneData.Objects[i] = objData;
         }
 
@@ -260,7 +265,7 @@ public partial class VisualObjs : MonoBehaviour
 
         objInst.name = new_model.name;
         objInst.transform.localScale = new Vector3(scale, scale, scale);
-        
+
         return objInst;
     }
 
@@ -308,10 +313,11 @@ public partial class VisualObjs : MonoBehaviour
         image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         image.Apply();
 
-        for (int i = 0; i < OBJ_NUM; i++)
+        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
         {
-            modelInsts[i].SetActive(false);
+            randomInsts[i].SetActive(false);
         }
+        
 
 
         cam.RenderWithShader(depthShader, "RenderType");
@@ -320,9 +326,9 @@ public partial class VisualObjs : MonoBehaviour
         spinCubeImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         spinCubeImage.Apply();
 
-        for (int i = 0; i < OBJ_NUM; i++)
+        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
         {
-            modelInsts[i].SetActive(true);
+            randomInsts[i].SetActive(true);
         }
 
         // environmentMap.SetTexture("_Tex", env);
@@ -385,9 +391,9 @@ public partial class VisualObjs : MonoBehaviour
         image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         image.Apply();
 
-        for (int i = 0; i < OBJ_NUM; i++)
+        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
         {
-            modelInsts[i].SetActive(false);
+            randomInsts[i].SetActive(false);
         }
 
         cam.RenderWithShader(normalShader, "RenderType");
@@ -395,9 +401,9 @@ public partial class VisualObjs : MonoBehaviour
             false);
         cubeImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         cubeImage.Apply();
-        for (int i = 0; i < OBJ_NUM; i++)
+        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
         {
-            modelInsts[i].SetActive(true);
+            randomInsts[i].SetActive(true);
         }
 
         // environmentMap.SetTexture("_Tex", env);
@@ -459,7 +465,7 @@ public partial class VisualObjs : MonoBehaviour
 
 
         String objectData = "\"objects\":[";
-        for (int i = 0; i < OBJ_NUM; i++)
+        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
         {
             objectData += "{" +
                           "\"id\":" + SceneData.Objects[i].Id + "," +
@@ -472,7 +478,7 @@ public partial class VisualObjs : MonoBehaviour
                           (float)SceneData.Objects[i].Position[2] + "," +
                           "]" +
                           "}";
-            if (i != OBJ_NUM - 1)
+            if (i != RANDOM_OBJ_NUM - 1)
             {
                 objectData += ",";
             }
