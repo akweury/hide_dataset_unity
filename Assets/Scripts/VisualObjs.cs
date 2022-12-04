@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEditor;
 using Pngcs.Unity;
@@ -61,10 +62,10 @@ public partial class VisualObjs : MonoBehaviour
     float table_width;
     float table_height;
     int fileCounter = 0;
-    int maxFileCounter = 3000;
-    int train_end_idx = 2500;
-    int validation_end_idx = 2750;
-    int test_end_idx = 3000;
+    int maxFileCounter = 20;
+    int train_end_idx = 10;
+    int validation_end_idx = 15;
+    int test_end_idx = 20;
     int modelIdx = -1;
     float scale_factor = 1;
 
@@ -179,10 +180,83 @@ public partial class VisualObjs : MonoBehaviour
 
     void renderObjsRandomly()
     {
-        // ruleInsts = addRuleObjs();
+        StreamReader streamReader = new StreamReader(Application.dataPath + "/Scripts/Rules/front.json");
+        string json = streamReader.ReadToEnd();
+        Rules rulesJson = JsonConvert.DeserializeObject<Rules>(json);
+        ruleInsts = addRuleObjs(rulesJson);
         randomInsts = addRandomObjs();
     }
 
+    List<GameObject> addRuleObjs(Rules rulesJson)
+    {
+        int obj_num = rulesJson.objs.Count;
+        List<GameObject> objInsts = new List<GameObject>(new GameObject[RANDOM_OBJ_NUM]);
+        List<Obj3D> obj3Ds = new List<Obj3D>();
+        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
+        {
+            int num_tries = 0;
+            float new_scale;
+            Obj3D new_obj_3D;
+            // choose a random new model
+            GameObject new_model = models[UnityEngine.Random.Range(0, models.Count)];
+
+            // find a 3D position for the new object
+            while (true)
+            {
+                num_tries += 1;
+                // exceed the maximum trying time
+                if (num_tries > MAX_NUM_TRIES) renderObjsRandomly();
+                // choose new size and position
+                new_scale = UnityEngine.Random.Range(MINIMUM_SCALE_RANGE, MAXIMUM_SCALE_RANGE) * scale_factor;
+                new_obj_3D.radius = new_scale * UNIFY_RADIUS;
+
+                new_obj_3D.p.x = table.transform.position[0] + UnityEngine.Random.Range(
+                    -(float)(table_width / 2) + new_obj_3D.radius, (float)(table_width / 2) - new_obj_3D.radius);
+                new_obj_3D.p.y = table.transform.position[1] + table_height * 0.5F + new_obj_3D.radius;
+                new_obj_3D.p.z = table.transform.position[2] + UnityEngine.Random.Range(
+                    -(float)(table_length / 2) + new_obj_3D.radius, (float)(table_length / 2) - new_obj_3D.radius);
+
+                // check for overlapping
+                bool dists_good = true;
+                // bool margins_good = true;
+                for (int j = 0; j < obj3Ds.Count; j++)
+                {
+                    float dx = new_obj_3D.p.x - obj3Ds[j].p.x;
+                    float dz = new_obj_3D.p.z - obj3Ds[j].p.z;
+                    float dist = (float)Math.Sqrt(dx * dx + dz * dz);
+                    if (dist - new_obj_3D.radius - obj3Ds[j].radius < MINIMUM_OBJ_DIST)
+                    {
+                        dists_good = false;
+                        break;
+                    }
+                }
+
+                if (dists_good) break;
+            }
+
+            // create the new object
+            objInsts[i] = NewObjectInstantiate(new_obj_3D.radius * 2, new_obj_3D.p, new_model);
+
+            // for cubes, adjust its radius
+            if (objInsts[i].name == "Cube") new_obj_3D.radius *= (float)Math.Sqrt(2);
+
+            // record the object data
+            obj3Ds.Add(new_obj_3D);
+            ObjectStruct objData;
+            objData.Id = i;
+            objData.Shape = objInsts[i].name;
+            objData.Size = new_obj_3D.radius;
+            objData.Position = objInsts[i].transform.position;
+            objData.Material = objInsts[i].GetComponent<MeshRenderer>().material.name.Replace(" (Instance)", "");
+            SceneData.Objects[i] = objData;
+        }
+
+        return objInsts;
+    }
+
+    
+    
+    
     List<GameObject> addRandomObjs()
     {
         List<GameObject> objInsts = new List<GameObject>(new GameObject[RANDOM_OBJ_NUM]);

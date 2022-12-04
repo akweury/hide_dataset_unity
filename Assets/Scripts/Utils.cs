@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public partial class VisualObjs
@@ -77,6 +78,24 @@ public partial class VisualObjs
         public float x;
         public float y;
         public float z;
+    }
+
+    public class Rules
+    {
+        [JsonProperty("target")]
+        public ObjProp target;
+        
+        [JsonProperty("Objs")]
+        public List<ObjProp> objs;
+    }
+
+    public struct ObjProp
+    {
+        [JsonProperty("size")]
+        private string size;
+        
+        [JsonProperty("position")]
+        private string position;
     }
 
 

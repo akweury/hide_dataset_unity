@@ -1,0 +1,12 @@
+{
+  "target": {
+    "size": "small",
+    "position": null
+  },
+  "Objs": [
+    {
+      "size": "big",
+      "position": "2,0,0"
+    }
+  ]
+}
