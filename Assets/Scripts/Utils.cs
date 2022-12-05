@@ -8,16 +8,34 @@ public partial class VisualObjs
     {
         public Vector3 p;
         public float radius;
+
+        public Obj3D(Vector3 p, float radius)
+        {
+            this.p = p;
+            this.radius = radius;
+        }
     }
-    
-    public struct ObjectStruct
+
+    public class ObjectStruct
     {
         public int Id;
         public string Shape;
         public string Material;
         public float Size;
         public Vector3 Position;
+        
+        
+
+        public ObjectStruct(int id, string shape, string material, float size, Vector3 position)
+        {
+            this.Id = id;
+            this.Shape = shape;
+            this.Material = material;
+            this.Size = size;
+            this.Position = position;
+        }
     }
+
     public class SceneStruct
     {
         public int ImageIndex;
@@ -82,27 +100,29 @@ public partial class VisualObjs
 
     public class Rules
     {
-        [JsonProperty("target")]
-        public ObjProp target;
-        
-        [JsonProperty("Objs")]
-        public List<ObjProp> objs;
+        [JsonProperty("target")] public ObjProp target;
+
+        [JsonProperty("Objs")] public List<ObjProp> objs;
     }
 
     public struct ObjProp
     {
-        [JsonProperty("size")]
-        private string size;
-        
-        [JsonProperty("position")]
-        private string position;
+        [JsonProperty("size")] public string size;
+        [JsonProperty("shape")] public string Shape;
+        [JsonProperty("material")] public string Material;
+        [JsonProperty("x")] public float x;
+        [JsonProperty("y")] public float y;
+        [JsonProperty("z")] public float z;
     }
 
-
-
-
+    private Dictionary<string, float> propMapping = new()
+    {
+        { "small", 0.2F },
+        { "big", 0.5F },
+        
+        { "cube", 0 },
+        { "sphere", 1 },
+        
+        { "orange", 6 }
+    };
 }
-//
-// public class Utils
-// {
-// }
