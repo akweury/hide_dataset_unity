@@ -117,8 +117,8 @@ public partial class VisualObjs
 
     private Dictionary<string, float> propMapping = new()
     {
-        { "small", 0.2F },
-        { "big", 0.5F },
+        { "small", 0.4F },
+        { "big", 0.7F },
         
         { "cube", 0 },
         { "sphere", 1 },

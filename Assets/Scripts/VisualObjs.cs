@@ -586,7 +586,7 @@ public partial class VisualObjs : MonoBehaviour
                           "\"position\":[" +
                           (float)SceneData.Objects[i].Position[0] + "," +
                           (float)SceneData.Objects[i].Position[1] + "," +
-                          (float)SceneData.Objects[i].Position[2] + "," +
+                          (float)SceneData.Objects[i].Position[2] +
                           "]" +
                           "}";
             if (i != RANDOM_OBJ_NUM - 1)
