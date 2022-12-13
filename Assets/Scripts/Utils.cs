@@ -103,6 +103,12 @@ public partial class VisualObjs
         [JsonProperty("target")] public ObjProp target;
 
         [JsonProperty("Objs")] public List<ObjProp> objs;
+        
+        [JsonProperty("target_objs_per_scene")] public int TargetObjPerScene;
+        
+        [JsonProperty("rule_objs_per_scene")] public int RuleObjPerScene;
+        
+        [JsonProperty("random_objs_per_scene")] public int RandomObjPerScene;
     }
 
     public struct ObjProp
@@ -115,7 +121,7 @@ public partial class VisualObjs
         [JsonProperty("z")] public float z;
     }
 
-    private Dictionary<string, float> propMapping = new()
+    private Dictionary<string, float> strFloMapping = new()
     {
         { "small", 0.4F },
         { "big", 0.7F },
@@ -123,6 +129,14 @@ public partial class VisualObjs
         { "cube", 0 },
         { "sphere", 1 },
         
-        { "orange", 6 }
+        { "orange", 6 },
     };
+    
+    private Dictionary<string, string> strStrMapping = new()
+    {
+        {"cube_model", "cube"},
+        {"sphere_model", "sphere"}
+    };
+    
+
 }

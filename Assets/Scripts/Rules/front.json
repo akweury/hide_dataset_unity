@@ -1,4 +1,7 @@
 {
+  "target_objs_per_scene": 1,
+  "rule_objs_per_scene": 2,
+  "random_objs_per_scene": 2,
   "target": {
     "size": "small",
     "shape": "sphere",

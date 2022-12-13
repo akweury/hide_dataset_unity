@@ -5,22 +5,21 @@ using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEditor;
 using Pngcs.Unity;
-using Object = UnityEngine.Object;
+
 
 public partial class VisualObjs : MonoBehaviour
 {
-    static int RANDOM_OBJ_NUM = 3;
-    private static int FRAMELOOP = 10;
-    int MAX_NUM_TRIES = 50;
+    private int _objNum;
+    private static int _frameLoop = 10;
+    int _maxNumTries = 50;
     float TABLE_WIDTH_BASE = 1.5F;
     float TABLE_LENGTH_BASE = 1.5F;
     float TABLE_HEIGHT_BASE = 0.1F;
     float UNIFY_RADIUS = 0.5F;
     float MINIMUM_OBJ_DIST = (float)0.1;
     private float MINIMUM_SCALE_RANGE = 0.15F;
-    private float MAXIMUM_SCALE_RANGE = 0.4F;
+    private float MAXIMUM_SCALE_RANGE = 0.3F;
 
     public int single_idx = 1;
     public List<GameObject> train_models;
@@ -49,7 +48,7 @@ public partial class VisualObjs : MonoBehaviour
     private Camera cam;
     public GameObject tableModel;
 
-    List<GameObject> objInsts = new List<GameObject>(new GameObject[RANDOM_OBJ_NUM]);
+    private List<GameObject> objInsts;
     private GameObject tableInst;
 
 
@@ -60,10 +59,16 @@ public partial class VisualObjs : MonoBehaviour
     float table_width;
     float table_height;
     int fileCounter = 0;
-    int maxFileCounter = 20;
-    int train_end_idx = 10;
-    int validation_end_idx = 15;
-    int test_end_idx = 20;
+    int maxFileCounter;
+
+    private int _trainNum = 100;
+    private int _testNum = 20;
+    private int _valNum = 20;
+
+    // int train_end_idx = 10;
+    // int validation_end_idx = 15;
+    // int test_end_idx = 20;
+
     int modelIdx = -1;
     float scale_factor = 1;
 
@@ -98,22 +103,28 @@ public partial class VisualObjs : MonoBehaviour
         table_length = TABLE_LENGTH_BASE * scale_factor;
         table_width = TABLE_WIDTH_BASE * scale_factor;
         table_height = TABLE_HEIGHT_BASE * scale_factor;
-
+        maxFileCounter = _trainNum + _valNum + _testNum;
+        
         StreamReader streamReader = new StreamReader(Application.dataPath + "/Scripts/Rules/front.json");
         string json = streamReader.ReadToEnd();
         rulesJson = JsonConvert.DeserializeObject<Rules>(json);
+        if (rulesJson != null)
+        {
+            _objNum = rulesJson.RandomObjPerScene + rulesJson.RuleObjPerScene + rulesJson.TargetObjPerScene;
+            objInsts = new List<GameObject>(new GameObject[_objNum]);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        // change train/eval/test models
-        if (fileCounter >= validation_end_idx)
+        // generate test scenes
+        if (fileCounter >= _trainNum + _valNum)
         {
             saved_path = root_path + "test/";
             models = test_models;
         }
-        else if (fileCounter >= train_end_idx)
+        else if (fileCounter >= _trainNum)
         {
             models = test_models;
             saved_path = root_path + "val/";
@@ -124,7 +135,7 @@ public partial class VisualObjs : MonoBehaviour
         }
 
         // save the scene data if it is a new scene
-        if (frames % FRAMELOOP == FRAMELOOP - 1 && newScene)
+        if (frames % _frameLoop == _frameLoop - 1 && newScene)
         {
             Calibration camera0 = getCameraMatrix();
             DepthMap depthMap0 = CaptureDepth("depth0");
@@ -137,7 +148,7 @@ public partial class VisualObjs : MonoBehaviour
         }
 
         // render the scene
-        if (frames % FRAMELOOP == 0 && fileCounter < maxFileCounter)
+        if (frames % _frameLoop == 0 && fileCounter < maxFileCounter)
         {
             if (fileCounter == 2)
             {
@@ -145,9 +156,9 @@ public partial class VisualObjs : MonoBehaviour
             }
 
             // change configurations if necessary
-            SceneData = new SceneStruct(RANDOM_OBJ_NUM, fileCounter);
+            SceneData = new SceneStruct(_objNum, fileCounter);
 
-            for (int i = 0; i < RANDOM_OBJ_NUM; i++)
+            for (int i = 0; i < _objNum; i++)
             {
                 if (objInsts[i] != null) Destroy(objInsts[i]);
             }
@@ -156,7 +167,7 @@ public partial class VisualObjs : MonoBehaviour
 
             int envIdx = new System.Random().Next(0, environments.Count);
             environmentMap.SetTexture("_Tex", danceRoomEnvironment);
-            if (frames % FRAMELOOP == 0) modelIdx = (modelIdx + 1) % models.Count;
+            if (frames % _frameLoop == 0) modelIdx = (modelIdx + 1) % models.Count;
 
             // instantiate the table
             Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
@@ -171,6 +182,7 @@ public partial class VisualObjs : MonoBehaviour
             {
                 placeLayoutFinished = placeObjsRandomly();
             }
+
             renderObjs();
             newScene = true;
         }
@@ -178,7 +190,7 @@ public partial class VisualObjs : MonoBehaviour
         frames++;
 
         // stop rendering when file number exceeded the threshold
-        if (fileCounter >= test_end_idx)
+        if (fileCounter >= _trainNum + _testNum + _valNum)
         {
             UnityEditor.EditorApplication.isPlaying = false;
         }
@@ -189,11 +201,9 @@ public partial class VisualObjs : MonoBehaviour
     {
         // List<Vector3> objPlaces = new List<Vector3>(new Vector3[RANDOM_OBJ_NUM]);
         int objIdx = 0;
-
         // add target object
         addRuleObj(0, rulesJson.target);
         objIdx++;
-
         // add rule objects
         for (int i = 0; i < rulesJson.objs.Count; i++)
         {
@@ -206,11 +216,16 @@ public partial class VisualObjs : MonoBehaviour
         }
 
         // add random objects
-        for (int i = objIdx; i < RANDOM_OBJ_NUM; i++)
+        for (int i = objIdx; i < _objNum; i++)
         {
-            addRandomObj(i);
+            bool objGood = addRandomObj(i);
             objIdx++;
+            if (!objGood)
+            {
+                return false;
+            }
         }
+
         return true;
     }
 
@@ -222,15 +237,15 @@ public partial class VisualObjs : MonoBehaviour
         // init obj
 
         int num_tries = 0;
-        float obj_radius = propMapping[objProp.size] * UNIFY_RADIUS;
-        GameObject obj_model = models[(int)propMapping[objProp.Shape]];
+        float obj_radius = strFloMapping[objProp.size] * UNIFY_RADIUS;
+        GameObject obj_model = models[(int)strFloMapping[objProp.Shape]];
         Vector3 obj_pos;
         // find a 3D position for the new object
         while (true)
         {
             num_tries += 1;
             // exceed the maximum trying time
-            if (num_tries > MAX_NUM_TRIES) return false;
+            if (num_tries > _maxNumTries) return false;
 
             // check for positions
             bool pos_good = true;
@@ -267,7 +282,7 @@ public partial class VisualObjs : MonoBehaviour
         }
 
         // for cubes, adjust its radius
-        if (objProp.Shape == "Cube") obj_radius *= (float)Math.Sqrt(2);
+        if (objProp.Shape == "cube") obj_radius *= (float)Math.Sqrt(2);
         // Obj3D target3D = new Obj3D(obj_pos, obj_radius);
 
         // record the object data
@@ -277,12 +292,13 @@ public partial class VisualObjs : MonoBehaviour
     }
 
 
-    void addRandomObj(int objIdx)
+    bool addRandomObj(int objIdx)
     {
         int num_tries = 0;
         float new_scale;
         // choose a random new model
         GameObject new_model = models[UnityEngine.Random.Range(0, models.Count)];
+        string shape_name = strStrMapping[new_model.name];
         float obj_radius;
         Vector3 obj_pos = new Vector3();
 
@@ -291,7 +307,8 @@ public partial class VisualObjs : MonoBehaviour
         {
             num_tries += 1;
             // exceed the maximum trying time
-            if (num_tries > MAX_NUM_TRIES) placeObjsRandomly();
+            if (num_tries > _maxNumTries) return false;
+
             // choose new size and position
             new_scale = UnityEngine.Random.Range(MINIMUM_SCALE_RANGE, MAXIMUM_SCALE_RANGE) * scale_factor;
             obj_radius = new_scale * UNIFY_RADIUS;
@@ -313,7 +330,7 @@ public partial class VisualObjs : MonoBehaviour
                 if (dist - obj_radius - SceneData.Objects[i].Size < MINIMUM_OBJ_DIST)
                 {
                     dists_good = false;
-                    break;
+                    return false;
                 }
             }
 
@@ -321,18 +338,19 @@ public partial class VisualObjs : MonoBehaviour
         }
 
         // create the new object
-        GameObject objInst = NewObjectInstantiate(obj_radius * 2, obj_pos, new_model, "");
+        // GameObject objInst = NewObjectInstantiate(obj_radius * 2, obj_pos, new_model, "");
 
         // for cubes, adjust its radius
-        if (objInst.name == "Cube") obj_radius *= (float)Math.Sqrt(2);
+        if (shape_name == "cube") obj_radius *= (float)Math.Sqrt(2);
 
         // record the object data
         SceneData.Objects[objIdx] = new ObjectStruct(
             objIdx,
-            objInst.name,
-            objInst.GetComponent<MeshRenderer>().material.name.Replace(" (Instance)", ""),
+            shape_name,
+            "",
             obj_radius,
             obj_pos);
+        return true;
     }
 
     void renderObjs()
@@ -341,12 +359,12 @@ public partial class VisualObjs : MonoBehaviour
         {
             float objSize = SceneData.Objects[i].Size;
             // for cubes, adjust its radius
-            if (SceneData.Objects[i].Shape == "Cube") objSize = SceneData.Objects[i].Size / (float)Math.Sqrt(2);
+            if (SceneData.Objects[i].Shape == "cube") objSize = SceneData.Objects[i].Size / (float)Math.Sqrt(2);
 
             objInsts[i] = NewObjectInstantiate(
                 objSize * 2,
                 SceneData.Objects[i].Position,
-                models[(int)propMapping[SceneData.Objects[i].Shape]],
+                models[(int)strFloMapping[SceneData.Objects[i].Shape]],
                 SceneData.Objects[i].Material);
 
 
@@ -370,7 +388,7 @@ public partial class VisualObjs : MonoBehaviour
         {
             if (material != "")
             {
-                rend.material = materials[(int)propMapping[material]];
+                rend.material = materials[(int)strFloMapping[material]];
             }
             else
             {
@@ -428,7 +446,7 @@ public partial class VisualObjs : MonoBehaviour
         image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         image.Apply();
 
-        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
+        for (int i = 0; i < _objNum; i++)
         {
             objInsts[i].SetActive(false);
         }
@@ -439,7 +457,7 @@ public partial class VisualObjs : MonoBehaviour
         spinCubeImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         spinCubeImage.Apply();
 
-        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
+        for (int i = 0; i < _objNum; i++)
         {
             objInsts[i].SetActive(true);
         }
@@ -502,7 +520,7 @@ public partial class VisualObjs : MonoBehaviour
         image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         image.Apply();
 
-        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
+        for (int i = 0; i < _objNum; i++)
         {
             objInsts[i].SetActive(false);
         }
@@ -512,7 +530,7 @@ public partial class VisualObjs : MonoBehaviour
             false);
         cubeImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         cubeImage.Apply();
-        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
+        for (int i = 0; i < _objNum; i++)
         {
             objInsts[i].SetActive(true);
         }
@@ -576,7 +594,7 @@ public partial class VisualObjs : MonoBehaviour
 
 
         String objectData = "\"objects\":[";
-        for (int i = 0; i < RANDOM_OBJ_NUM; i++)
+        for (int i = 0; i < _objNum; i++)
         {
             objectData += "{" +
                           "\"id\":" + SceneData.Objects[i].Id + "," +
@@ -589,7 +607,7 @@ public partial class VisualObjs : MonoBehaviour
                           (float)SceneData.Objects[i].Position[2] +
                           "]" +
                           "}";
-            if (i != RANDOM_OBJ_NUM - 1)
+            if (i != _objNum - 1)
             {
                 objectData += ",";
             }
