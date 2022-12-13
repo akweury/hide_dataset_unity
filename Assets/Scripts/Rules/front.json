@@ -10,19 +10,19 @@
   "Objs": [
     {
       "size": "big",
-      "shape": "sphere",
+      "shape": "cube",
       "material": "",
       "x": 1.5,
       "y": 0,
       "z": 0
     },
     {
-      "size": "small",
-      "shape": "cube",
+      "size": "big",
+      "shape": "sphere",
       "material": "",
       "x": 1.5,
       "y": 0,
-      "z": 1.5
+      "z": 2
     }
   ]
 }
