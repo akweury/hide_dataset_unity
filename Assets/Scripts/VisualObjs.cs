@@ -61,7 +61,7 @@ public partial class VisualObjs : MonoBehaviour
     int fileCounter = 0;
     int maxFileCounter;
 
-    private int _trainNum = 10;
+    private int _trainNum = 100;
     private int _testNum = 5;
     private int _valNum = 5;
 
