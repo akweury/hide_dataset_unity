@@ -23,8 +23,7 @@ public partial class VisualObjs
         public string Material;
         public float Size;
         public Vector3 Position;
-        
-        
+
 
         public ObjectStruct(int id, string shape, string material, float size, Vector3 position)
         {
@@ -101,14 +100,19 @@ public partial class VisualObjs
     public class Rules
     {
         [JsonProperty("target")] public ObjProp target;
-
         [JsonProperty("Objs")] public List<ObjProp> objs;
-        
-        [JsonProperty("target_objs_per_scene")] public int TargetObjPerScene;
-        
+
+        [JsonProperty("target_objs_per_scene")]
+        public int TargetObjPerScene;
+
         [JsonProperty("rule_objs_per_scene")] public int RuleObjPerScene;
-        
-        [JsonProperty("random_objs_per_scene")] public int RandomObjPerScene;
+
+        [JsonProperty("random_objs_per_scene")]
+        public int RandomObjPerScene;
+
+        [JsonProperty("train_num")] public int TrainNum;
+        [JsonProperty("test_num")] public int TestNum;
+        [JsonProperty("val_num")] public int ValNum;
     }
 
     public struct ObjProp
@@ -125,18 +129,16 @@ public partial class VisualObjs
     {
         { "small", 0.4F },
         { "big", 0.7F },
-        
+
         { "cube", 0 },
         { "sphere", 1 },
-        
+
         { "orange", 6 },
     };
-    
+
     private Dictionary<string, string> strStrMapping = new()
     {
-        {"cube_model", "cube"},
-        {"sphere_model", "sphere"}
+        { "cube_model", "cube" },
+        { "sphere_model", "sphere" }
     };
-    
-
 }

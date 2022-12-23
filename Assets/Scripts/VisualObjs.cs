@@ -58,16 +58,13 @@ public partial class VisualObjs : MonoBehaviour
     float table_length;
     float table_width;
     float table_height;
-    int fileCounter = 0;
+    int fileCounter;
     int maxFileCounter;
 
-    private int _trainNum = 100;
-    private int _testNum = 5;
-    private int _valNum = 5;
+    private int _trainNum;
+    private int _testNum;
+    private int _valNum;
 
-    // int train_end_idx = 10;
-    // int validation_end_idx = 15;
-    // int test_end_idx = 20;
 
     int modelIdx = -1;
     float scale_factor = 1;
@@ -80,6 +77,10 @@ public partial class VisualObjs : MonoBehaviour
     List<GameObject> models;
     private Rules rulesJson;
     private string sceneType;
+    private FileInfo[] _files;
+    private int _ruleFileCounter;
+    private bool initialize = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -104,21 +105,52 @@ public partial class VisualObjs : MonoBehaviour
         table_length = TABLE_LENGTH_BASE * scale_factor;
         table_width = TABLE_WIDTH_BASE * scale_factor;
         table_height = TABLE_HEIGHT_BASE * scale_factor;
-        maxFileCounter = _trainNum + _valNum + _testNum;
 
-        StreamReader streamReader = new StreamReader(Application.dataPath + "/Scripts/Rules/front.json");
-        string json = streamReader.ReadToEnd();
-        rulesJson = JsonConvert.DeserializeObject<Rules>(json);
-        if (rulesJson != null)
-        {
-            _objNum = rulesJson.RandomObjPerScene + rulesJson.RuleObjPerScene + rulesJson.TargetObjPerScene;
-            objInsts = new List<GameObject>(new GameObject[_objNum]);
-        }
+        // _ruleFileCounter = 0;
+        DirectoryInfo d = new DirectoryInfo(Application.dataPath + "/Scripts/Rules");
+        _files = d.GetFiles("*.json"); //Getting Text files
     }
 
     // Update is called once per frame
     void Update()
     {
+        // stop rendering when file number exceeded the threshold
+        if (fileCounter >= _trainNum + _testNum + _valNum)
+        {
+            fileCounter = 0;
+            initialize = false;
+            if (_ruleFileCounter >= _files.Length)
+            {
+                UnityEditor.EditorApplication.isPlaying = false;
+                initialize = true;
+            }
+        }
+
+        if (!initialize)
+        {
+            for (int i = 0; i < _objNum; i++)
+            {
+                if (objInsts[i] != null) Destroy(objInsts[i]);
+            }
+
+            StreamReader streamReader = new StreamReader(_files[_ruleFileCounter].FullName);
+            string json = streamReader.ReadToEnd();
+            rulesJson = JsonConvert.DeserializeObject<Rules>(json);
+            if (rulesJson != null)
+            {
+                _objNum = rulesJson.RandomObjPerScene + rulesJson.RuleObjPerScene + rulesJson.TargetObjPerScene;
+                objInsts = new List<GameObject>(new GameObject[_objNum]);
+            }
+
+            _trainNum = rulesJson.TrainNum;
+            _valNum = rulesJson.ValNum;
+            _testNum = rulesJson.TestNum;
+            maxFileCounter = _trainNum + _valNum + _testNum;
+            _ruleFileCounter += 1;
+            initialize = true;
+        }
+
+
         // generate test scenes
         if (fileCounter >= _trainNum + _valNum)
         {
@@ -184,20 +216,12 @@ public partial class VisualObjs : MonoBehaviour
             {
                 placeLayoutFinished = placeObjsRandomly();
             }
-
             renderObjs();
             newScene = true;
         }
 
         frames++;
-
-        // stop rendering when file number exceeded the threshold
-        if (fileCounter >= _trainNum + _testNum + _valNum)
-        {
-            UnityEditor.EditorApplication.isPlaying = false;
-        }
     }
-
 
     bool placeObjsRandomly()
     {
@@ -237,7 +261,7 @@ public partial class VisualObjs : MonoBehaviour
 
         if (String.Equals(sceneType, "test"))
         {
-            bool isGood = randomPos(newScale, objProp.Shape,objProp.Material, objId);
+            bool isGood = randomPos(newScale, objProp.Shape, objProp.Material, objId);
             return isGood;
         }
 
@@ -331,6 +355,7 @@ public partial class VisualObjs : MonoBehaviour
                     return false;
                 }
             }
+
             break;
         }
 
@@ -479,7 +504,8 @@ public partial class VisualObjs : MonoBehaviour
             }
         }
 
-        PNG.Write(imageRGB, w, h, 8, false, false, saved_path + fileCounter.ToString("D5") + "." + name + ".png");
+        PNG.Write(imageRGB, w, h, 8, false, false,
+            saved_path + _ruleFileCounter.ToString("D2") + "." + fileCounter.ToString("D5") + "." + name + ".png");
         //PNG.Write(imageRGB, w, h, 8, false, true, saved_path + fileCounter.ToString("D5") + "." + name + "RGB.png");
         Destroy(currentTexture);
     }
@@ -551,7 +577,7 @@ public partial class VisualObjs : MonoBehaviour
         }
 
         PNG.Write(depthMap.depths, w, h, 16, false, true,
-            saved_path + fileCounter.ToString("D5") + "." + name + ".png");
+            saved_path + _ruleFileCounter.ToString("D2") + "." + fileCounter.ToString("D5") + "." + name + ".png");
 
         Destroy(image);
         Destroy(spinCubeImage);
@@ -613,7 +639,8 @@ public partial class VisualObjs : MonoBehaviour
             }
         }
 
-        PNG.Write(normalMap, w, h, 8, false, false, saved_path + fileCounter.ToString("D5") + "." + name + ".png");
+        PNG.Write(normalMap, w, h, 8, false, false,
+            saved_path + _ruleFileCounter.ToString("D2") + "." + fileCounter.ToString("D5") + "." + name + ".png");
 
         Destroy(image);
         Destroy(cubeImage);
@@ -621,7 +648,10 @@ public partial class VisualObjs : MonoBehaviour
 
     void writeDataFileOneView(string name, List<GameObject> models, Calibration camera, DepthMap depthMap)
     {
-        StreamWriter writer = new StreamWriter(saved_path + fileCounter.ToString("D5") + "." + name + ".json", false);
+        StreamWriter writer =
+            new StreamWriter(
+                saved_path + _ruleFileCounter.ToString("D2") + "." + fileCounter.ToString("D5") + "." + name + ".json",
+                false);
         String data1 = "{" + "\"K\":[[" +
                        camera.K[0, 0] + "," + 0 + "," +
                        camera.K[0, 2].ToString().Replace(',', '.') + "],[" + 0 + "," +

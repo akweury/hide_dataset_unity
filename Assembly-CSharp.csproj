@@ -45,8 +45,9 @@
      <Compile Include="Assets\Scripts\Utils.cs" />
      <Compile Include="Assets\Scripts\VisualObjs.cs" />
      <None Include="Assets\PhaseShader.shader" />
-     <None Include="Assets\Scripts\Rules\front.json" />
+     <None Include="Assets\Scripts\Rules\left.json" />
      <None Include="Assets\NormalShader.shader" />
+     <None Include="Assets\Scripts\Rules\right.json" />
      <None Include="Assets\DepthShader.shader" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
