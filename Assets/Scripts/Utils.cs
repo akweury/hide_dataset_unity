@@ -48,19 +48,19 @@ public partial class VisualObjs
         }
     }
 
-    public class Calibration
-    {
-        public Matrix4x4 K;
-        public Matrix4x4 R;
-        public Vector3 t;
-
-        public Calibration(Matrix4x4 KK, Matrix4x4 RR, Vector3 tt)
-        {
-            K = KK;
-            R = RR;
-            t = tt;
-        }
-    }
+    // public class Calibration
+    // {
+    //     public Matrix4x4 K;
+    //     public Matrix4x4 R;
+    //     public Vector3 t;
+    //
+    //     public Calibration(Matrix4x4 KK, Matrix4x4 RR, Vector3 tt)
+    //     {
+    //         K = KK;
+    //         R = RR;
+    //         t = tt;
+    //     }
+    // }
 
     public struct DirectionStruct
     {
@@ -72,23 +72,23 @@ public partial class VisualObjs
         public Vector3 Below;
     }
 
-    public class DepthMap
-    {
-        public Color[] depths;
-        public int width;
-        public int height;
-        public float minDepth;
-        public float maxDepth;
-
-        public DepthMap(int w, int h)
-        {
-            depths = new Color[w * h];
-            width = w;
-            height = h;
-            minDepth = (float)Mathf.Infinity;
-            maxDepth = (float)0.0;
-        }
-    }
+    // public class DepthMap
+    // {
+    //     public Color[] depths;
+    //     public int width;
+    //     public int height;
+    //     public float minDepth;
+    //     public float maxDepth;
+    //
+    //     public DepthMap(int w, int h)
+    //     {
+    //         depths = new Color[w * h];
+    //         width = w;
+    //         height = h;
+    //         minDepth = (float)Mathf.Infinity;
+    //         maxDepth = (float)0.0;
+    //     }
+    // }
 
     public struct Point3D
     {
