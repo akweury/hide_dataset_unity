@@ -133,7 +133,7 @@ public partial class VisualObjs
         { "cube", 0 },
         { "sphere", 1 },
 
-        { "orange", 6 },
+        { "matt_orange", 6 },
     };
 
     private Dictionary<string, string> strStrMapping = new()
