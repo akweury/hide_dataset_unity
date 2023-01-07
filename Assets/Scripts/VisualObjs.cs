@@ -30,16 +30,21 @@ public class VisualObjs : MonoBehaviour
     private List<GameObject> _objInstances;
     private List<MeshRenderer> _modelRenderers;
     private List<ObjectStruct> _sceneData;
-
+    private float _scaleFactor = 1;
     private DepthCamera _depthCamera;
+    private const float TableWidthBase = 1.5F;
+    private const float TableLengthBase = 1.5F;
+    private const float TableHeightBase = 0.1F;
+    private float _tableLength;
+    private float _tableWidth;
+    private float _tableHeight;
+    private FileInfo[] _files;
     // private Camera _cam;
     // unchecked variables
 
     private static int _frameLoop = 10;
     private int _maxNumTry = 50;
-    float TABLE_WIDTH_BASE = 1.5F;
-    float TABLE_LENGTH_BASE = 1.5F;
-    float TABLE_HEIGHT_BASE = 0.1F;
+
     float UNIFY_RADIUS = 0.5F;
     float MINIMUM_OBJ_DIST = (float)0.1;
     private float MINIMUM_SCALE_RANGE = 0.15F;
@@ -56,42 +61,9 @@ public class VisualObjs : MonoBehaviour
     public GameObject tableModel;
 
     private GameObject tableInst;
-    float _tableLength;
-    float _tableWidth;
-    float _tableHeight;
-
-    int maxFileCounter;
-
-
-    // int modelIdx = -1;
-    float scale_factor = 1;
-
-    // string file_type;
-
-
-    // private Rules rulesJson;
-    private string _sceneType;
-    private FileInfo[] _files;
-
-
-    // public class ObjectStruct
-    // {
-    //     public int Id;
-    //     public string Shape;
-    //     public string Material;
-    //     public float Size;
-    //     public Vector3 Position;
-    //
-    //
-    //     public ObjectStruct(int id, string shape, string material, float size)
-    //     {
-    //         this.Id = id;
-    //         this.Shape = shape;
-    //         this.Material = material;
-    //         this.Size = size;
-    //     }
-    // }
     
+    int maxFileCounter;
+    private string _sceneType;
     
     // Start is called before the first frame update
     void Start()
@@ -110,10 +82,10 @@ public class VisualObjs : MonoBehaviour
 
 
         // adjust table size based on camera sensor size
-        scale_factor = 4F;
-        _tableLength = TABLE_LENGTH_BASE * scale_factor;
-        _tableWidth = TABLE_WIDTH_BASE * scale_factor;
-        _tableHeight = TABLE_HEIGHT_BASE * scale_factor;
+        _scaleFactor = 4F;
+        _tableLength = TableLengthBase * _scaleFactor;
+        _tableWidth = TableWidthBase * _scaleFactor;
+        _tableHeight = TableHeightBase * _scaleFactor;
 
         // get all rule files
         DirectoryInfo d = new DirectoryInfo(Application.dataPath + "/Scripts/Rules");
