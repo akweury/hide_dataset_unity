@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 using UnityEngine;
-using Pngcs.Unity;
+using Object = UnityEngine.Object;
 using Random = System.Random;
 
 
-public partial class VisualObjs : MonoBehaviour
+public class VisualObjs : MonoBehaviour
 {
     // useful public variables
     public GameObject table; // https://www.cgtrader.com/items/1875799/download-page
@@ -17,6 +17,9 @@ public partial class VisualObjs : MonoBehaviour
     public List<GameObject> cubeModels;
     public RenderTexture texture;
 
+    public Shader depthShader;
+    public Shader normalShader;
+    
     // useful private variables
     private int _frames;
     private string _rootPath;
@@ -26,7 +29,7 @@ public partial class VisualObjs : MonoBehaviour
     private int _fileCounter;
     private List<GameObject> _objInstances;
     private List<MeshRenderer> _modelRenderers;
-    private SceneStruct _sceneData;
+    private List<ObjectStruct> _sceneData;
 
     private DepthCamera _depthCamera;
     // private Camera _cam;
@@ -43,21 +46,13 @@ public partial class VisualObjs : MonoBehaviour
     private float MAXIMUM_SCALE_RANGE = 0.3F;
 
     public int single_idx = 1;
-
     public List<Material> materials;
     // public SceneStruct SceneData;
 
     public Material environmentMap;
     public Cubemap danceRoomEnvironment;
     public List<Cubemap> environments;
-
     public GameObject cursor;
-
-
-    public Shader depthShader;
-    public Shader normalShader;
-
-
     public GameObject tableModel;
 
     private GameObject tableInst;
@@ -79,6 +74,25 @@ public partial class VisualObjs : MonoBehaviour
     private FileInfo[] _files;
 
 
+    // public class ObjectStruct
+    // {
+    //     public int Id;
+    //     public string Shape;
+    //     public string Material;
+    //     public float Size;
+    //     public Vector3 Position;
+    //
+    //
+    //     public ObjectStruct(int id, string shape, string material, float size)
+    //     {
+    //         this.Id = id;
+    //         this.Shape = shape;
+    //         this.Material = material;
+    //         this.Size = size;
+    //     }
+    // }
+    
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -168,14 +182,14 @@ public partial class VisualObjs : MonoBehaviour
     void RenderNewScene(Rules rules, List<GameObject> spheres, List<GameObject> cubes, string sceneType)
     {
         int objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
-        _sceneData = new SceneStruct(objNum);
+        _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
         _objInstances = new List<GameObject>(new GameObject[objNum]);
 
         _sceneData = FillSceneData(rules, _sceneData, spheres, cubes);
         _sceneData = FillObjsPositions(rules, _sceneData, sceneType);
 
         int objId = 0;
-        foreach (var sceneObj in _sceneData.Objects)
+        foreach (var sceneObj in _sceneData)
         {
             float objSize = sceneObj.Size;
 
@@ -229,12 +243,12 @@ public partial class VisualObjs : MonoBehaviour
     //     return obj;
     // }
 
-    SceneStruct FillSceneData(Rules rules, SceneStruct sceneData, List<GameObject> spheres, List<GameObject> cubes)
+    List<ObjectStruct> FillSceneData(Rules rules, List<ObjectStruct> sceneData, List<GameObject> spheres, List<GameObject> cubes)
     {
-        ObjProp obj;
+        Rules.ObjProp obj;
         int objId = 0;
         // add rule object
-        for (int i = 0; i < sceneData.Objects.Count; i++)
+        for (int i = 0; i < sceneData.Count; i++)
         {
             obj = rules.Objs[i];
             if (obj.Material == "")
@@ -250,7 +264,8 @@ public partial class VisualObjs : MonoBehaviour
                     obj.Material = spheres[sphereId].name;
                 }
             }
-            sceneData.Objects[objId] = new ObjectStruct(objId, obj.Shape, obj.Material, strFloMapping[obj.size]);
+            // sceneData[objId].SetProperty(objId, obj.Shape, obj.Material, Rules.strFloMapping[obj.size]);
+            sceneData[objId] = new ObjectStruct(objId, obj.Shape, obj.Material, Rules.strFloMapping[obj.size]); 
             objId++;
         }
 
@@ -261,11 +276,11 @@ public partial class VisualObjs : MonoBehaviour
             int sizeId = UnityEngine.Random.Range(0, 2);
             if (sizeId == 0)
             {
-                size = strFloMapping["small"];
+                size = Rules.strFloMapping["small"];
             }
             else
             {
-                size = strFloMapping["big"];
+                size = Rules.strFloMapping["big"];
             }
             
             string shape;
@@ -283,14 +298,16 @@ public partial class VisualObjs : MonoBehaviour
                 int sphereId = UnityEngine.Random.Range(0, spheres.Count);
                 material = spheres[sphereId].name;
             }
-            sceneData.Objects[objId] = new ObjectStruct(objId, shape, material, size);
+            sceneData[objId] = new ObjectStruct(objId, shape, material, size); 
+
+            // sceneData[objId].SetProperty(objId, shape, material, size);
             objId++;
         }
 
         return sceneData;
     }
 
-    void SaveScene(List<GameObject> objInstances, DepthCamera depthCamera, SceneStruct sceneData)
+    void SaveScene(List<GameObject> objInstances, DepthCamera depthCamera, List<ObjectStruct> sceneData)
     {
         DepthCamera.Calibration camera0 = depthCamera.GetCameraMatrix();
         // Calibration camera0 = getCameraMatrix();
@@ -363,19 +380,9 @@ public partial class VisualObjs : MonoBehaviour
         Rules rulesJson = JsonConvert.DeserializeObject<Rules>(json);
         return rulesJson;
     }
+    
 
-    bool CheckFinished()
-    {
-        if (_ruleFileCounter > _files.Length)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    SceneStruct FillObjsPositions(Rules rules, SceneStruct sceneData, string sceneType)
+    List<ObjectStruct> FillObjsPositions(Rules rules, List<ObjectStruct> sceneData, string sceneType)
     {
         bool layoutFinished = false;
         while (!layoutFinished)
@@ -387,16 +394,16 @@ public partial class VisualObjs : MonoBehaviour
                 table.transform.position[2] + UnityEngine.Random.Range(-(_tableLength / 2), (_tableLength / 2)));
 
             // add rule objects
-            for (int i = 0; i < sceneData.Objects.Count; i++)
+            for (int i = 0; i < sceneData.Count; i++)
             {
 
                 if (String.Equals(sceneType, "test"))
                 {
-                    sceneData.Objects[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
+                    sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
                 }
                 else
                 {
-                    sceneData.Objects[objIdx] = GetRulePos(objIdx, rules.Objs[i], sceneData.Objects[objIdx], randomCenter);
+                    sceneData[objIdx] = GetRulePos(objIdx, rules.Objs[i], sceneData[objIdx], randomCenter);
                 }
 
                 objIdx++;
@@ -405,7 +412,7 @@ public partial class VisualObjs : MonoBehaviour
             // add random objects
             for (int i = 0; i < rules.RandomObjPerScene; i++)
             {
-                sceneData.Objects[objIdx] = GetRandomPos(objIdx, rules.Objs[i],sceneData);
+                sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i],sceneData);
                 objIdx++;
             }
 
@@ -415,9 +422,9 @@ public partial class VisualObjs : MonoBehaviour
         return sceneData;
     }
 
-    bool CheckScene(SceneStruct sceneData)
+    bool CheckScene(List<ObjectStruct> sceneData)
     {
-        foreach (var sceneObj in sceneData.Objects)
+        foreach (var sceneObj in sceneData)
         {
             if (sceneObj == null)
             {
@@ -433,9 +440,9 @@ public partial class VisualObjs : MonoBehaviour
         return true;
     }
 
-    ObjectStruct GetRulePos(int objId, ObjProp objProp, ObjectStruct obj, Vector3 center)
+    ObjectStruct GetRulePos(int objId, Rules.ObjProp objProp, ObjectStruct obj, Vector3 center)
     {
-        float newScale = strFloMapping[objProp.size];
+        float newScale = Rules.strFloMapping[objProp.size];
         int num_tries = 0;
         float obj_radius = newScale * UNIFY_RADIUS;
         Vector3 obj_pos;
@@ -530,9 +537,9 @@ public partial class VisualObjs : MonoBehaviour
     //     return sceneData;
     // }
 
-    ObjectStruct GetRandomPos(int objIdx, ObjProp objProp, SceneStruct sceneData)
+    ObjectStruct GetRandomPos(int objIdx, Rules.ObjProp objProp, List<ObjectStruct> sceneData)
     {
-        float newScale = strFloMapping[objProp.size];
+        float newScale = Rules.strFloMapping[objProp.size];
         int num_tries = 0;
         float objRadius;
         Vector3 objPos = new Vector3();
@@ -542,7 +549,7 @@ public partial class VisualObjs : MonoBehaviour
         {
             num_tries += 1;
             // exceed the maximum trying time
-            if (num_tries > _maxNumTry) return sceneData.Objects[objIdx];
+            if (num_tries > _maxNumTry) return sceneData[objIdx];
 
             // choose new size and position
             
@@ -558,10 +565,10 @@ public partial class VisualObjs : MonoBehaviour
             bool dists_good = true;
             for (int i = 0; i < objIdx; i++)
             {
-                float dx = objPos[0] - sceneData.Objects[i].Position[0];
-                float dz = objPos[2] - sceneData.Objects[i].Position[2];
+                float dx = objPos[0] - sceneData[i].Position[0];
+                float dz = objPos[2] - sceneData[i].Position[2];
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                if (dist - objRadius - sceneData.Objects[i].Size < MINIMUM_OBJ_DIST)
+                if (dist - objRadius - sceneData[i].Size < MINIMUM_OBJ_DIST)
                 {
                     dists_good = false;
                     return null;
@@ -575,13 +582,13 @@ public partial class VisualObjs : MonoBehaviour
         // GameObject objInst = NewObjectInstantiate(obj_radius * 2, obj_pos, new_model, "");
 
         // for cubes, adjust its radius
-        if (sceneData.Objects[objIdx].Shape == "cube") objRadius *= (float)Math.Sqrt(2);
+        if (sceneData[objIdx].Shape == "cube") objRadius *= (float)Math.Sqrt(2);
 
         // record the object data
-        sceneData.Objects[objIdx].Position = objPos;
-        sceneData.Objects[objIdx].Size = objRadius;
+        sceneData[objIdx].Position = objPos;
+        sceneData[objIdx].Size = objRadius;
 
-        return sceneData.Objects[objIdx];
+        return sceneData[objIdx];
     }
 
     GameObject NewObjectInstantiate(float scale, Vector3 newPoint, GameObject newModel)

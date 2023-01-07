@@ -7,7 +7,7 @@ using System.IO.Enumeration;
 using UnityEngine;
 using Pngcs.Unity;
 using Newtonsoft.Json;
-
+using Object = UnityEngine.Object;
 
 
 public class DepthCamera
@@ -96,7 +96,7 @@ public class DepthCamera
         return calibration;
     }
 
-    public void writeDataFileOneView(string fileName, Calibration camera, DepthMap depthMap, VisualObjs.SceneStruct sceneData)
+    public void writeDataFileOneView(string fileName, Calibration camera, DepthMap depthMap, List<ObjectStruct> sceneData)
     {
         StreamWriter writer = new StreamWriter(fileName, false);
         String data1 = "{" + "\"K\":[[" +
@@ -122,20 +122,20 @@ public class DepthCamera
 
         
         String objectData = "\"objects\":[";
-        for (int i = 0; i < sceneData.Objects.Count; i++)
+        for (int i = 0; i < sceneData.Count; i++)
         {
             objectData += "{" +
-                          "\"id\":" + sceneData.Objects[i].Id + "," +
-                          "\"shape\":\"" + sceneData.Objects[i].Shape + "\"" + "," +
-                          "\"size\":\"" + sceneData.Objects[i].Size + "\"" + "," +
-                          "\"material\":\"" + sceneData.Objects[i].Material + "\"" + "," +
+                          "\"id\":" + sceneData[i].Id + "," +
+                          "\"shape\":\"" + sceneData[i].Shape + "\"" + "," +
+                          "\"size\":\"" + sceneData[i].Size + "\"" + "," +
+                          "\"material\":\"" + sceneData[i].Material + "\"" + "," +
                           "\"position\":[" +
-                          (float)sceneData.Objects[i].Position[0] + "," +
-                          (float)sceneData.Objects[i].Position[1] + "," +
-                          (float)sceneData.Objects[i].Position[2] +
+                          (float)sceneData[i].Position[0] + "," +
+                          (float)sceneData[i].Position[1] + "," +
+                          (float)sceneData[i].Position[2] +
                           "]" +
                           "}";
-            if (i != sceneData.Objects.Count - 1)
+            if (i != sceneData.Count - 1)
             {
                 objectData += ",";
             }
