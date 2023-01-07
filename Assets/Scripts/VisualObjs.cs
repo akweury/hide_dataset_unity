@@ -132,7 +132,6 @@ public partial class VisualObjs : MonoBehaviour
         // render the scene
         if (_frames % _frameLoop == 0)
         {
-            
             RenderNewScene(_rules, sphereModels, cubeModels, _sceneType);
         }
 
@@ -151,7 +150,6 @@ public partial class VisualObjs : MonoBehaviour
             _fileCounter = 0;
             _ruleFileCounter++;
             // _objInstances = GetNewInstances(_rules);
-            UpdateModels(_rules);
         }
 
         // stop rendering when file number exceeded the threshold
@@ -160,6 +158,7 @@ public partial class VisualObjs : MonoBehaviour
             UnityEditor.EditorApplication.isPlaying = false;
         }
 
+        UpdateModels(_rules);
         _frames++;
     }
 
@@ -168,7 +167,7 @@ public partial class VisualObjs : MonoBehaviour
         int objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
         _sceneData = new SceneStruct(objNum);
         _objInstances = new List<GameObject>(new GameObject[objNum]);
-        
+
         _sceneData = FillSceneData(rules, _sceneData, spheres, cubes);
         _sceneData = FillObjsPositions(rules, _sceneData, sceneType);
 
@@ -203,6 +202,7 @@ public partial class VisualObjs : MonoBehaviour
                     }
                 }
             }
+
             _objInstances[objId] = NewObjectInstantiate(objSize * 2, sceneObj.Position, objModel);
             objId++;
         }
@@ -247,9 +247,11 @@ public partial class VisualObjs : MonoBehaviour
                     obj.Material = spheres[sphereId].name;
                 }
             }
+
             sceneData.Objects[objId] = new ObjectStruct(objId, obj.Shape, obj.Material);
             objId++;
         }
+
         // add random objects
         for (int i = 0; i < rules.RandomObjPerScene; i++)
         {
@@ -258,19 +260,21 @@ public partial class VisualObjs : MonoBehaviour
             string material;
             if (shapeId == 0)
             {
-                shape = "cube";    
+                shape = "cube";
                 int cubeId = UnityEngine.Random.Range(0, cubes.Count);
                 material = cubes[cubeId].name;
             }
             else
             {
-                shape = "sphere";    
+                shape = "sphere";
                 int sphereId = UnityEngine.Random.Range(0, spheres.Count);
                 material = spheres[sphereId].name;
             }
+
             sceneData.Objects[objId] = new ObjectStruct(objId, shape, material);
             objId++;
         }
+
         return sceneData;
     }
 
@@ -305,14 +309,14 @@ public partial class VisualObjs : MonoBehaviour
         }
 
         // generate validation scenes
-        if (_fileCounter >= rules.TrainNum)
+        else if (_fileCounter >= rules.TrainNum)
         {
             _sceneType = "val";
             _savePath = _rootPath + "val/";
         }
 
         // generate training scenes
-        if (_fileCounter >= 0)
+        else if (_fileCounter >= 0)
         {
             _sceneType = "train";
             _savePath = _rootPath + "train/";
@@ -365,20 +369,27 @@ public partial class VisualObjs : MonoBehaviour
         while (!layoutFinished)
         {
             int objIdx = 0;
-            
+            Vector3 randomCenter = new Vector3(
+                table.transform.position[0] + UnityEngine.Random.Range(-(_tableWidth / 2), (_tableWidth / 2)),
+                table.transform.position[1] + _tableHeight * 0.5F,
+                table.transform.position[2] + UnityEngine.Random.Range(-(_tableLength / 2), (_tableLength / 2)));
+
             // add rule objects
             for (int i = 0; i < sceneData.Objects.Count; i++)
             {
+
                 if (String.Equals(sceneType, "test"))
                 {
                     sceneData.Objects[objIdx] = GetRandomPos(objIdx, sceneData);
                 }
                 else
                 {
-                    sceneData.Objects[objIdx] = GetRulePos(objIdx, rules.Objs[i], sceneData.Objects[objIdx]);                    
+                    sceneData.Objects[objIdx] = GetRulePos(objIdx, rules.Objs[i], sceneData.Objects[objIdx], randomCenter);
                 }
+
                 objIdx++;
             }
+
             // add random objects
             for (int i = 0; i < rules.RandomObjPerScene; i++)
             {
@@ -400,6 +411,7 @@ public partial class VisualObjs : MonoBehaviour
             {
                 return false;
             }
+
             if (sceneObj.Position == Vector3.zero)
             {
                 return false;
@@ -409,7 +421,7 @@ public partial class VisualObjs : MonoBehaviour
         return true;
     }
 
-    ObjectStruct GetRulePos(int objId, ObjProp objProp, ObjectStruct obj)
+    ObjectStruct GetRulePos(int objId, ObjProp objProp, ObjectStruct obj, Vector3 center)
     {
         float newScale = strFloMapping[objProp.size];
         int num_tries = 0;
@@ -427,20 +439,12 @@ public partial class VisualObjs : MonoBehaviour
             // give a random position for the target object
             if (objProp.x == 0F && objProp.z == 0F)
             {
-                obj_pos = new Vector3(
-                    table.transform.position[0] +
-                    UnityEngine.Random.Range(-(_tableWidth / 2) + obj_radius, (_tableWidth / 2) - obj_radius),
-                    table.transform.position[1] + _tableHeight * 0.5F + obj_radius,
-                    table.transform.position[2] +
-                    UnityEngine.Random.Range(-(_tableLength / 2) + obj_radius, (_tableLength / 2) - obj_radius));
+                obj_pos = new Vector3(center[0], center[1] + obj_radius, center[2]);
             }
             // give a position for the rest rule objects based on target object position and info from the json file
             else
             {
-                obj_pos = new Vector3(
-                    objProp.x + obj.Position[0],
-                    table.transform.position[1] + _tableHeight * 0.5F + obj_radius,
-                    objProp.z + obj.Position[2]);
+                obj_pos = new Vector3(objProp.x + center[0], objProp.y + center[1] + obj_radius, objProp.z + center[2]);
 
                 // check if new position locates in the area of table
                 if (obj_pos[0] < -(float)(_tableWidth / 2) + obj_radius ||
@@ -540,7 +544,6 @@ public partial class VisualObjs : MonoBehaviour
 
             // check for overlapping
             bool dists_good = true;
-            // bool margins_good = true;
             for (int i = 0; i < objIdx; i++)
             {
                 float dx = objPos[0] - sceneData.Objects[i].Position[0];
@@ -549,7 +552,7 @@ public partial class VisualObjs : MonoBehaviour
                 if (dist - objRadius - sceneData.Objects[i].Size < MINIMUM_OBJ_DIST)
                 {
                     dists_good = false;
-                    return sceneData.Objects[i];
+                    return null;
                 }
             }
 
@@ -565,7 +568,7 @@ public partial class VisualObjs : MonoBehaviour
         // record the object data
         sceneData.Objects[objIdx].Position = objPos;
         sceneData.Objects[objIdx].Size = objRadius;
-        
+
         return sceneData.Objects[objIdx];
     }
 
