@@ -96,7 +96,7 @@ public class DepthCamera
         return calibration;
     }
 
-    public void writeDataFileOneView(string fileName, Calibration camera, DepthMap depthMap, List<GameObject> objs, VisualObjs.SceneStruct sceneData)
+    public void writeDataFileOneView(string fileName, Calibration camera, DepthMap depthMap, VisualObjs.SceneStruct sceneData)
     {
         StreamWriter writer = new StreamWriter(fileName, false);
         String data1 = "{" + "\"K\":[[" +
@@ -120,9 +120,9 @@ public class DepthCamera
                        depthMap.minDepth.ToString().Replace(',', '.') + "," + "\"maxDepth\":" +
                        depthMap.maxDepth.ToString().Replace(',', '.') + ",";
 
-
+        
         String objectData = "\"objects\":[";
-        for (int i = 0; i < objs.Count; i++)
+        for (int i = 0; i < sceneData.Objects.Count; i++)
         {
             objectData += "{" +
                           "\"id\":" + sceneData.Objects[i].Id + "," +
@@ -135,7 +135,7 @@ public class DepthCamera
                           (float)sceneData.Objects[i].Position[2] +
                           "]" +
                           "}";
-            if (i != objs.Count - 1)
+            if (i != sceneData.Objects.Count - 1)
             {
                 objectData += ",";
             }

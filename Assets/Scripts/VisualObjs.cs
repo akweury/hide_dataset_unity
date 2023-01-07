@@ -133,13 +133,13 @@ public partial class VisualObjs : MonoBehaviour
         if (_frames % _frameLoop == 0)
         {
             
-            _sceneData = RenderNewScene(_rules, sphereModels, cubeModels, _sceneType);
+            RenderNewScene(_rules, sphereModels, cubeModels, _sceneType);
         }
 
         // save the scene data if it is a new scene
         if (_frames % _frameLoop == _frameLoop - 1)
         {
-            SaveScene(_objInstances, _sceneData, _depthCamera);
+            SaveScene(_objInstances, _depthCamera, _sceneData);
             _fileCounter++;
         }
 
@@ -163,13 +163,17 @@ public partial class VisualObjs : MonoBehaviour
         _frames++;
     }
 
-    SceneStruct RenderNewScene(Rules rules, List<GameObject> spheres, List<GameObject> cubes, string sceneType)
+    void RenderNewScene(Rules rules, List<GameObject> spheres, List<GameObject> cubes, string sceneType)
     {
+        int objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
+        _sceneData = new SceneStruct(objNum);
+        _objInstances = new List<GameObject>(new GameObject[objNum]);
         
-        SceneStruct sceneData = FillSceneData(rules, spheres, cubes);
-        sceneData = FillObjsPositions(rules, sceneData, sceneType);
+        _sceneData = FillSceneData(rules, _sceneData, spheres, cubes);
+        _sceneData = FillObjsPositions(rules, _sceneData, sceneType);
 
-        foreach (var sceneObj in sceneData.Objects)
+        int objId = 0;
+        foreach (var sceneObj in _sceneData.Objects)
         {
             float objSize = sceneObj.Size;
 
@@ -184,6 +188,7 @@ public partial class VisualObjs : MonoBehaviour
                     if (sphere.name == sceneObj.Material)
                     {
                         objModel = sphere;
+                        break;
                     }
                 }
             }
@@ -194,14 +199,13 @@ public partial class VisualObjs : MonoBehaviour
                     if (cube.name == sceneObj.Material)
                     {
                         objModel = cube;
+                        break;
                     }
                 }
             }
-
-            NewObjectInstantiate(objSize * 2, sceneObj.Position, objModel);
+            _objInstances[objId] = NewObjectInstantiate(objSize * 2, sceneObj.Position, objModel);
+            objId++;
         }
-
-        return sceneData;
     }
 
     // ObjProp RandomMaterial(ObjProp obj, List<GameObject> spheres, List<GameObject> cubes)
@@ -222,14 +226,12 @@ public partial class VisualObjs : MonoBehaviour
     //     return obj;
     // }
 
-    SceneStruct FillSceneData(Rules rules, List<GameObject> spheres, List<GameObject> cubes)
+    SceneStruct FillSceneData(Rules rules, SceneStruct sceneData, List<GameObject> spheres, List<GameObject> cubes)
     {
-        int objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
-        SceneStruct sceneData = new SceneStruct(objNum);
         ObjProp obj;
         int objId = 0;
         // add rule object
-        for (int i = 0; i < objNum; i++)
+        for (int i = 0; i < sceneData.Objects.Count; i++)
         {
             obj = rules.Objs[i];
             if (obj.Material == "")
@@ -272,26 +274,26 @@ public partial class VisualObjs : MonoBehaviour
         return sceneData;
     }
 
-    void SaveScene(List<GameObject> objs, SceneStruct sceneData, DepthCamera depthCamera)
+    void SaveScene(List<GameObject> objInstances, DepthCamera depthCamera, SceneStruct sceneData)
     {
         DepthCamera.Calibration camera0 = depthCamera.GetCameraMatrix();
         // Calibration camera0 = getCameraMatrix();
         string filePrefix = _savePath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
 
         string depthFileName = filePrefix + ".depth0.png";
-        DepthCamera.DepthMap depthMap0 = depthCamera.CaptureDepth(depthFileName, objs);
+        DepthCamera.DepthMap depthMap0 = depthCamera.CaptureDepth(depthFileName, objInstances);
 
         string normalFileName = filePrefix + ".normal0.png";
-        depthCamera.CaptureNormal(normalFileName, camera0.R, objs);
+        depthCamera.CaptureNormal(normalFileName, camera0.R, objInstances);
 
         string sceneFileName = filePrefix + ".image.png";
         depthCamera.CaptureScene(sceneFileName);
 
         string dataFileName = filePrefix + ".data0.json";
-        depthCamera.writeDataFileOneView(dataFileName, camera0, depthMap0, objs, sceneData);
+        depthCamera.writeDataFileOneView(dataFileName, camera0, depthMap0, sceneData);
 
         environmentMap.SetTexture("_Tex", danceRoomEnvironment);
-        DestroyObjs(objs);
+        DestroyObjs(objInstances);
     }
 
     void UpdateModels(Rules rules)
@@ -395,6 +397,10 @@ public partial class VisualObjs : MonoBehaviour
         foreach (var sceneObj in sceneData.Objects)
         {
             if (sceneObj == null)
+            {
+                return false;
+            }
+            if (sceneObj.Position == Vector3.zero)
             {
                 return false;
             }
