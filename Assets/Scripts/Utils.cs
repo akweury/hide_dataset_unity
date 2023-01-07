@@ -25,11 +25,12 @@ public partial class VisualObjs
         public Vector3 Position;
 
 
-        public ObjectStruct(int id, string shape, string material)
+        public ObjectStruct(int id, string shape, string material, float size)
         {
             this.Id = id;
             this.Shape = shape;
             this.Material = material;
+            this.Size = size;
         }
     }
 

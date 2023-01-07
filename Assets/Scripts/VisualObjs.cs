@@ -142,22 +142,25 @@ public partial class VisualObjs : MonoBehaviour
             _fileCounter++;
         }
 
+
+        
         // load a new rule file
         if (RuleFinished(_rules, _fileCounter))
         {
             DestroyObjs(_objInstances);
-            _rules = LoadNewRule(_files[_ruleFileCounter].FullName);
-            _fileCounter = 0;
-            _ruleFileCounter++;
-            // _objInstances = GetNewInstances(_rules);
+            if (_ruleFileCounter >= _files.Length)
+            {
+                UnityEditor.EditorApplication.isPlaying = false;
+            }
+            else
+            {
+                _rules = LoadNewRule(_files[_ruleFileCounter].FullName);
+                _fileCounter = 0;
+                _ruleFileCounter++;
+            }
         }
 
         // stop rendering when file number exceeded the threshold
-        if (CheckFinished())
-        {
-            UnityEditor.EditorApplication.isPlaying = false;
-        }
-
         UpdateModels(_rules);
         _frames++;
     }
@@ -247,16 +250,26 @@ public partial class VisualObjs : MonoBehaviour
                     obj.Material = spheres[sphereId].name;
                 }
             }
-
-            sceneData.Objects[objId] = new ObjectStruct(objId, obj.Shape, obj.Material);
+            sceneData.Objects[objId] = new ObjectStruct(objId, obj.Shape, obj.Material, strFloMapping[obj.size]);
             objId++;
         }
 
         // add random objects
         for (int i = 0; i < rules.RandomObjPerScene; i++)
         {
-            int shapeId = UnityEngine.Random.Range(0, 2);
+            float size;
+            int sizeId = UnityEngine.Random.Range(0, 2);
+            if (sizeId == 0)
+            {
+                size = strFloMapping["small"];
+            }
+            else
+            {
+                size = strFloMapping["big"];
+            }
+            
             string shape;
+            int shapeId = UnityEngine.Random.Range(0, 2);
             string material;
             if (shapeId == 0)
             {
@@ -270,8 +283,7 @@ public partial class VisualObjs : MonoBehaviour
                 int sphereId = UnityEngine.Random.Range(0, spheres.Count);
                 material = spheres[sphereId].name;
             }
-
-            sceneData.Objects[objId] = new ObjectStruct(objId, shape, material);
+            sceneData.Objects[objId] = new ObjectStruct(objId, shape, material, size);
             objId++;
         }
 
@@ -354,7 +366,7 @@ public partial class VisualObjs : MonoBehaviour
 
     bool CheckFinished()
     {
-        if (_ruleFileCounter >= _files.Length)
+        if (_ruleFileCounter > _files.Length)
         {
             return true;
         }
@@ -380,7 +392,7 @@ public partial class VisualObjs : MonoBehaviour
 
                 if (String.Equals(sceneType, "test"))
                 {
-                    sceneData.Objects[objIdx] = GetRandomPos(objIdx, sceneData);
+                    sceneData.Objects[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
                 }
                 else
                 {
@@ -393,7 +405,7 @@ public partial class VisualObjs : MonoBehaviour
             // add random objects
             for (int i = 0; i < rules.RandomObjPerScene; i++)
             {
-                sceneData.Objects[objIdx] = GetRandomPos(objIdx, sceneData);
+                sceneData.Objects[objIdx] = GetRandomPos(objIdx, rules.Objs[i],sceneData);
                 objIdx++;
             }
 
@@ -518,10 +530,10 @@ public partial class VisualObjs : MonoBehaviour
     //     return sceneData;
     // }
 
-    ObjectStruct GetRandomPos(int objIdx, SceneStruct sceneData)
+    ObjectStruct GetRandomPos(int objIdx, ObjProp objProp, SceneStruct sceneData)
     {
+        float newScale = strFloMapping[objProp.size];
         int num_tries = 0;
-        float new_scale;
         float objRadius;
         Vector3 objPos = new Vector3();
 
@@ -533,8 +545,8 @@ public partial class VisualObjs : MonoBehaviour
             if (num_tries > _maxNumTry) return sceneData.Objects[objIdx];
 
             // choose new size and position
-            new_scale = UnityEngine.Random.Range(MINIMUM_SCALE_RANGE, MAXIMUM_SCALE_RANGE) * scale_factor;
-            objRadius = new_scale * UNIFY_RADIUS;
+            
+            objRadius = newScale * UNIFY_RADIUS;
 
             objPos[0] = table.transform.position[0] + UnityEngine.Random.Range(
                 -(float)(_tableWidth / 2) + objRadius, (float)(_tableWidth / 2) - objRadius);
