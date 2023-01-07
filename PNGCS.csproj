@@ -112,13 +112,8 @@
      <Compile Include="Assets/Pngcs/PngIDatChunkOutputStream.cs" />
      <Compile Include="Assets/Pngcs/Zlib/ZlibInputStreamIs.cs" />
      <Compile Include="Assets/Pngcs/FilterType.cs" />
-     <Folder Include="Assets/Pngcs" />
      <None Include="Assets/Pngcs/LICENSE.txt" />
-     <Folder Include="Assets/Pngcs/Structs" />
-     <Folder Include="Assets/Pngcs/Unity" />
-     <Folder Include="Assets/Pngcs/Chunks" />
      <None Include="Assets/Pngcs/PNGCS.asmdef" />
-     <Folder Include="Assets/Pngcs/Zlib" />
      <Reference Include="UnityEngine">
      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>

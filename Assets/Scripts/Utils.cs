@@ -25,26 +25,22 @@ public partial class VisualObjs
         public Vector3 Position;
 
 
-        public ObjectStruct(int id, string shape, string material, float size, Vector3 position)
+        public ObjectStruct(int id, string shape, string material)
         {
             this.Id = id;
             this.Shape = shape;
             this.Material = material;
-            this.Size = size;
-            this.Position = position;
         }
     }
 
     public class SceneStruct
     {
-        public int ImageIndex;
         public List<ObjectStruct> Objects;
-        public DirectionStruct Directions;
 
-        public SceneStruct(int objNum, int imageIndex)
+        public SceneStruct(int objNum)
         {
             Objects = new List<ObjectStruct>(new ObjectStruct[objNum]);
-            ImageIndex = imageIndex;
+            
         }
     }
 
@@ -99,13 +95,11 @@ public partial class VisualObjs
 
     public class Rules
     {
-        [JsonProperty("target")] public ObjProp target;
-        [JsonProperty("Objs")] public List<ObjProp> objs;
-
-        [JsonProperty("target_objs_per_scene")]
-        public int TargetObjPerScene;
-
-        [JsonProperty("rule_objs_per_scene")] public int RuleObjPerScene;
+        [JsonProperty("objs")] 
+        public List<ObjProp> Objs;
+        
+        [JsonProperty("rule_objs_per_scene")] 
+        public int RuleObjPerScene;
 
         [JsonProperty("random_objs_per_scene")]
         public int RandomObjPerScene;

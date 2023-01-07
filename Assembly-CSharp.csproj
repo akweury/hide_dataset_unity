@@ -42,50 +42,23 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets/Scripts/Cursor.cs" />
+     <Compile Include="Assets/Scripts/utils/SceneJson.cs" />
      <Compile Include="Assets/Scripts/Utils.cs" />
      <Compile Include="Assets/Scripts/VisualObjs.cs" />
-     <Compile Include="Assets/Scripts/sceneGenerator.cs" />
      <Compile Include="Assets/Scripts/DepthCamera.cs" />
-     <Folder Include="Assets" />
+     <Compile Include="Assets/Scripts/sceneGenerator.cs" />
      <None Include="Assets/Scenes/Test_output_5.json" />
-     <Folder Include="Assets/Materials/painted_concrete_2k/textures" />
-     <Folder Include="Assets/3DModels/BasicModels" />
      <None Include="Assets/PhaseShader.shader" />
-     <Folder Include="Assets/Prefabs" />
      <None Include="Assets/Scripts/Rules/left.json" />
-     <Folder Include="Assets/Materials/green_metal_rust_2k/textures" />
      <None Include="Assets/NormalShader.shader" />
-     <Folder Include="Assets/Materials/wood_cabinet_worn_long_2k" />
-     <Folder Include="Assets/Materials/weathered_brown_planks_2k/textures" />
-     <Folder Include="Assets/EnvMaps" />
      <None Include="Assets/Scripts/Rules/right.json" />
-     <Folder Include="Assets/Materials/laminate_floor_2k" />
-     <Folder Include="Assets/Materials/wood_cabinet_worn_long_2k/textures" />
      <None Include="Assets/Scenes/Test_output_6.json" />
      <None Include="Assets/Scenes/Test_output_4.json" />
-     <Folder Include="Assets/Materials" />
      <None Include="Assets/Scenes/Test_output_3.json" />
-     <Folder Include="Assets/Materials/polystyrene_2k" />
-     <Folder Include="Assets/Materials/denmin_fabric_02_2k/textures" />
      <None Include="Assets/Scenes/Test_output_1.json" />
      <None Include="Assets/DepthShader.shader" />
-     <Folder Include="Assets/3DModels" />
-     <Folder Include="Assets/Materials/painted_concrete_2k" />
-     <Folder Include="Assets/Materials/denmin_fabric_02_2k" />
-     <Folder Include="Assets/Materials/fabric_leather/textures" />
-     <Folder Include="Assets/Scripts/Rules" />
-     <Folder Include="Assets/Materials/green_metal_rust_2k" />
-     <Folder Include="Assets/PhysMaterials" />
-     <Folder Include="Assets/EnvMaps/Materials" />
      <None Include="Assets/Scenes/Test_output_2.json" />
-     <Folder Include="Assets/Materials/laminate_floor_2k/textures" />
      <None Include="Assets/Scenes/Test_output_0.json" />
-     <Folder Include="Assets/Materials/polystyrene_2k/textures" />
-     <Folder Include="Assets/Scenes" />
-     <Folder Include="Assets/Scripts" />
-     <Folder Include="Assets/Materials/fabric_leather" />
-     <Folder Include="Assets/Materials/Materials" />
-     <Folder Include="Assets/Materials/weathered_brown_planks_2k" />
      <Reference Include="UnityEngine">
      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>

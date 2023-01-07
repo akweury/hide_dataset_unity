@@ -1,19 +1,18 @@
 ﻿{
-  "target_objs_per_scene": 1,
-  "rule_objs_per_scene": 1,
+  "rule_objs_per_scene": 2,
   "random_objs_per_scene": 0,
   "train_num": 6,
   "test_num": 2,
   "val_num": 2,
-  "target": {
-    "size": "small",
-    "shape": "sphere",
-    "material": "orange",
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "Objs": [
+  "objs": [
+    {
+      "size": "small",
+      "shape": "sphere",
+      "material": "orange",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
     {
       "size": "big",
       "shape": "cube",
