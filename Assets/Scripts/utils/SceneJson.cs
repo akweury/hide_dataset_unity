@@ -16,9 +16,9 @@ namespace utils
         public struct ObjJson
         {
             [JsonProperty("id")] public int Id;
-            [JsonProperty("color")] public Vector3 Color;
+            [JsonProperty("color")] public float[] Color;
             [JsonProperty("shape")] public string Shape;
-            [JsonProperty("position")] public Vector3 Pos;
+            [JsonProperty("position")] public float[] Pos;
             [JsonProperty("size")] public float Size;
             [JsonProperty("material")] public string Material;
             
