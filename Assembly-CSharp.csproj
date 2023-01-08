@@ -42,10 +42,12 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets/Scripts/utils/ObjectStruct.cs" />
-     <Compile Include="Assets/Scripts/utils/Rules.cs" />
+     <Compile Include="Assets/Scripts/utils/RuleJson.cs" />
      <Compile Include="Assets/Scripts/VisualObjs.cs" />
      <Compile Include="Assets/Scripts/DepthCamera.cs" />
      <Compile Include="Assets/Scripts/SceneGenerator.cs" />
+     <Compile Include="Assets/Scripts/utils/SceneJson.cs" />
+     <Compile Include="Assets/Scripts/utils/SceneEngine.cs" />
      <None Include="Assets/Scenes/Test_output_5.json" />
      <None Include="Assets/PhaseShader.shader" />
      <None Include="Assets/Scripts/Rules/left.json" />

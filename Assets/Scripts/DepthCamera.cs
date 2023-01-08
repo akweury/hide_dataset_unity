@@ -74,6 +74,26 @@ public class DepthCamera
     }
 
 
+    public static void SaveScene(string filePrefix, List<GameObject> objInstances, DepthCamera depthCamera, List<ObjectStruct> sceneData)
+    {
+        Calibration camera0 = depthCamera.GetCameraMatrix();
+
+        string depthFileName = filePrefix + ".depth0.png";
+        DepthMap depthMap0 = depthCamera.CaptureDepth(depthFileName, objInstances);
+
+        string normalFileName = filePrefix + ".normal0.png";
+        depthCamera.CaptureNormal(normalFileName, camera0.R, objInstances);
+
+        string sceneFileName = filePrefix + ".image.png";
+        depthCamera.CaptureScene(sceneFileName);
+
+        string dataFileName = filePrefix + ".data0.json";
+        depthCamera.writeDataFileOneView(dataFileName, camera0, depthMap0, sceneData);
+
+        // environmentMap.SetTexture("_Tex", danceRoomEnvironment);
+        // DestroyObjs(objInstances);
+    }
+    
     public Calibration GetCameraMatrix()
     {
         Matrix4x4 R = Matrix4x4.Rotate(Quaternion.Inverse(Cam.transform.rotation));
@@ -127,7 +147,7 @@ public class DepthCamera
             objectData += "{" +
                           "\"id\":" + sceneData[i].Id + "," +
                           "\"shape\":\"" + sceneData[i].Shape + "\"" + "," +
-                          "\"size\":\"" + sceneData[i].Size + "\"" + "," +
+                          "\"size\":" + sceneData[i].Size  + "," +
                           "\"material\":\"" + sceneData[i].Material + "\"" + "," +
                           "\"position\":[" +
                           (float)sceneData[i].Position[0] + "," +

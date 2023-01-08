@@ -19,13 +19,14 @@ public class VisualObjs : MonoBehaviour
 
     public Shader depthShader;
     public Shader normalShader;
-    
+
     // useful private variables
+    private string _filePrefix;
     private int _frames;
     private string _rootPath;
     private string _savePath;
     private int _ruleFileCounter;
-    private Rules _rules;
+    private RuleJson _rules;
     private int _fileCounter;
     private List<GameObject> _objInstances;
     private List<MeshRenderer> _modelRenderers;
@@ -35,14 +36,17 @@ public class VisualObjs : MonoBehaviour
     private const float TableWidthBase = 1.5F;
     private const float TableLengthBase = 1.5F;
     private const float TableHeightBase = 0.1F;
+    private const int FrameLoop = 10;
     private float _tableLength;
     private float _tableWidth;
     private float _tableHeight;
     private FileInfo[] _files;
+
+    private string _sceneType;
     // private Camera _cam;
     // unchecked variables
 
-    private static int _frameLoop = 10;
+
     private int _maxNumTry = 50;
 
     float UNIFY_RADIUS = 0.5F;
@@ -51,6 +55,7 @@ public class VisualObjs : MonoBehaviour
     private float MAXIMUM_SCALE_RANGE = 0.3F;
 
     public int single_idx = 1;
+
     public List<Material> materials;
     // public SceneStruct SceneData;
 
@@ -61,10 +66,10 @@ public class VisualObjs : MonoBehaviour
     public GameObject tableModel;
 
     private GameObject tableInst;
-    
+
     int maxFileCounter;
-    private string _sceneType;
-    
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -116,20 +121,22 @@ public class VisualObjs : MonoBehaviour
     void Update()
     {
         // render the scene
-        if (_frames % _frameLoop == 0)
+        if (_frames % FrameLoop == 0)
         {
             RenderNewScene(_rules, sphereModels, cubeModels, _sceneType);
         }
 
         // save the scene data if it is a new scene
-        if (_frames % _frameLoop == _frameLoop - 1)
+        if (_frames % FrameLoop == FrameLoop - 1)
         {
-            SaveScene(_objInstances, _depthCamera, _sceneData);
+            _filePrefix = _savePath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
+            DepthCamera.SaveScene(_filePrefix, _objInstances, _depthCamera, _sceneData);
+            DestroyObjs(_objInstances);
+
             _fileCounter++;
         }
 
 
-        
         // load a new rule file
         if (RuleFinished(_rules, _fileCounter))
         {
@@ -151,7 +158,7 @@ public class VisualObjs : MonoBehaviour
         _frames++;
     }
 
-    void RenderNewScene(Rules rules, List<GameObject> spheres, List<GameObject> cubes, string sceneType)
+    void RenderNewScene(RuleJson rules, List<GameObject> spheres, List<GameObject> cubes, string sceneType)
     {
         int objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
         _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
@@ -215,9 +222,10 @@ public class VisualObjs : MonoBehaviour
     //     return obj;
     // }
 
-    List<ObjectStruct> FillSceneData(Rules rules, List<ObjectStruct> sceneData, List<GameObject> spheres, List<GameObject> cubes)
+    List<ObjectStruct> FillSceneData(RuleJson rules, List<ObjectStruct> sceneData, List<GameObject> spheres,
+        List<GameObject> cubes)
     {
-        Rules.ObjProp obj;
+        RuleJson.ObjProp obj;
         int objId = 0;
         // add rule object
         for (int i = 0; i < sceneData.Count; i++)
@@ -236,8 +244,9 @@ public class VisualObjs : MonoBehaviour
                     obj.Material = spheres[sphereId].name;
                 }
             }
+
             // sceneData[objId].SetProperty(objId, obj.Shape, obj.Material, Rules.strFloMapping[obj.size]);
-            sceneData[objId] = new ObjectStruct(objId, obj.Shape, obj.Material, Rules.strFloMapping[obj.size]); 
+            sceneData[objId] = new ObjectStruct(objId, obj.Shape, obj.Material, RuleJson.strFloMapping[obj.size]);
             objId++;
         }
 
@@ -248,13 +257,13 @@ public class VisualObjs : MonoBehaviour
             int sizeId = UnityEngine.Random.Range(0, 2);
             if (sizeId == 0)
             {
-                size = Rules.strFloMapping["small"];
+                size = RuleJson.strFloMapping["small"];
             }
             else
             {
-                size = Rules.strFloMapping["big"];
+                size = RuleJson.strFloMapping["big"];
             }
-            
+
             string shape;
             int shapeId = UnityEngine.Random.Range(0, 2);
             string material;
@@ -270,7 +279,8 @@ public class VisualObjs : MonoBehaviour
                 int sphereId = UnityEngine.Random.Range(0, spheres.Count);
                 material = spheres[sphereId].name;
             }
-            sceneData[objId] = new ObjectStruct(objId, shape, material, size); 
+
+            sceneData[objId] = new ObjectStruct(objId, shape, material, size);
 
             // sceneData[objId].SetProperty(objId, shape, material, size);
             objId++;
@@ -279,29 +289,29 @@ public class VisualObjs : MonoBehaviour
         return sceneData;
     }
 
-    void SaveScene(List<GameObject> objInstances, DepthCamera depthCamera, List<ObjectStruct> sceneData)
-    {
-        DepthCamera.Calibration camera0 = depthCamera.GetCameraMatrix();
-        // Calibration camera0 = getCameraMatrix();
-        string filePrefix = _savePath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
+    // void SaveScene(List<GameObject> objInstances, DepthCamera depthCamera, List<ObjectStruct> sceneData)
+    // {
+    //     DepthCamera.Calibration camera0 = depthCamera.GetCameraMatrix();
+    //     // Calibration camera0 = getCameraMatrix();
+    //     string filePrefix = _savePath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
+    //
+    //     string depthFileName = filePrefix + ".depth0.png";
+    //     DepthCamera.DepthMap depthMap0 = depthCamera.CaptureDepth(depthFileName, objInstances);
+    //
+    //     string normalFileName = filePrefix + ".normal0.png";
+    //     depthCamera.CaptureNormal(normalFileName, camera0.R, objInstances);
+    //
+    //     string sceneFileName = filePrefix + ".image.png";
+    //     depthCamera.CaptureScene(sceneFileName);
+    //
+    //     string dataFileName = filePrefix + ".data0.json";
+    //     depthCamera.writeDataFileOneView(dataFileName, camera0, depthMap0, sceneData);
+    //
+    //     environmentMap.SetTexture("_Tex", danceRoomEnvironment);
+    //     DestroyObjs(objInstances);
+    // }
 
-        string depthFileName = filePrefix + ".depth0.png";
-        DepthCamera.DepthMap depthMap0 = depthCamera.CaptureDepth(depthFileName, objInstances);
-
-        string normalFileName = filePrefix + ".normal0.png";
-        depthCamera.CaptureNormal(normalFileName, camera0.R, objInstances);
-
-        string sceneFileName = filePrefix + ".image.png";
-        depthCamera.CaptureScene(sceneFileName);
-
-        string dataFileName = filePrefix + ".data0.json";
-        depthCamera.writeDataFileOneView(dataFileName, camera0, depthMap0, sceneData);
-
-        environmentMap.SetTexture("_Tex", danceRoomEnvironment);
-        DestroyObjs(objInstances);
-    }
-
-    void UpdateModels(Rules rules)
+    void UpdateModels(RuleJson rules)
     {
         if (_fileCounter >= rules.TrainNum + rules.ValNum)
         {
@@ -334,7 +344,7 @@ public class VisualObjs : MonoBehaviour
     }
 
 
-    bool RuleFinished(Rules rules, int fileCounter)
+    bool RuleFinished(RuleJson rules, int fileCounter)
     {
         if (fileCounter >= rules.TrainNum + rules.TestNum + rules.ValNum)
         {
@@ -345,16 +355,16 @@ public class VisualObjs : MonoBehaviour
     }
 
 
-    Rules LoadNewRule(string ruleFileName)
+    RuleJson LoadNewRule(string ruleFileName)
     {
         StreamReader streamReader = new StreamReader(ruleFileName);
         string json = streamReader.ReadToEnd();
-        Rules rulesJson = JsonConvert.DeserializeObject<Rules>(json);
+        RuleJson rulesJson = JsonConvert.DeserializeObject<RuleJson>(json);
         return rulesJson;
     }
-    
 
-    List<ObjectStruct> FillObjsPositions(Rules rules, List<ObjectStruct> sceneData, string sceneType)
+
+    List<ObjectStruct> FillObjsPositions(RuleJson rules, List<ObjectStruct> sceneData, string sceneType)
     {
         bool layoutFinished = false;
         while (!layoutFinished)
@@ -368,7 +378,6 @@ public class VisualObjs : MonoBehaviour
             // add rule objects
             for (int i = 0; i < sceneData.Count; i++)
             {
-
                 if (String.Equals(sceneType, "test"))
                 {
                     sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
@@ -384,7 +393,7 @@ public class VisualObjs : MonoBehaviour
             // add random objects
             for (int i = 0; i < rules.RandomObjPerScene; i++)
             {
-                sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i],sceneData);
+                sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
                 objIdx++;
             }
 
@@ -412,9 +421,9 @@ public class VisualObjs : MonoBehaviour
         return true;
     }
 
-    ObjectStruct GetRulePos(int objId, Rules.ObjProp objProp, ObjectStruct obj, Vector3 center)
+    ObjectStruct GetRulePos(int objId, RuleJson.ObjProp objProp, ObjectStruct obj, Vector3 center)
     {
-        float newScale = Rules.strFloMapping[objProp.size];
+        float newScale = RuleJson.strFloMapping[objProp.size];
         int num_tries = 0;
         float obj_radius = newScale * UNIFY_RADIUS;
         Vector3 obj_pos;
@@ -509,9 +518,9 @@ public class VisualObjs : MonoBehaviour
     //     return sceneData;
     // }
 
-    ObjectStruct GetRandomPos(int objIdx, Rules.ObjProp objProp, List<ObjectStruct> sceneData)
+    ObjectStruct GetRandomPos(int objIdx, RuleJson.ObjProp objProp, List<ObjectStruct> sceneData)
     {
-        float newScale = Rules.strFloMapping[objProp.size];
+        float newScale = RuleJson.strFloMapping[objProp.size];
         int num_tries = 0;
         float objRadius;
         Vector3 objPos = new Vector3();
@@ -524,7 +533,7 @@ public class VisualObjs : MonoBehaviour
             if (num_tries > _maxNumTry) return sceneData[objIdx];
 
             // choose new size and position
-            
+
             objRadius = newScale * UNIFY_RADIUS;
 
             objPos[0] = table.transform.position[0] + UnityEngine.Random.Range(
