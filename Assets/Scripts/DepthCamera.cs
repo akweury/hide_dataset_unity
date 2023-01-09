@@ -99,6 +99,63 @@ public class DepthCamera
         // DestroyObjs(objInstances);
     }
 
+    public static void SaveCompareScene(string inputPath, string outputPath, int fileCounter,
+        List<GameObject> objInstances, DepthCamera depthCamera,
+        List<ObjectStruct> sceneData)
+    {
+        string oldSceneFile = inputPath + "Test_output_" + fileCounter + ".png";
+        string sceneFileName = outputPath + "Test_output_" + fileCounter + ".png";
+
+        depthCamera.CompareTwoScene(oldSceneFile, sceneFileName);
+    }
+
+
+    public void CompareTwoScene(string oldFileName, string newFileName)
+    {
+        RenderTexture.active = Cam.targetTexture;
+        // projector.cookie = white;
+
+
+        Cam.Render();
+        Texture2D currentTexture =
+            new Texture2D(Cam.targetTexture.width, Cam.targetTexture.height, TextureFormat.RGB24, false);
+        currentTexture.ReadPixels(new Rect(0, 0, Cam.targetTexture.width, Cam.targetTexture.height), 0, 0);
+        currentTexture.Apply();
+
+        // read old image
+        // Texture2D oldImage = PNG.Read(oldFileName);
+        int w = currentTexture.width;
+        int h = currentTexture.height;
+
+        var imageBytes = File.ReadAllBytes(oldFileName);
+        Texture2D oldTexture = new Texture2D(w, h); //must start with a placeholder Texture object
+        oldTexture.LoadImage(imageBytes);
+        oldTexture.name = "oldImage";
+
+
+        Color[] imageRGB = new Color[2 * w * h];
+        // old image
+        for (int i = 0; i < 2 * w; i++)
+        {
+            for (int j = 0; j < h; j++)
+            {
+                UnityEngine.Color c;
+                if (i < w)
+                {
+                    c = oldTexture.GetPixel(i, j);
+                }
+                else
+                {
+                    c = currentTexture.GetPixel(i - w, j);
+                }
+
+                imageRGB[j * 2 * w + i] = new UnityEngine.Color(c.r, c.g, c.b, 0);
+            }
+        }
+
+        PNG.Write(imageRGB, 2 * w, h, 8, false, false, newFileName);
+    }
+
     public Calibration GetCameraMatrix()
     {
         Matrix4x4 R = Matrix4x4.Rotate(Quaternion.Inverse(Cam.transform.rotation));
