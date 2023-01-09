@@ -21,10 +21,13 @@ public class VisualObjs : MonoBehaviour
     public Shader normalShader;
 
     // useful private variables
+    private string _rootPath;
+    private string _datasetPath;
+    private string _rulePath;
+    private string _savePath;
+    
     private string _filePrefix;
     private int _frames;
-    private string _rootPath;
-    private string _savePath;
     private int _ruleFileCounter;
     private RuleJson _rules;
     private int _fileCounter;
@@ -39,21 +42,14 @@ public class VisualObjs : MonoBehaviour
     private const int FrameLoop = 10;
     private const int MaxNumTry = 50;
     private const float UnifyRadius = 0.5F;
-
+    // private string _expPath;
     private const float MinimumObjDist = (float)0.1;
-
-    // private float _minimumScaleRange = 0.15F;
-    // private float MaximumScaleRange = 0.3F;
     private float _tableLength;
     private float _tableWidth;
     private float _tableHeight;
     private FileInfo[] _files;
 
     private string _sceneType;
-    // private Camera _cam;
-    // unchecked variables
-
-
     public int single_idx = 1;
 
     public List<Material> materials;
@@ -73,27 +69,25 @@ public class VisualObjs : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // path control
+        _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
+        _datasetPath = _rootPath + "dataset/01.scene_simulation/";
+        _rulePath = _rootPath + "rules";
+        
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         _depthCamera = new DepthCamera(cam, depthShader, normalShader);
         _depthCamera.Cam.targetTexture = texture;
         RenderSettings.ambientLight = Color.gray;
 
-        System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/data_synthetic");
-        System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/data_synthetic/train");
-        System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/data_synthetic/val");
-        System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/data_synthetic/test");
+        
+        System.IO.Directory.CreateDirectory(_datasetPath);
+        System.IO.Directory.CreateDirectory(_datasetPath + "train");
+        System.IO.Directory.CreateDirectory(_datasetPath + "val");
+        System.IO.Directory.CreateDirectory(_datasetPath + "test");
 
-        _rootPath = Application.dataPath + "/../CapturedData/data_synthetic/";
-
-
-        // adjust table size based on camera sensor size
-        _scaleFactor = 4F;
-        _tableLength = TableLengthBase * _scaleFactor;
-        _tableWidth = TableWidthBase * _scaleFactor;
-        _tableHeight = TableHeightBase * _scaleFactor;
-
+        
         // get all rule files
-        DirectoryInfo d = new DirectoryInfo(Application.dataPath + "/Scripts/Rules");
+        DirectoryInfo d = new DirectoryInfo(_rulePath);
         _files = d.GetFiles("*.json"); // Getting Rule files
 
         // load a new rule
@@ -104,17 +98,17 @@ public class VisualObjs : MonoBehaviour
         UpdateModels(_rules);
 
         // instantiate the table
+        // adjust table size based on camera sensor size
+        _scaleFactor = 4F;
+        _tableLength = TableLengthBase * _scaleFactor;
+        _tableWidth = TableWidthBase * _scaleFactor;
+        _tableHeight = TableHeightBase * _scaleFactor;
+        
         Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
         table.transform.localScale = new Vector3(_tableLength, _tableHeight, _tableWidth);
         environmentMap.SetTexture("_Tex", danceRoomEnvironment);
-
-        // _modelRenderers = new List<MeshRenderer>(new MeshRenderer[_models.Count]);
-        // foreach (var model in _models)
-        // {
-        //     _modelRenderers.Add(model.GetComponent<MeshRenderer>());
-        // }
     }
 
     // Update is called once per frame
@@ -316,21 +310,21 @@ public class VisualObjs : MonoBehaviour
         if (_fileCounter >= rules.TrainNum + rules.ValNum)
         {
             _sceneType = "test";
-            _savePath = _rootPath + "test/";
+            _savePath = _datasetPath + "test/";
         }
 
         // generate validation scenes
         else if (_fileCounter >= rules.TrainNum)
         {
             _sceneType = "val";
-            _savePath = _rootPath + "val/";
+            _savePath = _datasetPath + "val/";
         }
 
         // generate training scenes
         else if (_fileCounter >= 0)
         {
             _sceneType = "train";
-            _savePath = _rootPath + "train/";
+            _savePath = _datasetPath + "train/";
         }
     }
 
@@ -580,8 +574,8 @@ public class VisualObjs : MonoBehaviour
         // record the object data
         sceneData[objIdx].Position = objPos;
         sceneData[objIdx].Size = objRadius;
-        
-        
+
+
         // normal return
         return sceneData[objIdx];
     }

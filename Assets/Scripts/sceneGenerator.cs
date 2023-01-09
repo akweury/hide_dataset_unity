@@ -20,13 +20,18 @@ public class SceneGenerator : MonoBehaviour
     public Shader normalShader;
 
     // useful private variables
-    private string _filePrefix;
-    private int _frames;
+    private string _rootPath;
+    private string _datasetPath;
+
     private string _outputPath;
     private string _inputPath;
+
+    private string _filePrefix;
+    private int _frames;
+
     // private int _ruleFileCounter;
     private int _fileCounter;
-    private List<GameObject> _objInstances; 
+    private List<GameObject> _objInstances;
     private List<MeshRenderer> _modelRenderers;
     private List<ObjectStruct> _sceneData;
     private DepthCamera _depthCamera;
@@ -43,24 +48,20 @@ public class SceneGenerator : MonoBehaviour
     private SceneJson _sceneJson;
 
     private bool _sceneDone;
+
     // Start is called before the first frame update
     void Start()
     {
+        _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
+        _inputPath = _rootPath + "output/02.scene_modification/";
+        _outputPath = _rootPath + "output/03.scene_visualization/";
+
+
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         _depthCamera = new DepthCamera(cam, depthShader, normalShader);
         _depthCamera.Cam.targetTexture = texture;
         RenderSettings.ambientLight = Color.gray;
 
-        System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/output");
-        System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/input");
-        _inputPath = Application.dataPath + "/../CapturedData/input/";
-        _outputPath = Application.dataPath + "/../CapturedData/output/";
-
-        // adjust table size based on camera sensor size
-        // _scaleFactor = 4F;
-        _tableLength = TableLengthBase * ScaleFactor;
-        _tableWidth = TableWidthBase * ScaleFactor;
-        _tableHeight = TableHeightBase * ScaleFactor;
 
         // get all json files
         DirectoryInfo d = new DirectoryInfo(_inputPath);
@@ -73,6 +74,10 @@ public class SceneGenerator : MonoBehaviour
         _fileCounter++;
 
         // instantiate the table
+        // adjust table size based on camera sensor size
+        _tableLength = TableLengthBase * ScaleFactor;
+        _tableWidth = TableWidthBase * ScaleFactor;
+        _tableHeight = TableHeightBase * ScaleFactor;
         table.transform.localScale = new Vector3(_tableLength, _tableHeight, _tableWidth);
     }
 
@@ -88,12 +93,10 @@ public class SceneGenerator : MonoBehaviour
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            
             DepthCamera.SaveScene(_filePrefix, _objInstances, _depthCamera, _sceneData);
             DestroyObjs(_objInstances);
             _sceneDone = true;
             _filePrefix = _outputPath + "Test_output_" + _fileCounter;
-            _fileCounter++;
         }
 
 
@@ -133,7 +136,7 @@ public class SceneGenerator : MonoBehaviour
         _objInstances = new List<GameObject>(new GameObject[objNum]);
 
         _sceneData = FillSceneData(sceneJson, _sceneData);
-        
+
         int objId = 0;
         foreach (var sceneObj in _sceneData)
         {
@@ -174,28 +177,42 @@ public class SceneGenerator : MonoBehaviour
 
     List<ObjectStruct> FillSceneData(SceneJson sceneJson, List<ObjectStruct> sceneData)
     {
-        foreach (var sceneObj in sceneJson.Objs)
+        for (int oldIdx = 0; oldIdx < sceneJson.Objs.Count; oldIdx++)
         {
-            int objId = sceneObj.Id;
-            foreach (var configObj in sceneJson.SceneConfig.Objects)
+            // match the predicted object with the original scene 
+            int objId = sceneJson.Objs[oldIdx].Id;
+            SceneJson.ObjJson objCandidate = sceneJson.SceneConfig.Objects[0];
+            SceneJson.ObjJson predObjCandidate = sceneJson.PredObjs[0];
+
+            float minX = 1000;
+            float minZ = 1000;
+            for (int i = 0; i < sceneJson.SceneConfig.Objects.Count; i++)
             {
-                if (configObj.Id == objId)
+                float xDiff = Mathf.Abs(sceneJson.SceneConfig.Objects[i].screenPos[0] -
+                                        sceneJson.Objs[oldIdx].screenPos[0]);
+                // float zDiff = Mathf.Abs(configObj.screenPos[2] - sceneObj.screenPos[2]);
+                if (xDiff < minX)
                 {
-                    string shape = configObj.Shape;
-                    string material = configObj.Material;
-                    float size = configObj.Size;
-                    float[] position = configObj.Pos;
-                    sceneData[objId] = new ObjectStruct(objId, shape, material, size)
-                    {
-                        Position = new Vector3(position[0],position[1], position[2])
-                    };
+                    minX = xDiff;
+                    objCandidate = sceneJson.SceneConfig.Objects[i];
                 }
             }
+
+            predObjCandidate = sceneJson.PredObjs[oldIdx];
+            // record the new object
+            string shape = objCandidate.Shape;
+            string material = objCandidate.Material;
+            float size = objCandidate.Size;
+            float[] position = predObjCandidate.Pos;
+            sceneData[objId] = new ObjectStruct(objId, shape, material, size)
+            {
+                Position = new Vector3(position[0], position[1], position[2])
+            };
         }
 
         return sceneData;
     }
-    
+
     GameObject NewObjectInstantiate(float scale, Vector3 newPoint, GameObject newModel)
     {
         // place the object on the table
@@ -203,13 +220,13 @@ public class SceneGenerator : MonoBehaviour
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
         Vector3 position = new Vector3(newPoint.x, newPoint.y, newPoint.z);
         GameObject objInst = Instantiate(newModel, position, rotation);
-        
+
         objInst.name = newModel.name;
         objInst.transform.localScale = new Vector3(scale, scale, scale);
 
         return objInst;
     }
- 
+
     void DestroyObjs(List<GameObject> objs)
     {
         foreach (var obj in objs)
@@ -217,8 +234,4 @@ public class SceneGenerator : MonoBehaviour
             if (obj) Destroy(obj);
         }
     }
-    
-
-
-    
 }

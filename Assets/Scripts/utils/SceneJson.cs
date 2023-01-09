@@ -9,6 +9,9 @@ namespace utils
         [JsonProperty("scene")] 
         public List<ObjJson> Objs;
         
+        [JsonProperty("pred_scene")] 
+        public List<ObjJson> PredObjs;
+        
         [JsonProperty("file_name")] 
         public SceneConfigJson SceneConfig;
         
