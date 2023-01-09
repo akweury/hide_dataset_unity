@@ -15,6 +15,7 @@ public class DepthCamera
     public Camera Cam;
     public Shader DepthShader;
     public Shader NormalShader;
+    public Shader MaskShader;
 
     public DepthCamera(Camera camera, Shader depthShader, Shader normalShader)
     {
@@ -74,7 +75,8 @@ public class DepthCamera
     }
 
 
-    public static void SaveScene(string filePrefix, List<GameObject> objInstances, DepthCamera depthCamera, List<ObjectStruct> sceneData)
+    public static void SaveScene(string filePrefix, List<GameObject> objInstances, DepthCamera depthCamera,
+        List<ObjectStruct> sceneData)
     {
         Calibration camera0 = depthCamera.GetCameraMatrix();
 
@@ -87,13 +89,16 @@ public class DepthCamera
         string sceneFileName = filePrefix + ".image.png";
         depthCamera.CaptureScene(sceneFileName);
 
+        string maskFileName = filePrefix + ".mask.png";
+        depthCamera.CaptureMask(maskFileName, objInstances);
+
         string dataFileName = filePrefix + ".data0.json";
         depthCamera.writeDataFileOneView(dataFileName, camera0, depthMap0, sceneData);
 
         // environmentMap.SetTexture("_Tex", danceRoomEnvironment);
         // DestroyObjs(objInstances);
     }
-    
+
     public Calibration GetCameraMatrix()
     {
         Matrix4x4 R = Matrix4x4.Rotate(Quaternion.Inverse(Cam.transform.rotation));
@@ -116,7 +121,8 @@ public class DepthCamera
         return calibration;
     }
 
-    public void writeDataFileOneView(string fileName, Calibration camera, DepthMap depthMap, List<ObjectStruct> sceneData)
+    public void writeDataFileOneView(string fileName, Calibration camera, DepthMap depthMap,
+        List<ObjectStruct> sceneData)
     {
         StreamWriter writer = new StreamWriter(fileName, false);
         String data1 = "{" + "\"K\":[[" +
@@ -140,14 +146,14 @@ public class DepthCamera
                        depthMap.minDepth.ToString().Replace(',', '.') + "," + "\"maxDepth\":" +
                        depthMap.maxDepth.ToString().Replace(',', '.') + ",";
 
-        
+
         String objectData = "\"objects\":[";
         for (int i = 0; i < sceneData.Count; i++)
         {
             objectData += "{" +
                           "\"id\":" + sceneData[i].Id + "," +
                           "\"shape\":\"" + sceneData[i].Shape + "\"" + "," +
-                          "\"size\":" + sceneData[i].Size  + "," +
+                          "\"size\":" + sceneData[i].Size + "," +
                           "\"material\":\"" + sceneData[i].Material + "\"" + "," +
                           "\"position\":[" +
                           (float)sceneData[i].Position[0] + "," +
@@ -166,8 +172,8 @@ public class DepthCamera
         writer.Write(data1 + objectData + "}");
         writer.Close();
     }
-    
-    
+
+
     public void CaptureScene(string fileName)
     {
         RenderTexture.active = Cam.targetTexture;
@@ -198,8 +204,8 @@ public class DepthCamera
         //PNG.Write(imageRGB, w, h, 8, false, true, saved_path + fileCounter.ToString("D5") + "." + name + "RGB.png");
         // Destroy(currentTexture);
     }
-    
-    
+
+
     public void CaptureNormal(string fileName, Matrix4x4 R, List<GameObject> objs)
     {
         RenderTexture.active = Cam.targetTexture;
@@ -260,7 +266,7 @@ public class DepthCamera
         // Destroy(image);
         // Destroy(cubeImage);
     }
-    
+
     public DepthMap CaptureDepth(string fileName, List<GameObject> objs)
     {
         RenderTexture.active = Cam.targetTexture;
@@ -327,11 +333,74 @@ public class DepthCamera
         }
 
         PNG.Write(depthMap.depths, w, h, 16, false, true, fileName);
-        
- 
+
+
         // Destroy(image);
         // Destroy(spinCubeImage);
 
         return depthMap;
+    }
+
+
+    public void CaptureMask(string fileName, List<GameObject> objs)
+    {
+        // Texture env = environmentMap.GetTexture("_Tex");
+        // environmentMap.SetTexture("_Tex", blackEnvironment);
+        List<Texture2D> labelImages = new List<Texture2D>(new Texture2D[objs.Count]);
+        RenderTexture camTexture = Cam.targetTexture;
+        RenderTexture.active = camTexture;
+        int width = camTexture.width;
+        int height = camTexture.height;
+
+        // take background image
+        foreach (var obj in objs)
+        {
+            obj.SetActive(false);
+        }
+
+        Cam.RenderWithShader(MaskShader, "RenderType");
+        Texture2D bgImage = new Texture2D(width, height, TextureFormat.RGBAFloat, false);
+        bgImage.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        bgImage.Apply();
+
+        // take object image
+        for (int i = 0; i < objs.Count; i++)
+        {
+            Texture2D img;
+
+            objs[i].SetActive(true);
+            Cam.RenderWithShader(MaskShader, "RenderType");
+            img = new Texture2D(width, height, TextureFormat.RGBAFloat,
+                false);
+            img.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+            img.Apply();
+            labelImages[i] = img;
+            objs[i].SetActive(false);
+        }
+
+        DepthMap maskMap = new DepthMap(width, height);
+
+        int w = width;
+        int h = height;
+
+        for (int i = 0; i < h; i++)
+        {
+            for (int j = 0; j < w; j++)
+            {
+                UnityEngine.Color bgPixel = bgImage.GetPixel(j, i);
+                for (int objIdx = 0; objIdx < labelImages.Count; objIdx++)
+                {
+                    UnityEngine.Color objPixel = labelImages[objIdx].GetPixel(j, i);
+                    float maskID = objIdx + 1;
+                    if (objPixel.r == 0)
+                        maskID = 0;
+                    if (bgPixel.r != 0 && Math.Abs(bgPixel.r - objPixel.r) < 0.01F)
+                        maskID = 0; // filter out spin cube
+                    maskMap.depths[i * w + j] = new UnityEngine.Color(maskID / 255, 0, 0, 0);
+                }
+            }
+        }
+
+        PNG.Write(maskMap.depths, w, h, 16, false, true, fileName);
     }
 }

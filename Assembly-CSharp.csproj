@@ -49,6 +49,7 @@
      <Compile Include="Assets/Scripts/utils/SceneEngine.cs" />
      <Compile Include="Assets/Scripts/utils/SceneJson.cs" />
      <None Include="Assets/Scenes/Test_output_5.json" />
+     <None Include="Assets/MaskShader.shader" />
      <None Include="Assets/PhaseShader.shader" />
      <None Include="Assets/Scripts/Rules/left.json" />
      <None Include="Assets/NormalShader.shader" />
