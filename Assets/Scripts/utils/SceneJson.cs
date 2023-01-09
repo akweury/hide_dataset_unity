@@ -21,6 +21,7 @@ namespace utils
             [JsonProperty("position")] public float[] Pos;
             [JsonProperty("size")] public float Size;
             [JsonProperty("material")] public string Material;
+            [JsonProperty("screenPosition")] public float[] screenPos;
             
         }
         
