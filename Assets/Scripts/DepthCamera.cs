@@ -150,6 +150,8 @@ public class DepthCamera
         String objectData = "\"objects\":[";
         for (int i = 0; i < sceneData.Count; i++)
         {
+            Vector3 screenPos = Cam.WorldToScreenPoint(sceneData[i].Position);
+            screenPos[1] = Cam.targetTexture.height - screenPos[1];
             objectData += "{" +
                           "\"id\":" + sceneData[i].Id + "," +
                           "\"shape\":\"" + sceneData[i].Shape + "\"" + "," +
@@ -159,6 +161,10 @@ public class DepthCamera
                           (float)sceneData[i].Position[0] + "," +
                           (float)sceneData[i].Position[1] + "," +
                           (float)sceneData[i].Position[2] +
+                          "]" + "," +
+                          "\"screenPosition\":[" +
+                          screenPos[0] + "," +
+                          screenPos[1] +
                           "]" +
                           "}";
             if (i != sceneData.Count - 1)
@@ -392,13 +398,14 @@ public class DepthCamera
                 for (int objIdx = 0; objIdx < maskImages.Count; objIdx++)
                 {
                     UnityEngine.Color objPixel = maskImages[objIdx].GetPixel(j, i);
-                    
+
                     if (Math.Abs(bgPixel.r - objPixel.r) > 0.001)
-                    { 
+                    {
                         maskID = objIdx + 1;
                         break;
                     }
-            }
+                }
+
                 maskMap.depths[i * w + j] = new UnityEngine.Color(maskID / 255, 0, 0, 0);
             }
         }

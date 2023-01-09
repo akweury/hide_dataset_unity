@@ -580,7 +580,9 @@ public class VisualObjs : MonoBehaviour
         // record the object data
         sceneData[objIdx].Position = objPos;
         sceneData[objIdx].Size = objRadius;
-
+        
+        
+        // normal return
         return sceneData[objIdx];
     }
 
