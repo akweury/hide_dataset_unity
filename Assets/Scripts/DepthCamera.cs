@@ -346,7 +346,7 @@ public class DepthCamera
     {
         // Texture env = environmentMap.GetTexture("_Tex");
         // environmentMap.SetTexture("_Tex", blackEnvironment);
-        List<Texture2D> labelImages = new List<Texture2D>(new Texture2D[objs.Count]);
+        List<Texture2D> maskImages = new List<Texture2D>(new Texture2D[objs.Count]);
         RenderTexture camTexture = Cam.targetTexture;
         RenderTexture.active = camTexture;
         int width = camTexture.width;
@@ -358,7 +358,7 @@ public class DepthCamera
             obj.SetActive(false);
         }
 
-        Cam.RenderWithShader(MaskShader, "RenderType");
+        Cam.RenderWithShader(DepthShader, "RenderType");
         Texture2D bgImage = new Texture2D(width, height, TextureFormat.RGBAFloat, false);
         bgImage.ReadPixels(new Rect(0, 0, width, height), 0, 0);
         bgImage.Apply();
@@ -369,12 +369,12 @@ public class DepthCamera
             Texture2D img;
 
             objs[i].SetActive(true);
-            Cam.RenderWithShader(MaskShader, "RenderType");
+            Cam.RenderWithShader(DepthShader, "RenderType");
             img = new Texture2D(width, height, TextureFormat.RGBAFloat,
                 false);
             img.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             img.Apply();
-            labelImages[i] = img;
+            maskImages[i] = img;
             objs[i].SetActive(false);
         }
 
@@ -388,16 +388,18 @@ public class DepthCamera
             for (int j = 0; j < w; j++)
             {
                 UnityEngine.Color bgPixel = bgImage.GetPixel(j, i);
-                for (int objIdx = 0; objIdx < labelImages.Count; objIdx++)
+                float maskID = 0;
+                for (int objIdx = 0; objIdx < maskImages.Count; objIdx++)
                 {
-                    UnityEngine.Color objPixel = labelImages[objIdx].GetPixel(j, i);
-                    float maskID = objIdx + 1;
-                    if (objPixel.r == 0)
-                        maskID = 0;
-                    if (bgPixel.r != 0 && Math.Abs(bgPixel.r - objPixel.r) < 0.01F)
-                        maskID = 0; // filter out spin cube
-                    maskMap.depths[i * w + j] = new UnityEngine.Color(maskID / 255, 0, 0, 0);
-                }
+                    UnityEngine.Color objPixel = maskImages[objIdx].GetPixel(j, i);
+                    
+                    if (Math.Abs(bgPixel.r - objPixel.r) > 0.001)
+                    { 
+                        maskID = objIdx + 1;
+                        break;
+                    }
+            }
+                maskMap.depths[i * w + j] = new UnityEngine.Color(maskID / 255, 0, 0, 0);
             }
         }
 
