@@ -46,8 +46,8 @@
      <Compile Include="Assets/Scripts/VisualObjs.cs" />
      <Compile Include="Assets/Scripts/DepthCamera.cs" />
      <Compile Include="Assets/Scripts/SceneGenerator.cs" />
-     <Compile Include="Assets/Scripts/utils/SceneJson.cs" />
      <Compile Include="Assets/Scripts/utils/SceneEngine.cs" />
+     <Compile Include="Assets/Scripts/utils/SceneJson.cs" />
      <None Include="Assets/Scenes/Test_output_5.json" />
      <None Include="Assets/PhaseShader.shader" />
      <None Include="Assets/Scripts/Rules/left.json" />

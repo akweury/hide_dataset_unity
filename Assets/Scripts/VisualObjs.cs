@@ -37,6 +37,13 @@ public class VisualObjs : MonoBehaviour
     private const float TableLengthBase = 1.5F;
     private const float TableHeightBase = 0.1F;
     private const int FrameLoop = 10;
+    private const int MaxNumTry = 50;
+    private const float UnifyRadius = 0.5F;
+
+    private const float MinimumObjDist = (float)0.1;
+
+    // private float _minimumScaleRange = 0.15F;
+    // private float MaximumScaleRange = 0.3F;
     private float _tableLength;
     private float _tableWidth;
     private float _tableHeight;
@@ -46,13 +53,6 @@ public class VisualObjs : MonoBehaviour
     // private Camera _cam;
     // unchecked variables
 
-
-    private int _maxNumTry = 50;
-
-    float UNIFY_RADIUS = 0.5F;
-    float MINIMUM_OBJ_DIST = (float)0.1;
-    private float MINIMUM_SCALE_RANGE = 0.15F;
-    private float MAXIMUM_SCALE_RANGE = 0.3F;
 
     public int single_idx = 1;
 
@@ -228,7 +228,7 @@ public class VisualObjs : MonoBehaviour
         RuleJson.ObjProp obj;
         int objId = 0;
         // add rule object
-        for (int i = 0; i < sceneData.Count; i++)
+        for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
             obj = rules.Objs[i];
             if (obj.Material == "")
@@ -376,26 +376,40 @@ public class VisualObjs : MonoBehaviour
                 table.transform.position[2] + UnityEngine.Random.Range(-(_tableLength / 2), (_tableLength / 2)));
 
             // add rule objects
-            for (int i = 0; i < sceneData.Count; i++)
+
+            for (int i = 0; i < rules.RuleObjPerScene; i++)
             {
                 if (String.Equals(sceneType, "test"))
                 {
-                    sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
+                    sceneData[objIdx] = GetRandomPos(objIdx, sceneData);
                 }
                 else
                 {
                     sceneData[objIdx] = GetRulePos(objIdx, rules.Objs[i], sceneData[objIdx], randomCenter);
+                    if (sceneData[objIdx].Position == Vector3.zero)
+                    {
+                        break;
+                    }
                 }
 
                 objIdx++;
             }
 
             // add random objects
-            for (int i = 0; i < rules.RandomObjPerScene; i++)
+            if (objIdx >= rules.RuleObjPerScene)
             {
-                sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
-                objIdx++;
+                for (int i = 0; i < rules.RandomObjPerScene; i++)
+                {
+                    sceneData[objIdx] = GetRandomPos(objIdx, sceneData);
+                    if (sceneData[objIdx].Position == Vector3.zero)
+                    {
+                        break;
+                    }
+
+                    objIdx++;
+                }
             }
+
 
             layoutFinished = CheckScene(sceneData);
         }
@@ -425,14 +439,14 @@ public class VisualObjs : MonoBehaviour
     {
         float newScale = RuleJson.strFloMapping[objProp.size];
         int num_tries = 0;
-        float obj_radius = newScale * UNIFY_RADIUS;
+        float obj_radius = newScale * UnifyRadius;
         Vector3 obj_pos;
         // find a 3D position for the new object
         while (true)
         {
             // exceed the maximum trying time
             num_tries += 1;
-            if (num_tries > _maxNumTry) return obj;
+            if (num_tries > MaxNumTry) return obj;
 
             // choose a proper position
             bool pos_good = true;
@@ -518,9 +532,9 @@ public class VisualObjs : MonoBehaviour
     //     return sceneData;
     // }
 
-    ObjectStruct GetRandomPos(int objIdx, RuleJson.ObjProp objProp, List<ObjectStruct> sceneData)
+    ObjectStruct GetRandomPos(int objIdx, List<ObjectStruct> sceneData)
     {
-        float newScale = RuleJson.strFloMapping[objProp.size];
+        float newScale = sceneData[objIdx].Size;
         int num_tries = 0;
         float objRadius;
         Vector3 objPos = new Vector3();
@@ -530,11 +544,10 @@ public class VisualObjs : MonoBehaviour
         {
             num_tries += 1;
             // exceed the maximum trying time
-            if (num_tries > _maxNumTry) return sceneData[objIdx];
+            if (num_tries > MaxNumTry) return sceneData[objIdx];
 
             // choose new size and position
-
-            objRadius = newScale * UNIFY_RADIUS;
+            objRadius = newScale * UnifyRadius;
 
             objPos[0] = table.transform.position[0] + UnityEngine.Random.Range(
                 -(float)(_tableWidth / 2) + objRadius, (float)(_tableWidth / 2) - objRadius);
@@ -543,20 +556,19 @@ public class VisualObjs : MonoBehaviour
                 -(float)(_tableLength / 2) + objRadius, (float)(_tableLength / 2) - objRadius);
 
             // check for overlapping
-            bool dists_good = true;
+            bool distsGood = true;
             for (int i = 0; i < objIdx; i++)
             {
                 float dx = objPos[0] - sceneData[i].Position[0];
                 float dz = objPos[2] - sceneData[i].Position[2];
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                if (dist - objRadius - sceneData[i].Size < MINIMUM_OBJ_DIST)
+                if (dist - objRadius - sceneData[i].Size < MinimumObjDist)
                 {
-                    dists_good = false;
-                    return null;
+                    return sceneData[objIdx];
                 }
             }
 
-            if (dists_good) break;
+            if (distsGood) break;
         }
 
         // create the new object

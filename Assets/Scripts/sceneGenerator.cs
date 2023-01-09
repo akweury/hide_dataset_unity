@@ -22,11 +22,11 @@ public class SceneGenerator : MonoBehaviour
     // useful private variables
     private string _filePrefix;
     private int _frames;
-    private string _rootPath;
-    private string _savePath;
-    private int _ruleFileCounter;
+    private string _outputPath;
+    private string _inputPath;
+    // private int _ruleFileCounter;
     private int _fileCounter;
-    private List<GameObject> _objInstances;
+    private List<GameObject> _objInstances; 
     private List<MeshRenderer> _modelRenderers;
     private List<ObjectStruct> _sceneData;
     private DepthCamera _depthCamera;
@@ -42,6 +42,7 @@ public class SceneGenerator : MonoBehaviour
     private string _sceneType;
     private SceneJson _sceneJson;
 
+    private bool _sceneDone;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,7 +52,9 @@ public class SceneGenerator : MonoBehaviour
         RenderSettings.ambientLight = Color.gray;
 
         System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/output");
-        _rootPath = Application.dataPath + "/../CapturedData/output/";
+        System.IO.Directory.CreateDirectory(Application.dataPath + "/../CapturedData/input");
+        _inputPath = Application.dataPath + "/../CapturedData/input/";
+        _outputPath = Application.dataPath + "/../CapturedData/output/";
 
         // adjust table size based on camera sensor size
         // _scaleFactor = 4F;
@@ -60,12 +63,13 @@ public class SceneGenerator : MonoBehaviour
         _tableHeight = TableHeightBase * ScaleFactor;
 
         // get all json files
-        DirectoryInfo d = new DirectoryInfo(_rootPath);
+        DirectoryInfo d = new DirectoryInfo(_inputPath);
         _files = d.GetFiles("*.json"); // Getting Rule files
         _fileCounter = 0;
 
         // load a new scene
         _sceneJson = LoadNewScene(_files[_fileCounter].FullName);
+        _filePrefix = _outputPath + "Test_output_" + _fileCounter;
         _fileCounter++;
 
         // instantiate the table
@@ -84,27 +88,28 @@ public class SceneGenerator : MonoBehaviour
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            _filePrefix = _savePath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
+            
             DepthCamera.SaveScene(_filePrefix, _objInstances, _depthCamera, _sceneData);
             DestroyObjs(_objInstances);
-
+            _sceneDone = true;
+            _filePrefix = _outputPath + "Test_output_" + _fileCounter;
             _fileCounter++;
         }
 
 
         // load a new rule file
-        if (SceneDone(_sceneJson, _fileCounter))
+        if (_sceneDone)
         {
             DestroyObjs(_objInstances);
-            if (_ruleFileCounter >= _files.Length)
+            if (_fileCounter >= _files.Length)
             {
                 UnityEditor.EditorApplication.isPlaying = false;
             }
             else
             {
-                _sceneJson = LoadNewScene(_files[_ruleFileCounter].FullName);
-                _fileCounter = 0;
-                _ruleFileCounter++;
+                _sceneJson = LoadNewScene(_files[_fileCounter].FullName);
+                _sceneDone = false;
+                _fileCounter++;
             }
         }
 
@@ -179,10 +184,10 @@ public class SceneGenerator : MonoBehaviour
                     string shape = configObj.Shape;
                     string material = configObj.Material;
                     float size = configObj.Size;
-                    Vector3 position = configObj.Pos;
+                    float[] position = configObj.Pos;
                     sceneData[objId] = new ObjectStruct(objId, shape, material, size)
                     {
-                        Position = position
+                        Position = new Vector3(position[0],position[1], position[2])
                     };
                 }
             }
@@ -213,14 +218,7 @@ public class SceneGenerator : MonoBehaviour
         }
     }
     
-    bool SceneDone(SceneJson sceneJson, int fileCounter)
-    {
-        if (fileCounter >= sceneJson.Objs.Count)
-        {
-            return true;
-        }
-        return false;
-    }
+
 
     
 }

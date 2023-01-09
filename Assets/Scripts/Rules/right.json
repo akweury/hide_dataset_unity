@@ -1,6 +1,6 @@
 ﻿{
   "rule_objs_per_scene": 2,
-  "random_objs_per_scene": 0,
+  "random_objs_per_scene": 5,
   "train_num": 6,
   "test_num": 2,
   "val_num": 2,
