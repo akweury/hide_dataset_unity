@@ -71,7 +71,7 @@ public class SceneGenerator : MonoBehaviour
         // load a new scene
         _sceneJson = LoadNewScene(_files[_fileCounter].FullName);
         _filePrefix = _outputPath + "Test_output_" + _fileCounter;
-        _fileCounter++;
+        // _fileCounter++;
 
         // instantiate the table
         // adjust table size based on camera sensor size
@@ -93,9 +93,10 @@ public class SceneGenerator : MonoBehaviour
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            DepthCamera.SaveScene(_filePrefix, _objInstances, _depthCamera, _sceneData);
+            DepthCamera.SaveCompareScene(_inputPath,_outputPath, _fileCounter, _objInstances, _depthCamera, _sceneData);
             DestroyObjs(_objInstances);
             _sceneDone = true;
+            _fileCounter++;
             _filePrefix = _outputPath + "Test_output_" + _fileCounter;
         }
 
@@ -112,7 +113,7 @@ public class SceneGenerator : MonoBehaviour
             {
                 _sceneJson = LoadNewScene(_files[_fileCounter].FullName);
                 _sceneDone = false;
-                _fileCounter++;
+                // _fileCounter++;
             }
         }
 
@@ -199,6 +200,10 @@ public class SceneGenerator : MonoBehaviour
             }
 
             predObjCandidate = sceneJson.PredObjs[oldIdx];
+            
+            float newX = predObjCandidate.Pos[0];
+            float oldY = sceneJson.Objs[oldIdx].Pos[1];
+            float newZ = predObjCandidate.Pos[2];
             // record the new object
             string shape = objCandidate.Shape;
             string material = objCandidate.Material;
@@ -206,7 +211,7 @@ public class SceneGenerator : MonoBehaviour
             float[] position = predObjCandidate.Pos;
             sceneData[objId] = new ObjectStruct(objId, shape, material, size)
             {
-                Position = new Vector3(position[0], position[1], position[2])
+                Position = new Vector3(newX, oldY, newZ)
             };
         }
 
