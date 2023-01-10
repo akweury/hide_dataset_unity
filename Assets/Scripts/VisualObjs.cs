@@ -24,7 +24,7 @@ public class VisualObjs : MonoBehaviour
     private string _rootPath;
     private string _datasetPath;
     private string _rulePath;
-    private string _savePath;
+    // private string _savePath;
     
     private string _filePrefix;
     private int _frames;
@@ -71,8 +71,15 @@ public class VisualObjs : MonoBehaviour
     {
         // path control
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
-        _datasetPath = _rootPath + "dataset/01.scene_simulation/";
-        _rulePath = _rootPath + "rules";
+        _rulePath = _rootPath + "../rules";
+
+        // _sceneType = "train";
+        // _datasetPath = _rootPath + "dataset/02.learning_rules";
+        _sceneType = "test";
+        _datasetPath = _rootPath + "dataset/03.scene_manipulation/";
+        
+        // _savePath = _datasetPath;
+        
         
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         _depthCamera = new DepthCamera(cam, depthShader, normalShader);
@@ -81,9 +88,6 @@ public class VisualObjs : MonoBehaviour
 
         
         System.IO.Directory.CreateDirectory(_datasetPath);
-        System.IO.Directory.CreateDirectory(_datasetPath + "train");
-        System.IO.Directory.CreateDirectory(_datasetPath + "val");
-        System.IO.Directory.CreateDirectory(_datasetPath + "test");
 
         
         // get all rule files
@@ -95,7 +99,7 @@ public class VisualObjs : MonoBehaviour
         _fileCounter = 0;
         _ruleFileCounter++;
         // _objInstances = GetNewInstances(_rules);
-        UpdateModels(_rules);
+        // UpdateModels(_rules);
 
         // instantiate the table
         // adjust table size based on camera sensor size
@@ -123,7 +127,7 @@ public class VisualObjs : MonoBehaviour
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            _filePrefix = _savePath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
+            _filePrefix = _datasetPath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
             DepthCamera.SaveScene(_filePrefix, _objInstances, _depthCamera, _sceneData);
             DestroyObjs(_objInstances);
 
@@ -148,7 +152,7 @@ public class VisualObjs : MonoBehaviour
         }
 
         // stop rendering when file number exceeded the threshold
-        UpdateModels(_rules);
+        // UpdateModels(_rules);
         _frames++;
     }
 
@@ -305,28 +309,28 @@ public class VisualObjs : MonoBehaviour
     //     DestroyObjs(objInstances);
     // }
 
-    void UpdateModels(RuleJson rules)
-    {
-        if (_fileCounter >= rules.TrainNum + rules.ValNum)
-        {
-            _sceneType = "test";
-            _savePath = _datasetPath + "test/";
-        }
-
-        // generate validation scenes
-        else if (_fileCounter >= rules.TrainNum)
-        {
-            _sceneType = "val";
-            _savePath = _datasetPath + "val/";
-        }
-
-        // generate training scenes
-        else if (_fileCounter >= 0)
-        {
-            _sceneType = "train";
-            _savePath = _datasetPath + "train/";
-        }
-    }
+    // void UpdateModels(RuleJson rules)
+    // {
+    //     if (_fileCounter >= rules.TrainNum + rules.ValNum)
+    //     {
+    //         _sceneType = "test";
+    //         _savePath = _datasetPath + "test/";
+    //     }
+    //
+    //     // generate validation scenes
+    //     else if (_fileCounter >= rules.TrainNum)
+    //     {
+    //         _sceneType = "val";
+    //         _savePath = _datasetPath + "val/";
+    //     }
+    //
+    //     // generate training scenes
+    //     else if (_fileCounter >= 0)
+    //     {
+    //         _sceneType = "train";
+    //         _savePath = _datasetPath + "train/";
+    //     }
+    // }
 
 
     void DestroyObjs(List<GameObject> objs)
@@ -340,7 +344,7 @@ public class VisualObjs : MonoBehaviour
 
     bool RuleFinished(RuleJson rules, int fileCounter)
     {
-        if (fileCounter >= rules.TrainNum + rules.TestNum + rules.ValNum)
+        if (fileCounter >= rules.SceneNum)
         {
             return true;
         }

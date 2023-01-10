@@ -53,8 +53,8 @@ public class SceneGenerator : MonoBehaviour
     void Start()
     {
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
-        _inputPath = _rootPath + "output/02.scene_modification/";
-        _outputPath = _rootPath + "output/03.scene_visualization/";
+        _inputPath = _rootPath + "output/03.scene_manipulation/";
+        _outputPath = _rootPath + "output/03.scene_manipulation/";
 
 
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);

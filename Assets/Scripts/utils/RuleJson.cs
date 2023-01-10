@@ -13,9 +13,7 @@ public class RuleJson
     [JsonProperty("random_objs_per_scene")]
     public int RandomObjPerScene;
 
-    [JsonProperty("train_num")] public int TrainNum;
-    [JsonProperty("test_num")] public int TestNum;
-    [JsonProperty("val_num")] public int ValNum;
+    [JsonProperty("scene_num")] public int SceneNum;
 
     public struct ObjProp
     {
