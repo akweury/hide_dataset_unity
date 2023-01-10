@@ -70,7 +70,8 @@ public class SceneGenerator : MonoBehaviour
 
         // load a new scene
         _sceneJson = LoadNewScene(_files[_fileCounter].FullName);
-        _filePrefix = _outputPath + "Test_output_" + _fileCounter;
+        string fileNum = _files[_fileCounter].FullName.Split("_")[5].Split(".")[0];
+        _filePrefix = _outputPath + "Test_output_" + fileNum;
         // _fileCounter++;
 
         // instantiate the table
@@ -87,17 +88,20 @@ public class SceneGenerator : MonoBehaviour
         // render the scene
         if (_frames % FrameLoop == 0)
         {
+
             RenderNewScene(_sceneJson, sphereModels, cubeModels, _sceneType);
         }
 
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            DepthCamera.SaveCompareScene(_inputPath,_outputPath, _fileCounter, _objInstances, _depthCamera, _sceneData);
+            
+            DepthCamera.SaveCompareScene(_filePrefix, _fileCounter, _objInstances, _depthCamera,
+                _sceneData);
             DestroyObjs(_objInstances);
             _sceneDone = true;
             _fileCounter++;
-            _filePrefix = _outputPath + "Test_output_" + _fileCounter;
+
         }
 
 
@@ -112,6 +116,8 @@ public class SceneGenerator : MonoBehaviour
             else
             {
                 _sceneJson = LoadNewScene(_files[_fileCounter].FullName);
+                string fileNum = _files[_fileCounter].FullName.Split("_")[5].Split(".")[0];
+                _filePrefix = _outputPath + "Test_output_" + fileNum;
                 _sceneDone = false;
                 // _fileCounter++;
             }
@@ -200,7 +206,7 @@ public class SceneGenerator : MonoBehaviour
             }
 
             predObjCandidate = sceneJson.PredObjs[oldIdx];
-            
+
             float newX = predObjCandidate.Pos[0];
             float oldY = sceneJson.Objs[oldIdx].Pos[1];
             float newZ = predObjCandidate.Pos[2];
