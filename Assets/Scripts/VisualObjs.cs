@@ -73,10 +73,10 @@ public class VisualObjs : MonoBehaviour
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
         _rulePath = _rootPath + "../rules";
 
-        // _sceneType = "train";
-        // _datasetPath = _rootPath + "dataset/02.learning_rules";
-        _sceneType = "test";
-        _datasetPath = _rootPath + "dataset/03.scene_manipulation/";
+        _sceneType = "train";
+        _datasetPath = _rootPath + "dataset/02.learning_rules/";
+        // _sceneType = "test";
+        // _datasetPath = _rootPath + "dataset/03.scene_manipulation/";
         
         // _savePath = _datasetPath;
         
