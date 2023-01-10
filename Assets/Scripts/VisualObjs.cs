@@ -23,6 +23,8 @@ public class VisualObjs : MonoBehaviour
     // useful private variables
     private string _rootPath;
     private string _datasetPath;
+    private string _rootDatasetPath;
+    private string _subDatasetName;
     private string _rulePath;
     // private string _savePath;
     
@@ -73,13 +75,15 @@ public class VisualObjs : MonoBehaviour
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
         _rulePath = _rootPath + "../rules";
 
-        _sceneType = "train";
-        _datasetPath = _rootPath + "dataset/02.learning_rules/";
-        // _sceneType = "test";
-        // _datasetPath = _rootPath + "dataset/03.scene_manipulation/";
+        _subDatasetName = "left_more_right_less";
         
-        // _savePath = _datasetPath;
+        // _sceneType = "train";
+        // _rootDatasetPath = _rootPath + "dataset/02.learning_rules/"; 
+
+        _sceneType = "test";
+        _rootDatasetPath = _rootPath + "dataset/03.scene_manipulation/";
         
+        _datasetPath =_rootDatasetPath + _subDatasetName + "/";
         
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         _depthCamera = new DepthCamera(cam, depthShader, normalShader);
@@ -87,8 +91,8 @@ public class VisualObjs : MonoBehaviour
         RenderSettings.ambientLight = Color.gray;
 
         
+        System.IO.Directory.CreateDirectory(_rootDatasetPath);
         System.IO.Directory.CreateDirectory(_datasetPath);
-
         
         // get all rule files
         DirectoryInfo d = new DirectoryInfo(_rulePath);

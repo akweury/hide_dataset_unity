@@ -25,6 +25,7 @@ public class SceneGenerator : MonoBehaviour
 
     private string _outputPath;
     private string _inputPath;
+    private string _subDatasetName;
 
     private string _filePrefix;
     private int _frames;
@@ -53,8 +54,12 @@ public class SceneGenerator : MonoBehaviour
     void Start()
     {
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
-        _inputPath = _rootPath + "output/03.scene_manipulation/";
-        _outputPath = _rootPath + "output/03.scene_manipulation/";
+
+        // _subDatasetName = "left_more_right_less";
+        _subDatasetName = "left_right_equal";
+
+        _inputPath = _rootPath + "output/03.scene_manipulation/" + _subDatasetName + "/";
+        _outputPath = _rootPath + "output/03.scene_manipulation/" + _subDatasetName + "/";
 
 
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
@@ -70,7 +75,8 @@ public class SceneGenerator : MonoBehaviour
 
         // load a new scene
         _sceneJson = LoadNewScene(_files[_fileCounter].FullName);
-        string fileNum = _files[_fileCounter].FullName.Split("_")[5].Split(".")[0];
+        string[] fileNameComponent = _files[_fileCounter].FullName.Split("_");
+        string fileNum = fileNameComponent[^1].Split(".")[0];
         _filePrefix = _outputPath + "Test_output_" + fileNum;
         // _fileCounter++;
 
@@ -88,20 +94,17 @@ public class SceneGenerator : MonoBehaviour
         // render the scene
         if (_frames % FrameLoop == 0)
         {
-
             RenderNewScene(_sceneJson, sphereModels, cubeModels, _sceneType);
         }
 
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            
             DepthCamera.SaveCompareScene(_filePrefix, _fileCounter, _objInstances, _depthCamera,
                 _sceneData);
             DestroyObjs(_objInstances);
             _sceneDone = true;
             _fileCounter++;
-
         }
 
 
@@ -116,7 +119,8 @@ public class SceneGenerator : MonoBehaviour
             else
             {
                 _sceneJson = LoadNewScene(_files[_fileCounter].FullName);
-                string fileNum = _files[_fileCounter].FullName.Split("_")[5].Split(".")[0];
+                string[] fileNameComponent = _files[_fileCounter].FullName.Split("_");
+                string fileNum = fileNameComponent[^1].Split(".")[0];
                 _filePrefix = _outputPath + "Test_output_" + fileNum;
                 _sceneDone = false;
                 // _fileCounter++;
