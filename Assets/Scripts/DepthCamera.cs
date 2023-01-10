@@ -99,12 +99,13 @@ public class DepthCamera
         // DestroyObjs(objInstances);
     }
 
-    public static void SaveCompareScene(string inputPath, string outputPath, int fileCounter,
+    public static void SaveCompareScene(string filePrefix, int fileCounter,
         List<GameObject> objInstances, DepthCamera depthCamera,
         List<ObjectStruct> sceneData)
     {
-        string oldSceneFile = inputPath + "Test_output_" + fileCounter + ".png";
-        string sceneFileName = outputPath + "Test_output_" + fileCounter + ".png";
+        
+        string oldSceneFile = filePrefix + ".png";
+        string sceneFileName = filePrefix + ".compare.png";
 
         depthCamera.CompareTwoScene(oldSceneFile, sceneFileName);
     }
