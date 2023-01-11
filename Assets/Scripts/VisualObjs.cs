@@ -73,16 +73,17 @@ public class VisualObjs : MonoBehaviour
     {
         // path control
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
-        _rulePath = _rootPath + "../rules";
-
-        _subDatasetName = "left_more_right_less";
         
+
+        // _subDatasetName = "left_more_right_less";
+        _subDatasetName = "triangle_3";
+ 
         // _sceneType = "train";
         // _rootDatasetPath = _rootPath + "dataset/02.learning_rules/"; 
-
         _sceneType = "test";
         _rootDatasetPath = _rootPath + "dataset/03.scene_manipulation/";
         
+        _rulePath = _rootPath + "../rules/" + _subDatasetName + "/";
         _datasetPath =_rootDatasetPath + _subDatasetName + "/";
         
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);

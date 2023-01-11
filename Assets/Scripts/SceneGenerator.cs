@@ -56,7 +56,8 @@ public class SceneGenerator : MonoBehaviour
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
 
         // _subDatasetName = "left_more_right_less";
-        _subDatasetName = "left_right_equal";
+        // _subDatasetName = "left_right_equal";
+        _subDatasetName = "triangle_3";
 
         _inputPath = _rootPath + "output/03.scene_manipulation/" + _subDatasetName + "/";
         _outputPath = _rootPath + "output/03.scene_manipulation/" + _subDatasetName + "/";
