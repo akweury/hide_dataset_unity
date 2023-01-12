@@ -99,19 +99,16 @@ public class DepthCamera
         // DestroyObjs(objInstances);
     }
 
-    public static void SaveCompareScene(string filePrefix, int fileCounter,
-        List<GameObject> objInstances, DepthCamera depthCamera,
-        List<ObjectStruct> sceneData)
+    public static void SaveCompareScene(string filePrefix, DepthCamera depthCamera, bool succeedScene)
     {
-        
         string oldSceneFile = filePrefix + ".png";
         string sceneFileName = filePrefix + ".compare.png";
 
-        depthCamera.CompareTwoScene(oldSceneFile, sceneFileName);
+        depthCamera.CompareTwoScene(oldSceneFile, sceneFileName, succeedScene);
     }
 
 
-    public void CompareTwoScene(string oldFileName, string newFileName)
+    public void CompareTwoScene(string oldFileName, string newFileName, bool succeedScene)
     {
         RenderTexture.active = Cam.targetTexture;
         // projector.cookie = white;
@@ -141,10 +138,13 @@ public class DepthCamera
             for (int j = 0; j < h; j++)
             {
                 UnityEngine.Color c;
+
+                // old image
                 if (i < w)
                 {
                     c = oldTexture.GetPixel(i, j);
                 }
+                // new image
                 else
                 {
                     c = currentTexture.GetPixel(i - w, j);
@@ -153,6 +153,37 @@ public class DepthCamera
                 imageRGB[j * 2 * w + i] = new UnityEngine.Color(c.r, c.g, c.b, 0);
             }
         }
+
+        // draw a border to indicate success/failure
+        for (int i = w; i < 2 * w; i++)
+        {
+            for (int j = 0; j < h; j++)
+            {
+                UnityEngine.Color c;
+
+                // old image
+                int borderWidth = 3;
+                if (i - w == borderWidth || 2 * w - i == borderWidth || j < borderWidth || h - j < borderWidth)
+                {
+                    if (!succeedScene)
+                    {
+                        c = Color.red;
+                    }
+                    else
+                    {
+                        c = Color.green;
+                    }
+                }
+                // new image
+                else
+                {
+                    c = currentTexture.GetPixel(i - w, j);
+                }
+
+                imageRGB[j * 2 * w + i] = new UnityEngine.Color(c.r, c.g, c.b, 0);
+            }
+        }
+
 
         PNG.Write(imageRGB, 2 * w, h, 8, false, false, newFileName);
     }
