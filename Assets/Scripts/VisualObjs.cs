@@ -1,4 +1,5 @@
 using System;
+using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,9 +26,10 @@ public class VisualObjs : MonoBehaviour
     private string _datasetPath;
     private string _rootDatasetPath;
     private string _subDatasetName;
+
     private string _rulePath;
     // private string _savePath;
-    
+
     private string _filePrefix;
     private int _frames;
     private int _ruleFileCounter;
@@ -43,7 +45,9 @@ public class VisualObjs : MonoBehaviour
     private const float TableHeightBase = 0.1F;
     private const int FrameLoop = 10;
     private const int MaxNumTry = 50;
-    private const float UnifyRadius = 0.5F;
+
+    private const float UnifyRadius = 0.6F;
+
     // private string _expPath;
     private const float MinimumObjDist = (float)0.1;
     private float _tableLength;
@@ -51,7 +55,8 @@ public class VisualObjs : MonoBehaviour
     private float _tableHeight;
     private FileInfo[] _files;
 
-    private string _sceneType;
+    private string _useType;
+    private string _sceneSign;
     public int single_idx = 1;
 
     public List<Material> materials;
@@ -73,28 +78,43 @@ public class VisualObjs : MonoBehaviour
     {
         // path control
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
-        
 
-        // _subDatasetName = "left_more_right_less";
-        _subDatasetName = "triangle_3";
- 
-        // _sceneType = "train";
-        // _rootDatasetPath = _rootPath + "dataset/02.learning_rules/"; 
-        _sceneType = "test";
-        _rootDatasetPath = _rootPath + "dataset/03.scene_manipulation/";
-        
+
+        // _subDatasetName = "left_right_equal";
+        // _subDatasetName = "check_mark";
+        _subDatasetName = "cross";
+        // _subDatasetName = "play_color";
+        // _subDatasetName = "pentagon_same_color";
+
+        // _useType = "train";
+        // _useType = "test";
+        _useType = "val";
+
+        // _sceneSign = "true";
+        // _sceneSign = "false";
+
+        _rootDatasetPath = _rootPath + "dataset/";
+        // _sceneType = "test";
+        // _rootDatasetPath = _rootPath + "dataset/03.scene_manipulation/";
+
         _rulePath = _rootPath + "../rules/" + _subDatasetName + "/";
-        _datasetPath =_rootDatasetPath + _subDatasetName + "/";
-        
+        _datasetPath = _rootDatasetPath + _subDatasetName + "/";
+
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         _depthCamera = new DepthCamera(cam, depthShader, normalShader);
         _depthCamera.Cam.targetTexture = texture;
         RenderSettings.ambientLight = Color.gray;
 
-        
+
         System.IO.Directory.CreateDirectory(_rootDatasetPath);
         System.IO.Directory.CreateDirectory(_datasetPath);
-        
+        System.IO.Directory.CreateDirectory(_datasetPath + "test");
+        System.IO.Directory.CreateDirectory(_datasetPath + "train");
+        System.IO.Directory.CreateDirectory(_datasetPath + "val");
+        System.IO.Directory.CreateDirectory(_datasetPath + _useType + "/" + "false");
+        System.IO.Directory.CreateDirectory(_datasetPath + _useType + "/" + "true");
+
+
         // get all rule files
         DirectoryInfo d = new DirectoryInfo(_rulePath);
         _files = d.GetFiles("*.json"); // Getting Rule files
@@ -112,7 +132,7 @@ public class VisualObjs : MonoBehaviour
         _tableLength = TableLengthBase * _scaleFactor;
         _tableWidth = TableWidthBase * _scaleFactor;
         _tableHeight = TableHeightBase * _scaleFactor;
-        
+
         Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
@@ -126,13 +146,23 @@ public class VisualObjs : MonoBehaviour
         // render the scene
         if (_frames % FrameLoop == 0)
         {
-            RenderNewScene(_rules, sphereModels, cubeModels, _sceneType);
+            RenderNewScene(_rules, sphereModels, cubeModels);
         }
 
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            _filePrefix = _datasetPath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
+            if (_rules.SceneType == "positive")
+            {
+                _filePrefix = _datasetPath + _useType + "/true/" + _ruleFileCounter.ToString("D2") + "." +
+                              _fileCounter.ToString("D5");
+            }
+            else
+            {
+                _filePrefix = _datasetPath + _useType + "/false/" + _ruleFileCounter.ToString("D2") + "." +
+                              _fileCounter.ToString("D5");
+            }
+
             DepthCamera.SaveScene(_filePrefix, _objInstances, _depthCamera, _sceneData);
             DestroyObjs(_objInstances);
 
@@ -161,14 +191,14 @@ public class VisualObjs : MonoBehaviour
         _frames++;
     }
 
-    void RenderNewScene(RuleJson rules, List<GameObject> spheres, List<GameObject> cubes, string sceneType)
+    void RenderNewScene(RuleJson rules, List<GameObject> spheres, List<GameObject> cubes)
     {
         int objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
         _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
         _objInstances = new List<GameObject>(new GameObject[objNum]);
 
         _sceneData = FillSceneData(rules, _sceneData, spheres, cubes);
-        _sceneData = FillObjsPositions(rules, _sceneData, sceneType);
+        _sceneData = FillObjsPositions(rules, _sceneData);
 
         int objId = 0;
         foreach (var sceneObj in _sceneData)
@@ -230,21 +260,40 @@ public class VisualObjs : MonoBehaviour
     {
         RuleJson.ObjProp obj;
         int objId = 0;
+        int randomMaterialID = UnityEngine.Random.Range(0, 6);
         // add rule object
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
             obj = rules.Objs[i];
-            if (obj.Material == "")
+            // if obj has random shape
+            if (obj.Shape == "")
             {
-                if (obj.Shape == "cube")
+                int objShape = UnityEngine.Random.Range(0, 2);
+                if (objShape == 0)
                 {
-                    int cubeId = UnityEngine.Random.Range(0, cubes.Count);
-                    obj.Material = cubes[cubeId].name;
+                    obj.Shape = "cube";
+                    if (rules.IsSameColor)
+                    {
+                        obj.Material = cubes[randomMaterialID].name;
+                    }
+                    else
+                    {
+                        int cubeId = UnityEngine.Random.Range(0, cubes.Count);
+                        obj.Material = cubes[cubeId].name;
+                    }
                 }
-                else if (obj.Shape == "sphere")
+                else
                 {
-                    int sphereId = UnityEngine.Random.Range(0, spheres.Count);
-                    obj.Material = spheres[sphereId].name;
+                    obj.Shape = "sphere";
+                    if (rules.IsSameColor)
+                    {
+                        obj.Material = spheres[randomMaterialID].name;
+                    }
+                    else
+                    {
+                        int sphereId = UnityEngine.Random.Range(0, spheres.Count);
+                        obj.Material = spheres[sphereId].name;
+                    }
                 }
             }
 
@@ -367,22 +416,22 @@ public class VisualObjs : MonoBehaviour
     }
 
 
-    List<ObjectStruct> FillObjsPositions(RuleJson rules, List<ObjectStruct> sceneData, string sceneType)
+    List<ObjectStruct> FillObjsPositions(RuleJson rules, List<ObjectStruct> sceneData)
     {
         bool layoutFinished = false;
         while (!layoutFinished)
         {
             int objIdx = 0;
             Vector3 randomCenter = new Vector3(
-                table.transform.position[0] + UnityEngine.Random.Range(-(_tableWidth / 2), (_tableWidth / 2)),
+                table.transform.position[0] + UnityEngine.Random.Range(-(_tableWidth / 3), (_tableWidth / 3)),
                 table.transform.position[1] + _tableHeight * 0.5F,
-                table.transform.position[2] + UnityEngine.Random.Range(-(_tableLength / 2), (_tableLength / 2)));
+                table.transform.position[2] + UnityEngine.Random.Range(-(_tableLength / 3), (_tableLength / 3)));
 
             // add rule objects
 
             for (int i = 0; i < rules.RuleObjPerScene; i++)
             {
-                if (String.Equals(sceneType, "test"))
+                if (rules.IsRandomPosition)
                 {
                     sceneData[objIdx] = GetRandomPos(objIdx, sceneData);
                 }

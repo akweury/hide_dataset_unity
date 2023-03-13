@@ -47,6 +47,7 @@ public class SceneGenerator : MonoBehaviour
     private FileInfo[] _files;
     private string _sceneType;
     private SceneJson _sceneJson;
+    private bool _succeedScene;
 
     private bool _sceneDone;
 
@@ -95,14 +96,13 @@ public class SceneGenerator : MonoBehaviour
         // render the scene
         if (_frames % FrameLoop == 0)
         {
-            RenderNewScene(_sceneJson, sphereModels, cubeModels, _sceneType);
+            _succeedScene = RenderNewScene(_sceneJson, sphereModels, cubeModels, _sceneType);
         }
 
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            DepthCamera.SaveCompareScene(_filePrefix, _fileCounter, _objInstances, _depthCamera,
-                _sceneData);
+            DepthCamera.SaveCompareScene(_filePrefix, _depthCamera, _succeedScene);
             DestroyObjs(_objInstances);
             _sceneDone = true;
             _fileCounter++;
@@ -141,12 +141,12 @@ public class SceneGenerator : MonoBehaviour
     }
 
 
-    void RenderNewScene(SceneJson sceneJson, List<GameObject> spheres, List<GameObject> cubes, string sceneType)
+    bool RenderNewScene(SceneJson sceneJson, List<GameObject> spheres, List<GameObject> cubes, string sceneType)
     {
         int objNum = sceneJson.Objs.Count;
         _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
         _objInstances = new List<GameObject>(new GameObject[objNum]);
-
+        
         _sceneData = FillSceneData(sceneJson, _sceneData);
 
         int objId = 0;
@@ -185,6 +185,9 @@ public class SceneGenerator : MonoBehaviour
             _objInstances[objId] = NewObjectInstantiate(objSize * 2, sceneObj.Position, objModel);
             objId++;
         }
+        
+        bool succeedScene = sceneJson.SucceedScene;
+        return succeedScene;
     }
 
     List<ObjectStruct> FillSceneData(SceneJson sceneJson, List<ObjectStruct> sceneData)
@@ -200,8 +203,8 @@ public class SceneGenerator : MonoBehaviour
             float minZ = 1000;
             for (int i = 0; i < sceneJson.SceneConfig.Objects.Count; i++)
             {
-                float xDiff = Mathf.Abs(sceneJson.SceneConfig.Objects[i].screenPos[0] -
-                                        sceneJson.Objs[oldIdx].screenPos[0]);
+                float xDiff = Mathf.Abs(sceneJson.SceneConfig.Objects[i].ScreenPos[0] -
+                                        sceneJson.Objs[oldIdx].ScreenPos[0]);
                 // float zDiff = Mathf.Abs(configObj.screenPos[2] - sceneObj.screenPos[2]);
                 if (xDiff < minX)
                 {

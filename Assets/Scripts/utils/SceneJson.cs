@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace utils
@@ -15,6 +16,10 @@ namespace utils
         [JsonProperty("file_name")] 
         public SceneConfigJson SceneConfig;
         
+        [JsonProperty("succeed_scene")] 
+        public bool SucceedScene;
+
+        
         
         public struct ObjJson
         {
@@ -24,7 +29,7 @@ namespace utils
             [JsonProperty("position")] public float[] Pos;
             [JsonProperty("size")] public float Size;
             [JsonProperty("material")] public string Material;
-            [JsonProperty("screenPosition")] public float[] screenPos;
+            [JsonProperty("screenPosition")] public float[] ScreenPos;
             
         }
         

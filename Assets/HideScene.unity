@@ -295,14 +295,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1318314686}
-  m_LocalRotation: {x: 0.25704846, y: -0, z: -0, w: 0.96639854}
-  m_LocalPosition: {x: 1.48, y: 4.76, z: -8.15}
+  m_LocalRotation: {x: 0.23743162, y: 0, z: 0, w: 0.97140425}
+  m_LocalPosition: {x: 1.5, y: 4.15, z: -8.27}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 29.79, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 27.47, y: 0, z: 0}
 --- !u!73398921 &1318314690
 VFXRenderer:
   serializedVersion: 1
@@ -487,7 +487,7 @@ PrefabInstance:
       objectReference: {fileID: 2008057318401078053, guid: 21b4f89cf9866df48ad399c2b4443ac4, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: materials.Array.size
@@ -539,7 +539,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 5d3b3daaddbb6fd4eb50a75e21ae0ad7, type: 2}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.size
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: train_models.Array.size
@@ -636,7 +636,27 @@ PrefabInstance:
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[0]
       value: 
-      objectReference: {fileID: 606210022712285165, guid: 7e4955b08134d4a9495a2d3b48701341, type: 3}
+      objectReference: {fileID: 3084562671370927486, guid: a905d45b50ad642499e6e2d7c8bb55d9, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: sphereModels.Array.data[1]
+      value: 
+      objectReference: {fileID: 7511521384345649979, guid: 883cb7e45a59c490b8fd11c0e6ba0776, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: sphereModels.Array.data[2]
+      value: 
+      objectReference: {fileID: 5106333268775429570, guid: 701fd4e528a5346a6bc1fadda49a6130, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: sphereModels.Array.data[3]
+      value: 
+      objectReference: {fileID: 7906852455259625630, guid: f14cc53e14885440d8a669efd12b859e, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: sphereModels.Array.data[4]
+      value: 
+      objectReference: {fileID: 4176180306455292242, guid: 146a82b3fdb57479dbfa4dc9c138d223, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: sphereModels.Array.data[5]
+      value: 
+      objectReference: {fileID: 5726583291997248554, guid: 6df825af958a1434fb4fc4ef64610316, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: train_models.Array.data[0]
       value: 
@@ -655,7 +675,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 310855717209966750, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 310855717209966750, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 310855717209966750, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -715,7 +739,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 277772773497603198}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69ba0b6bdee7dbc4daf1d98da5b5b1bf, type: 3}
   m_Name: 
@@ -723,6 +747,7 @@ MonoBehaviour:
   table: {fileID: 277772773497603198}
   sphereModels:
   - {fileID: 606210022712285165, guid: 7e4955b08134d4a9495a2d3b48701341, type: 3}
+  - {fileID: 5726583291997248554, guid: 6df825af958a1434fb4fc4ef64610316, type: 3}
   cubeModels:
   - {fileID: 5105161876819932642, guid: cb41e31549a9e4e3895cf07a267b1e71, type: 3}
   - {fileID: 1562460671526737094, guid: 961be71bdff7940f6b734ae0d9752d01, type: 3}

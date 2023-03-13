@@ -13,6 +13,15 @@ public class RuleJson
     [JsonProperty("random_objs_per_scene")]
     public int RandomObjPerScene;
 
+    [JsonProperty("same_color")]
+    public bool IsSameColor;
+    
+    [JsonProperty("random_position")]
+    public bool IsRandomPosition;
+    
+    [JsonProperty("scene_type")]
+    public string SceneType;
+    
     [JsonProperty("scene_num")] public int SceneNum;
 
     public struct ObjProp
@@ -27,7 +36,7 @@ public class RuleJson
 
     public static Dictionary<string, float> strFloMapping = new()
     {
-        { "small", 0.4F },
+        { "small", 0.5F },
         { "big", 0.7F },
 
         { "cube", 0 },
