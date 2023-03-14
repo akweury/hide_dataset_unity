@@ -1,13 +1,8 @@
 using System;
-using System;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using Newtonsoft.Json;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using Random = System.Random;
 
 
 public class VisualObjs : MonoBehaviour
@@ -45,7 +40,6 @@ public class VisualObjs : MonoBehaviour
     private const float TableHeightBase = 0.1F;
     private const int FrameLoop = 10;
     private const int MaxNumTry = 50;
-
     private const float UnifyRadius = 0.6F;
 
     // private string _expPath;
@@ -79,13 +73,12 @@ public class VisualObjs : MonoBehaviour
         // path control
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
 
-
-        // _subDatasetName = "left_right_equal";
+        
         // _subDatasetName = "check_mark";
-        _subDatasetName = "cross";
-        // _subDatasetName = "play_color";
-        // _subDatasetName = "pentagon_same_color";
-
+        // _subDatasetName = "check_mark_same";
+        // _subDatasetName = "cross";
+        _subDatasetName = "cross_same";
+        
         // _useType = "train";
         // _useType = "test";
         _useType = "val";
@@ -261,15 +254,21 @@ public class VisualObjs : MonoBehaviour
         RuleJson.ObjProp obj;
         int objId = 0;
         int randomMaterialID = UnityEngine.Random.Range(0, 6);
+        int randomShapeID = UnityEngine.Random.Range(0, 2);
         // add rule object
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
             obj = rules.Objs[i];
             // if obj has random shape
+            
             if (obj.Shape == "")
             {
-                int objShape = UnityEngine.Random.Range(0, 2);
-                if (objShape == 0)
+                if (!rules.IsSameShape)
+                {
+                    randomShapeID = UnityEngine.Random.Range(0, 2);
+                }
+
+                if (randomShapeID == 0)
                 {
                     obj.Shape = "cube";
                     if (rules.IsSameColor)
