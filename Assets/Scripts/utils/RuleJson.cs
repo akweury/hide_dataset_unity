@@ -13,12 +13,6 @@ public class RuleJson
     [JsonProperty("random_objs_per_scene")]
     public int RandomObjPerScene;
 
-    [JsonProperty("same_color")]
-    public bool IsSameColor;
-    
-    [JsonProperty("same_shape")]
-    public bool IsSameShape;
-    
     [JsonProperty("random_position")]
     public bool IsRandomPosition;
     

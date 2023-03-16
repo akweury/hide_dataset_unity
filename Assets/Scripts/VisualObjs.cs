@@ -73,12 +73,13 @@ public class VisualObjs : MonoBehaviour
         // path control
         _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
 
-        
+
         // _subDatasetName = "check_mark";
-        // _subDatasetName = "check_mark_same";
-        // _subDatasetName = "cross";
-        _subDatasetName = "cross_same";
-        
+        _subDatasetName = "cross_same_shape";
+        // _subDatasetName = "cross_same";
+        // _subDatasetName = "three_same";
+        // _subDatasetName = "two_pairs";
+
         // _useType = "train";
         // _useType = "test";
         _useType = "val";
@@ -253,47 +254,29 @@ public class VisualObjs : MonoBehaviour
     {
         RuleJson.ObjProp obj;
         int objId = 0;
-        int randomMaterialID = UnityEngine.Random.Range(0, 6);
-        int randomShapeID = UnityEngine.Random.Range(0, 2);
+        int[] randomMaterialIDs = new int[rules.RuleObjPerScene];
+        int[] randomShapeIDs = new int[rules.RuleObjPerScene];
+        for (int i = 0; i < rules.RuleObjPerScene; i++)
+        {
+            randomMaterialIDs[i] = UnityEngine.Random.Range(0, 100001);
+            randomShapeIDs[i] = UnityEngine.Random.Range(0, 100001);
+        }
+
         // add rule object
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
             obj = rules.Objs[i];
-            // if obj has random shape
-            
-            if (obj.Shape == "")
+            int shapeID = randomShapeIDs[Int16.Parse(rules.Objs[i].Shape) % rules.RuleObjPerScene] % 2;
+            int materialID = randomMaterialIDs[Int16.Parse(rules.Objs[i].Material) % rules.RuleObjPerScene] % 6;
+            if (shapeID == 0)
             {
-                if (!rules.IsSameShape)
-                {
-                    randomShapeID = UnityEngine.Random.Range(0, 2);
-                }
-
-                if (randomShapeID == 0)
-                {
-                    obj.Shape = "cube";
-                    if (rules.IsSameColor)
-                    {
-                        obj.Material = cubes[randomMaterialID].name;
-                    }
-                    else
-                    {
-                        int cubeId = UnityEngine.Random.Range(0, cubes.Count);
-                        obj.Material = cubes[cubeId].name;
-                    }
-                }
-                else
-                {
-                    obj.Shape = "sphere";
-                    if (rules.IsSameColor)
-                    {
-                        obj.Material = spheres[randomMaterialID].name;
-                    }
-                    else
-                    {
-                        int sphereId = UnityEngine.Random.Range(0, spheres.Count);
-                        obj.Material = spheres[sphereId].name;
-                    }
-                }
+                obj.Shape = "sphere";
+                obj.Material = spheres[materialID].name;
+            }
+            else
+            {
+                obj.Shape = "cube";
+                obj.Material = cubes[materialID].name;
             }
 
             // sceneData[objId].SetProperty(objId, obj.Shape, obj.Material, Rules.strFloMapping[obj.size]);
