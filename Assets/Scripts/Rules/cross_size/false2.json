@@ -1,0 +1,49 @@
+{
+  "rule_objs_per_scene": 5,
+  "random_objs_per_scene": 0,
+  "scene_num": 3,
+  "scene_type": "negative",
+  "random_position": false,
+  "objs": [
+      {
+        "size": "small",
+        "shape": "1",
+        "material": "1",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      {
+        "size": "small",
+        "shape": "2",
+        "material": "2",
+        "x": 1,
+        "y": 0,
+        "z": -1
+      },
+      {
+        "size": "small",
+        "shape":"3",
+        "material": "3",
+        "x": 1,
+        "y": 0,
+        "z": 1
+      },
+      {
+        "size": "small",
+        "shape": "4",
+        "material": "4",
+        "x": -0.5,
+        "y": 0,
+        "z": 0.5
+      },
+      {
+        "size": "small",
+        "shape": "5",
+        "material": "5",
+        "x": -0.5,
+        "y": 0,
+        "z": -0.5
+      }
+  ]
+}

@@ -71,12 +71,12 @@ public class VisualObjs : MonoBehaviour
     void Start()
     {
         // path control
-        _rootPath = Application.dataPath + "/../../spatial_relation_vector/storage/";
+        _rootPath = Application.dataPath + "/";
 
 
         // _subDatasetName = "check_mark";
-        _subDatasetName = "cross_same_shape";
-        // _subDatasetName = "cross_same";
+        // _subDatasetName = "cross_same_shape";
+        _subDatasetName = "ShapeOfShape";
         // _subDatasetName = "three_same";
         // _subDatasetName = "two_pairs";
 
@@ -87,11 +87,11 @@ public class VisualObjs : MonoBehaviour
         // _sceneSign = "true";
         // _sceneSign = "false";
 
-        _rootDatasetPath = _rootPath + "dataset/";
+        _rootDatasetPath = _rootPath + "/../Datasets/";
         // _sceneType = "test";
         // _rootDatasetPath = _rootPath + "dataset/03.scene_manipulation/";
 
-        _rulePath = _rootPath + "../rules/" + _subDatasetName + "/";
+        _rulePath = _rootPath + "/Scripts/Rules/" + _subDatasetName + "/";
         _datasetPath = _rootDatasetPath + _subDatasetName + "/";
 
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
@@ -266,18 +266,31 @@ public class VisualObjs : MonoBehaviour
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
             obj = rules.Objs[i];
-            int shapeID = randomShapeIDs[Int16.Parse(rules.Objs[i].Shape) % rules.RuleObjPerScene] % 2;
-            int materialID = randomMaterialIDs[Int16.Parse(rules.Objs[i].Material) % rules.RuleObjPerScene] % 6;
-            if (shapeID == 0)
+
+            // determine the shape
+            if (!(rules.Objs[i].Shape == "sphere" || rules.Objs[i].Shape == "cube"))
             {
-                obj.Shape = "sphere";
+                int shapeID = randomShapeIDs[Int16.Parse(rules.Objs[i].Shape) % rules.RuleObjPerScene] % 2;
+                if (shapeID == 0)
+                {
+                    obj.Shape = "sphere";
+                }
+                else
+                {
+                    obj.Shape = "cube";
+                }
+            }
+
+            int materialID = randomMaterialIDs[Int16.Parse(rules.Objs[i].Material) % rules.RuleObjPerScene] % 6;
+            if (rules.Objs[i].Shape == "sphere")
+            {
                 obj.Material = spheres[materialID].name;
             }
-            else
+            else if (rules.Objs[i].Shape == "cube")
             {
-                obj.Shape = "cube";
                 obj.Material = cubes[materialID].name;
             }
+
 
             // sceneData[objId].SetProperty(objId, obj.Shape, obj.Material, Rules.strFloMapping[obj.size]);
             sceneData[objId] = new ObjectStruct(objId, obj.Shape, obj.Material, RuleJson.strFloMapping[obj.size]);

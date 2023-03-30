@@ -1,0 +1,41 @@
+{
+  "rule_objs_per_scene": 4,
+  "random_objs_per_scene": 0,
+  "scene_num": 32,
+  "scene_type": "positive",
+  "random_position": false,
+  "objs": [
+    {
+      "size": "small",
+      "shape": "cube",
+      "material": "1",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "size": "small",
+      "shape": "cube",
+      "material": "2",
+      "x": 1.5,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "size": "small",
+      "shape":"cube",
+      "material": "3",
+      "x": 1.5,
+      "y": 0,
+      "z": 1.5
+    },
+    {
+      "size": "small",
+      "shape": "cube",
+      "material": "4",
+      "x": 0,
+      "y": 0,
+      "z": 1.5
+    }
+  ]
+}
