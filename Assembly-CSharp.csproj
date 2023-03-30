@@ -73,7 +73,10 @@
      <None Include="Assets/Scripts/Rules/two_pairs/two_pairs_true.json" />
      <None Include="Assets/Scripts/Rules/ShapeOfShape/triangleSphere.json" />
      <None Include="Assets/Scripts/Rules/cross_same/random.json" />
+     <None Include="Assets/Scripts/Rules/hard_hide/three_same_false_shape.json" />
      <None Include="Assets/Scripts/Rules/cross_size/false2.json" />
+     <None Include="Assets/Scripts/Rules/hard_hide/three_same_true.json" />
+     <None Include="Assets/Scripts/Rules/hard_hide/hide_false.json" />
      <None Include="Assets/Scripts/Rules/triangle_same/triangle_false_color.json" />
      <None Include="Assets/DepthShader.shader" />
      <None Include="Assets/Scripts/Rules/cross_same/cross.json" />

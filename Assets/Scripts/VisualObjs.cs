@@ -20,7 +20,7 @@ public class VisualObjs : MonoBehaviour
     private string _rootPath;
     private string _datasetPath;
     private string _rootDatasetPath;
-    private string _subDatasetName;
+    // private string _subDatasetName;
 
     private string _rulePath;
     // private string _savePath;
@@ -57,10 +57,11 @@ public class VisualObjs : MonoBehaviour
     // public SceneStruct SceneData;
 
     public Material environmentMap;
-    public Cubemap danceRoomEnvironment;
-    public List<Cubemap> environments;
-    public GameObject cursor;
-    public GameObject tableModel;
+    // public Cubemap danceRoomEnvironment;
+    // public List<Cubemap> environments;
+    // public GameObject cursor;
+    // public GameObject tableModel;
+    public String expName;
 
     private GameObject tableInst;
 
@@ -76,7 +77,8 @@ public class VisualObjs : MonoBehaviour
 
         // _subDatasetName = "check_mark";
         // _subDatasetName = "cross_same_shape";
-        _subDatasetName = "ShapeOfShape";
+        // _subDatasetName = "ShapeOfShape";
+        // _subDatasetName = expName;
         // _subDatasetName = "three_same";
         // _subDatasetName = "two_pairs";
 
@@ -91,8 +93,8 @@ public class VisualObjs : MonoBehaviour
         // _sceneType = "test";
         // _rootDatasetPath = _rootPath + "dataset/03.scene_manipulation/";
 
-        _rulePath = _rootPath + "/Scripts/Rules/" + _subDatasetName + "/";
-        _datasetPath = _rootDatasetPath + _subDatasetName + "/";
+        _rulePath = _rootPath + "/Scripts/Rules/" + expName + "/";
+        _datasetPath = _rootDatasetPath + expName + "/";
 
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         _depthCamera = new DepthCamera(cam, depthShader, normalShader);
@@ -131,7 +133,7 @@ public class VisualObjs : MonoBehaviour
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
         table.transform.localScale = new Vector3(_tableLength, _tableHeight, _tableWidth);
-        environmentMap.SetTexture("_Tex", danceRoomEnvironment);
+        // environmentMap.SetTexture("_Tex", danceRoomEnvironment);
     }
 
     // Update is called once per frame
@@ -282,11 +284,11 @@ public class VisualObjs : MonoBehaviour
             }
 
             int materialID = randomMaterialIDs[Int16.Parse(rules.Objs[i].Material) % rules.RuleObjPerScene] % 6;
-            if (rules.Objs[i].Shape == "sphere")
+            if (obj.Shape == "sphere")
             {
                 obj.Material = spheres[materialID].name;
             }
-            else if (rules.Objs[i].Shape == "cube")
+            else if (obj.Shape == "cube")
             {
                 obj.Material = cubes[materialID].name;
             }
