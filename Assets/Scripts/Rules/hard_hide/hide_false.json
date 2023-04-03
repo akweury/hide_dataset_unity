@@ -1,5 +1,5 @@
 {
-  "rule_objs_per_scene": 3,
+  "rule_objs_per_scene": 10,
   "random_objs_per_scene": 0,
   "scene_num": 64,
   "scene_type": "negative",
@@ -16,7 +16,7 @@
     {
       "size": "small",
       "shape": "1",
-      "material": "2",
+      "material": "1",
       "x": 1,
       "y": 0,
       "z": 0
@@ -24,10 +24,66 @@
     {
       "size": "small",
       "shape": "1",
-      "material": "3",
+      "material": "1",
       "x": -1,
       "y": 0,
       "z": 0
+    },
+    {
+      "size": "small",
+      "shape": "2",
+      "material": "2",
+      "x": 0.5,
+      "y": 0,
+      "z": 0.5
+    },
+    {
+      "size": "small",
+      "shape": "2",
+      "material": "2",
+      "x": -0.5,
+      "y": 0,
+      "z": 0.5
+    },
+    {
+      "size": "small",
+      "shape": "3",
+      "material": "3",
+      "x": -1,
+      "y": 0,
+      "z": 1
+    },
+    {
+      "size": "small",
+      "shape": "3",
+      "material": "3",
+      "x": 0,
+      "y": 0,
+      "z": 1
+    },
+    {
+      "size": "small",
+      "shape": "3",
+      "material": "3",
+      "x": 1,
+      "y": 0,
+      "z": 1
+    },
+    {
+      "size": "small",
+      "shape": "4",
+      "material": "4",
+      "x": -0.5,
+      "y": 0,
+      "z": 1.5
+    },
+    {
+      "size": "small",
+      "shape": "4",
+      "material": "4",
+      "x": 0.5,
+      "y": 0,
+      "z": 1.5
     }
   ]
 }

@@ -19,6 +19,7 @@ public class VisualObjs : MonoBehaviour
     // useful private variables
     private string _rootPath;
     private string _datasetPath;
+
     private string _rootDatasetPath;
     // private string _subDatasetName;
 
@@ -51,12 +52,10 @@ public class VisualObjs : MonoBehaviour
 
     private string _useType;
     private string _sceneSign;
-    public int single_idx = 1;
 
-    public List<Material> materials;
     // public SceneStruct SceneData;
 
-    public Material environmentMap;
+
     // public Cubemap danceRoomEnvironment;
     // public List<Cubemap> environments;
     // public GameObject cursor;
@@ -82,9 +81,9 @@ public class VisualObjs : MonoBehaviour
         // _subDatasetName = "three_same";
         // _subDatasetName = "two_pairs";
 
-        // _useType = "train";
+        _useType = "train";
         // _useType = "test";
-        _useType = "val";
+        // _useType = "val";
 
         // _sceneSign = "true";
         // _sceneSign = "false";
@@ -338,52 +337,6 @@ public class VisualObjs : MonoBehaviour
         return sceneData;
     }
 
-    // void SaveScene(List<GameObject> objInstances, DepthCamera depthCamera, List<ObjectStruct> sceneData)
-    // {
-    //     DepthCamera.Calibration camera0 = depthCamera.GetCameraMatrix();
-    //     // Calibration camera0 = getCameraMatrix();
-    //     string filePrefix = _savePath + _ruleFileCounter.ToString("D2") + "." + _fileCounter.ToString("D5");
-    //
-    //     string depthFileName = filePrefix + ".depth0.png";
-    //     DepthCamera.DepthMap depthMap0 = depthCamera.CaptureDepth(depthFileName, objInstances);
-    //
-    //     string normalFileName = filePrefix + ".normal0.png";
-    //     depthCamera.CaptureNormal(normalFileName, camera0.R, objInstances);
-    //
-    //     string sceneFileName = filePrefix + ".image.png";
-    //     depthCamera.CaptureScene(sceneFileName);
-    //
-    //     string dataFileName = filePrefix + ".data0.json";
-    //     depthCamera.writeDataFileOneView(dataFileName, camera0, depthMap0, sceneData);
-    //
-    //     environmentMap.SetTexture("_Tex", danceRoomEnvironment);
-    //     DestroyObjs(objInstances);
-    // }
-
-    // void UpdateModels(RuleJson rules)
-    // {
-    //     if (_fileCounter >= rules.TrainNum + rules.ValNum)
-    //     {
-    //         _sceneType = "test";
-    //         _savePath = _datasetPath + "test/";
-    //     }
-    //
-    //     // generate validation scenes
-    //     else if (_fileCounter >= rules.TrainNum)
-    //     {
-    //         _sceneType = "val";
-    //         _savePath = _datasetPath + "val/";
-    //     }
-    //
-    //     // generate training scenes
-    //     else if (_fileCounter >= 0)
-    //     {
-    //         _sceneType = "train";
-    //         _savePath = _datasetPath + "train/";
-    //     }
-    // }
-
-
     void DestroyObjs(List<GameObject> objs)
     {
         foreach (var obj in objs)
@@ -430,11 +383,12 @@ public class VisualObjs : MonoBehaviour
             {
                 if (rules.IsRandomPosition)
                 {
-                    sceneData[objIdx] = GetRandomPos(objIdx, sceneData);
+                    sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
                 }
                 else
                 {
                     sceneData[objIdx] = GetRulePos(objIdx, rules.Objs[i], sceneData[objIdx], randomCenter);
+
                     if (sceneData[objIdx].Position == Vector3.zero)
                     {
                         break;
@@ -449,7 +403,7 @@ public class VisualObjs : MonoBehaviour
             {
                 for (int i = 0; i < rules.RandomObjPerScene; i++)
                 {
-                    sceneData[objIdx] = GetRandomPos(objIdx, sceneData);
+                    sceneData[objIdx] = GetRandomPos(objIdx, rules.Objs[i], sceneData);
                     if (sceneData[objIdx].Position == Vector3.zero)
                     {
                         break;
@@ -488,6 +442,7 @@ public class VisualObjs : MonoBehaviour
     {
         float newScale = RuleJson.strFloMapping[objProp.size];
         int num_tries = 0;
+        float posScale = 1.5f;
         float obj_radius = newScale * UnifyRadius;
         Vector3 obj_pos;
         // find a 3D position for the new object
@@ -507,7 +462,8 @@ public class VisualObjs : MonoBehaviour
             // give a position for the rest rule objects based on target object position and info from the json file
             else
             {
-                obj_pos = new Vector3(objProp.x + center[0], objProp.y + center[1] + obj_radius, objProp.z + center[2]);
+                obj_pos = new Vector3(objProp.x * posScale + center[0], objProp.y + center[1] + obj_radius,
+                    objProp.z * posScale + center[2]);
 
                 // check if new position locates in the area of table
                 if (obj_pos[0] < -(float)(_tableWidth / 2) + obj_radius ||
@@ -581,9 +537,10 @@ public class VisualObjs : MonoBehaviour
     //     return sceneData;
     // }
 
-    ObjectStruct GetRandomPos(int objIdx, List<ObjectStruct> sceneData)
+    ObjectStruct GetRandomPos(int objIdx, RuleJson.ObjProp objProp, List<ObjectStruct> sceneData)
     {
-        float newScale = sceneData[objIdx].Size;
+        // float newScale = sceneData[objIdx].Size;
+        float newScale = RuleJson.strFloMapping[objProp.size];
         int num_tries = 0;
         float objRadius;
         Vector3 objPos = new Vector3();
