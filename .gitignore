@@ -33,7 +33,7 @@ Assembly-CSharp.csproj
 UserSettings/Layouts/default-2021.dwlt
 
 .consulo/
-*.csproj
+
 *.unityproj
 *.sln
 *.suo
