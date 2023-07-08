@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 public class VisualObjs : MonoBehaviour
@@ -17,9 +18,8 @@ public class VisualObjs : MonoBehaviour
     public Shader normalShader;
 
     // useful private variables
-    private string _rootPath;
+    private string _assetsPath;
     private string _datasetPath;
-
     private string _rootDatasetPath;
     // private string _subDatasetName;
 
@@ -34,7 +34,7 @@ public class VisualObjs : MonoBehaviour
     private List<GameObject> _objInstances;
     private List<MeshRenderer> _modelRenderers;
     private List<ObjectStruct> _sceneData;
-    private float _scaleFactor = 1;
+    
     private DepthCamera _depthCamera;
     private const float TableWidthBase = 1.5F;
     private const float TableLengthBase = 1.5F;
@@ -42,8 +42,7 @@ public class VisualObjs : MonoBehaviour
     private const int FrameLoop = 10;
     private const int MaxNumTry = 50;
     private const float UnifyRadius = 0.6F;
-
-    // private string _expPath;
+    
     private const float MinimumObjDist = (float)0.1;
     private float _tableLength;
     private float _tableWidth;
@@ -52,18 +51,11 @@ public class VisualObjs : MonoBehaviour
 
     private string _useType;
     private string _sceneSign;
-
-    // public SceneStruct SceneData;
-
-
-    // public Cubemap danceRoomEnvironment;
-    // public List<Cubemap> environments;
-    // public GameObject cursor;
-    // public GameObject tableModel;
     public String expName;
-
+    [FormerlySerializedAs("_scaleFactor")] public float _objScale;
+    
     private GameObject tableInst;
-
+    private string[] _sceneType = ["train","test", "val","EOF"];
     int maxFileCounter;
 
 
@@ -71,28 +63,14 @@ public class VisualObjs : MonoBehaviour
     void Start()
     {
         // path control
-        _rootPath = Application.dataPath + "/";
-
-
-        // _subDatasetName = "check_mark";
-        // _subDatasetName = "cross_same_shape";
-        // _subDatasetName = "ShapeOfShape";
-        // _subDatasetName = expName;
-        // _subDatasetName = "three_same";
-        // _subDatasetName = "two_pairs";
+        _assetsPath = Application.dataPath + "/";
 
         _useType = "train";
-        // _useType = "test";
-        // _useType = "val";
 
-        // _sceneSign = "true";
-        // _sceneSign = "false";
+        _rootDatasetPath = _assetsPath + "/../Datasets/";
 
-        _rootDatasetPath = _rootPath + "/../Datasets/";
-        // _sceneType = "test";
-        // _rootDatasetPath = _rootPath + "dataset/03.scene_manipulation/";
 
-        _rulePath = _rootPath + "/Scripts/Rules/" + expName + "/";
+        _rulePath = _assetsPath + "/Scripts/Rules/" + expName + "/";
         _datasetPath = _rootDatasetPath + expName + "/";
 
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
@@ -106,8 +84,12 @@ public class VisualObjs : MonoBehaviour
         System.IO.Directory.CreateDirectory(_datasetPath + "test");
         System.IO.Directory.CreateDirectory(_datasetPath + "train");
         System.IO.Directory.CreateDirectory(_datasetPath + "val");
-        System.IO.Directory.CreateDirectory(_datasetPath + _useType + "/" + "false");
-        System.IO.Directory.CreateDirectory(_datasetPath + _useType + "/" + "true");
+        System.IO.Directory.CreateDirectory(_datasetPath + "train" + "/" + "false");
+        System.IO.Directory.CreateDirectory(_datasetPath + "test" + "/" + "false");
+        System.IO.Directory.CreateDirectory(_datasetPath + "val" + "/" + "false");
+        System.IO.Directory.CreateDirectory(_datasetPath + "train" + "/" + "true");
+        System.IO.Directory.CreateDirectory(_datasetPath + "test" + "/" + "true");
+        System.IO.Directory.CreateDirectory(_datasetPath + "val" + "/" + "true");
 
 
         // get all rule files
@@ -123,10 +105,10 @@ public class VisualObjs : MonoBehaviour
 
         // instantiate the table
         // adjust table size based on camera sensor size
-        _scaleFactor = 4F;
-        _tableLength = TableLengthBase * _scaleFactor;
-        _tableWidth = TableWidthBase * _scaleFactor;
-        _tableHeight = TableHeightBase * _scaleFactor;
+        
+        _tableLength = TableLengthBase * _objScale;
+        _tableWidth = TableWidthBase * _objScale;
+        _tableHeight = TableHeightBase * _objScale;
 
         Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
@@ -169,12 +151,26 @@ public class VisualObjs : MonoBehaviour
         if (RuleFinished(_rules, _fileCounter))
         {
             DestroyObjs(_objInstances);
+            
+            // exit the program
             if (_ruleFileCounter >= _files.Length)
             {
-                UnityEditor.EditorApplication.isPlaying = false;
+                if (_sceneType == "EOF")
+                {
+                    UnityEditor.EditorApplication.isPlaying = false;    
+                }
+                else
+                {
+                    // update the scene type and reset parameters
+                    _fileCounter = 0;
+                    _rules =  LoadNewRule(_files[0].FullName);
+                    _ruleFileCounter = 1;
+
+                }
             }
             else
             {
+                // load new rules
                 _rules = LoadNewRule(_files[_ruleFileCounter].FullName);
                 _fileCounter = 0;
                 _ruleFileCounter++;

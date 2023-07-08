@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\VisualObjs.cs" />
      <Compile Include="Assets\Scripts\SceneGenerator.cs" />
      <Folder Include="Assets" />
+     <Folder Include="Assets\Scripts\Rules\letter_I" />
      <Folder Include="Assets\3DModels\BasicModels" />
      <Folder Include="Assets\Scripts\Rules\cross_same_shape" />
      <None Include="Assets\Scripts\Rules\check_mark\check_mark_leftdown.json" />
@@ -63,9 +64,11 @@
      <None Include="Assets\Scripts\Rules\check_mark\check_mark_leftup.json" />
      <Folder Include="Assets\Scripts\Rules\ShapeOfShape" />
      <None Include="Assets\Scripts\Rules\cross_same_shape\random.json" />
+     <Folder Include="Assets\Scripts\Rules\letter_G" />
      <None Include="Assets\Scripts\Rules\cross_size\random.json" />
      <None Include="Assets\Scripts\Rules\cross_size\true2.json" />
      <None Include="Assets\Scripts\Rules\check_mark\check_mark_false_random.json" />
+     <None Include="Assets\Scripts\Rules\letter_G\letter_G_pos_v1.json" />
      <None Include="Assets\Scripts\Rules\cross_size\false3.json" />
      <None Include="Assets\Scripts\Rules\ShapeOfShape\squareSphereFalse.json" />
      <Folder Include="Assets\Materials\wood_cabinet_worn_long_4k.blend" />
@@ -77,6 +80,8 @@
      <None Include="Assets\Scripts\Rules\hard_hide\three_same_true.json" />
      <None Include="Assets\Scripts\Rules\hard_hide\hide_false.json" />
      <None Include="Assets\DepthShader.shader" />
+     <None Include="Assets\Scripts\Rules\letter_G\letter_G_neg_v1.json" />
+     <None Include="Assets\Scripts\Rules\letter_I\letter_I_neg_v1.json" />
      <Folder Include="Assets\3DModels" />
      <Folder Include="Assets\Scripts\utils" />
      <Folder Include="Assets\Scripts\Rules\check_mark" />
@@ -87,9 +92,11 @@
      <Folder Include="Assets\PhysMaterials" />
      <Folder Include="Assets\EnvMaps\Materials" />
      <None Include="Assets\Scripts\Rules\cross\cross.json" />
+     <None Include="Assets\Scripts\Rules\letter_G\letter_G_false_shape.json" />
      <None Include="Assets\Scripts\Rules\cross_size\false4.json" />
      <Folder Include="Assets\Scenes" />
      <Folder Include="Assets\Scripts" />
+     <None Include="Assets\Scripts\Rules\letter_I\letter_I_pos_v1.json" />
      <None Include="Assets\Scripts\Rules\cross_size\true.json" />
      <Folder Include="Assets\Scripts\Rules\cross" />
      <None Include="Assets\Scripts\Rules\ShapeOfShape\triangleCubeFalse.json" />
