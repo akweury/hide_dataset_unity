@@ -56,7 +56,8 @@ public class VisualObjs : MonoBehaviour
     public String expName;
     public float tableScale;
     public float objScale;
-
+    public float posScale;
+    
     private GameObject tableInst;
     private string[] _sceneType = { "train", "test", "val", "EOF" };
     private int _sceneTypeCounter = 0;
@@ -371,9 +372,9 @@ public class VisualObjs : MonoBehaviour
         {
             int objIdx = 0;
             Vector3 randomCenter = new Vector3(
-                table.transform.position[0] + UnityEngine.Random.Range(-(_tableWidth / 3), (_tableWidth / 3)),
+                table.transform.position[0] + UnityEngine.Random.Range(-(_tableWidth / 5), (_tableWidth / 5)),
                 table.transform.position[1] + _tableHeight * 0.5F,
-                table.transform.position[2] + UnityEngine.Random.Range(-(_tableLength / 3), (_tableLength / 3)));
+                table.transform.position[2] + UnityEngine.Random.Range(-(_tableLength / 5), (_tableLength / 5)));
 
             // add rule objects
 
@@ -439,7 +440,7 @@ public class VisualObjs : MonoBehaviour
     ObjectStruct GetRulePos(int objId, RuleJson.ObjProp objProp, ObjectStruct obj, Vector3 center)
     {
         int num_tries = 0;
-        float posScale = 1.5f;
+        
         float obj_radius = objScale * UnifyRadius;
         Vector3 obj_pos;
         // find a 3D position for the new object

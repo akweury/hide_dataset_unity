@@ -1,7 +1,7 @@
 {
   "rule_objs_per_scene": 5,
   "random_objs_per_scene": 0,
-  "scene_num": 10,
+  "scene_num": 2,
   "scene_type": "negative",
   "random_position": true,
   "min_shape_variation": 1,
