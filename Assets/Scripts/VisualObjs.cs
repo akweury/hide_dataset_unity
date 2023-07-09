@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,6 +21,7 @@ public class VisualObjs : MonoBehaviour
     // useful private variables
     private string _assetsPath;
     private string _datasetPath;
+
     private string _rootDatasetPath;
     // private string _subDatasetName;
 
@@ -34,7 +36,7 @@ public class VisualObjs : MonoBehaviour
     private List<GameObject> _objInstances;
     private List<MeshRenderer> _modelRenderers;
     private List<ObjectStruct> _sceneData;
-    
+
     private DepthCamera _depthCamera;
     private const float TableWidthBase = 1.5F;
     private const float TableLengthBase = 1.5F;
@@ -42,7 +44,7 @@ public class VisualObjs : MonoBehaviour
     private const int FrameLoop = 10;
     private const int MaxNumTry = 50;
     private const float UnifyRadius = 0.6F;
-    
+
     private const float MinimumObjDist = (float)0.1;
     private float _tableLength;
     private float _tableWidth;
@@ -52,10 +54,11 @@ public class VisualObjs : MonoBehaviour
     private string _useType;
     private string _sceneSign;
     public String expName;
-    [FormerlySerializedAs("_scaleFactor")] public float _objScale;
-    
+    public float tableScale;
+    public float objScale;
+
     private GameObject tableInst;
-    private string[] _sceneType = {"train","test", "val","EOF"};
+    private string[] _sceneType = { "train", "test", "val", "EOF" };
     private int _sceneTypeCounter = 0;
     int maxFileCounter;
 
@@ -67,7 +70,7 @@ public class VisualObjs : MonoBehaviour
         _assetsPath = Application.dataPath + "/";
         _useType = "train";
         _sceneTypeCounter += 1;
-        
+
         _rootDatasetPath = _assetsPath + "/../Datasets/";
 
 
@@ -106,10 +109,10 @@ public class VisualObjs : MonoBehaviour
 
         // instantiate the table
         // adjust table size based on camera sensor size
-        
-        _tableLength = TableLengthBase * _objScale;
-        _tableWidth = TableWidthBase * _objScale;
-        _tableHeight = TableHeightBase * _objScale;
+
+        _tableLength = TableLengthBase * tableScale;
+        _tableWidth = TableWidthBase * tableScale;
+        _tableHeight = TableHeightBase * tableScale;
 
         Quaternion rotation = Quaternion.Euler(UnityEngine.Random.Range((float)0, (float)0),
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
@@ -152,7 +155,7 @@ public class VisualObjs : MonoBehaviour
         if (RuleFinished(_rules, _fileCounter))
         {
             DestroyObjs(_objInstances);
-            
+
             // exit the program
             if (_ruleFileCounter >= _files.Length)
             {
@@ -160,12 +163,12 @@ public class VisualObjs : MonoBehaviour
                 _sceneTypeCounter += 1;
                 // update the scene type and reset parameters
                 _fileCounter = 0;
-                _rules =  LoadNewRule(_files[0].FullName);
+                _rules = LoadNewRule(_files[0].FullName);
                 _ruleFileCounter = 1;
-                
+
                 if (_useType == "EOF")
                 {
-                    UnityEditor.EditorApplication.isPlaying = false;    
+                    UnityEditor.EditorApplication.isPlaying = false;
                 }
             }
             else
@@ -204,7 +207,7 @@ public class VisualObjs : MonoBehaviour
             {
                 foreach (GameObject sphere in spheres)
                 {
-                    if (sphere.name == sceneObj.Material)
+                    if (sphere.name.Contains(sceneObj.Material))
                     {
                         objModel = sphere;
                         break;
@@ -215,7 +218,7 @@ public class VisualObjs : MonoBehaviour
             {
                 foreach (GameObject cube in cubes)
                 {
-                    if (cube.name == sceneObj.Material)
+                    if (cube.name.Contains(sceneObj.Material))
                     {
                         objModel = cube;
                         break;
@@ -251,46 +254,45 @@ public class VisualObjs : MonoBehaviour
     {
         RuleJson.ObjProp obj;
         int objId = 0;
-        int[] randomMaterialIDs = new int[rules.RuleObjPerScene];
-        int[] randomShapeIDs = new int[rules.RuleObjPerScene];
+        string[] randomMaterialIDs = new string[rules.RuleObjPerScene];
+        string[] randomShapeIDs = new string[rules.RuleObjPerScene];
+
+        int ruleShapeId = UnityEngine.Random.Range(0, 2);
+        string objShapes = "";
+        if (ruleShapeId == 0)
+        {
+            objShapes = "cube";
+        }
+        else if (ruleShapeId == 1)
+        {
+            objShapes = "sphere";
+        }
+
+        string[] objColors = new string[rules.RuleObjPerScene];
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
-            randomMaterialIDs[i] = UnityEngine.Random.Range(0, 100001);
-            randomShapeIDs[i] = UnityEngine.Random.Range(0, 100001);
+            int colorID = UnityEngine.Random.Range(0, 3);
+            if (colorID == 0)
+            {
+                objColors[i] = "red";
+            }
+            else if (colorID == 1)
+            {
+                objColors[i] = "green";
+            }
+            else if (colorID == 2)
+            {
+                objColors[i] = "blue";
+            }
         }
 
         // add rule object
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
             obj = rules.Objs[i];
-
-            // determine the shape
-            if (!(rules.Objs[i].Shape == "sphere" || rules.Objs[i].Shape == "cube"))
-            {
-                int shapeID = randomShapeIDs[Int16.Parse(rules.Objs[i].Shape) % rules.RuleObjPerScene] % 2;
-                if (shapeID == 0)
-                {
-                    obj.Shape = "sphere";
-                }
-                else
-                {
-                    obj.Shape = "cube";
-                }
-            }
-
-            int materialID = randomMaterialIDs[Int16.Parse(rules.Objs[i].Material) % rules.RuleObjPerScene] % 6;
-            if (obj.Shape == "sphere")
-            {
-                obj.Material = spheres[materialID].name;
-            }
-            else if (obj.Shape == "cube")
-            {
-                obj.Material = cubes[materialID].name;
-            }
-
-
-            // sceneData[objId].SetProperty(objId, obj.Shape, obj.Material, Rules.strFloMapping[obj.size]);
-            sceneData[objId] = new ObjectStruct(objId, obj.Shape, obj.Material, RuleJson.strFloMapping[obj.size]);
+            string objShape = objShapes;
+            string objColor = objColors[i];
+            sceneData[objId] = new ObjectStruct(objId, objShape, objColor, objScale);
             objId++;
         }
 
@@ -436,10 +438,9 @@ public class VisualObjs : MonoBehaviour
 
     ObjectStruct GetRulePos(int objId, RuleJson.ObjProp objProp, ObjectStruct obj, Vector3 center)
     {
-        float newScale = RuleJson.strFloMapping[objProp.size];
         int num_tries = 0;
         float posScale = 1.5f;
-        float obj_radius = newScale * UnifyRadius;
+        float obj_radius = objScale * UnifyRadius;
         Vector3 obj_pos;
         // find a 3D position for the new object
         while (true)
@@ -477,7 +478,7 @@ public class VisualObjs : MonoBehaviour
         }
 
         // for cubes, adjust its radius
-        if (objProp.Shape == "cube") obj_radius *= (float)Math.Sqrt(2);
+        // if (objProp.Shape == "cube") obj_radius *= (float)Math.Sqrt(2);
 
         // record the object data
 
@@ -536,7 +537,6 @@ public class VisualObjs : MonoBehaviour
     ObjectStruct GetRandomPos(int objIdx, RuleJson.ObjProp objProp, List<ObjectStruct> sceneData)
     {
         // float newScale = sceneData[objIdx].Size;
-        float newScale = RuleJson.strFloMapping[objProp.size];
         int num_tries = 0;
         float objRadius;
         Vector3 objPos = new Vector3();
@@ -549,7 +549,7 @@ public class VisualObjs : MonoBehaviour
             if (num_tries > MaxNumTry) return sceneData[objIdx];
 
             // choose new size and position
-            objRadius = newScale * UnifyRadius;
+            objRadius = objScale * UnifyRadius;
 
             objPos[0] = table.transform.position[0] + UnityEngine.Random.Range(
                 -(float)(_tableWidth / 2) + objRadius, (float)(_tableWidth / 2) - objRadius);

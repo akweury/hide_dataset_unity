@@ -20,12 +20,14 @@ public class RuleJson
     public string SceneType;
     
     [JsonProperty("scene_num")] public int SceneNum;
+    
+    [JsonProperty("min_shape_variation")] public int MinShapeVariation;
+    [JsonProperty("max_shape_variation")] public int MaxShapeVariation;
+    [JsonProperty("min_color_variation")] public int MinColorVariation;
+    [JsonProperty("max_color_variation")] public int MaxColorVariation;
 
     public struct ObjProp
     {
-        [JsonProperty("size")] public string size;
-        [JsonProperty("shape")] public string Shape;
-        [JsonProperty("material")] public string Material;
         [JsonProperty("x")] public float x;
         [JsonProperty("y")] public float y;
         [JsonProperty("z")] public float z;

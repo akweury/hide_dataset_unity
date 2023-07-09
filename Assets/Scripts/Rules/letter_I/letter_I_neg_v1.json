@@ -4,6 +4,10 @@
   "scene_num": 10,
   "scene_type": "negative",
   "random_position": true,
+  "min_shape_variation": 1,
+  "max_shape_variation": 1,
+  "min_color_variation": 1,
+  "max_color_variation": 3,
   "objs": [
     {
       "x": 0,
@@ -32,3 +36,4 @@
     }
   ]
 }
+  
