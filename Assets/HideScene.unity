@@ -215,7 +215,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 92.3, y: 197.9, z: -53.6}
 --- !u!1 &552532598
 GameObject:
@@ -309,7 +309,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45.02, y: -94.47, z: 3}
 --- !u!1 &1318314686
 GameObject:
@@ -395,7 +395,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 54.03, y: 0, z: 0}
 --- !u!73398921 &1318314690
 VFXRenderer:
@@ -494,6 +494,10 @@ PrefabInstance:
       value: letter_I
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: _objScale
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -503,7 +507,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.size
-      value: 6
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: testModels.Array.size
@@ -547,7 +551,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 5d3b3daaddbb6fd4eb50a75e21ae0ad7, type: 2}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.size
-      value: 6
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: train_models.Array.size
@@ -560,11 +564,11 @@ PrefabInstance:
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.data[1]
       value: 
-      objectReference: {fileID: 1562460671526737094, guid: 961be71bdff7940f6b734ae0d9752d01, type: 3}
+      objectReference: {fileID: 5246011121959925047, guid: b8b1f77d4484d3346b042a48595051fb, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.data[2]
       value: 
-      objectReference: {fileID: 8268430955181030965, guid: 69ac1a492e53a4404aace75453dbe13a, type: 3}
+      objectReference: {fileID: 2653593239239676703, guid: 5d914ab0c8c7a194abc23c5da75fe3db, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.data[3]
       value: 
@@ -644,23 +648,23 @@ PrefabInstance:
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[0]
       value: 
-      objectReference: {fileID: 3084562671370927486, guid: a905d45b50ad642499e6e2d7c8bb55d9, type: 3}
+      objectReference: {fileID: 8740907846074378234, guid: 097999a095ec16e4c8c6f4360ef88465, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[1]
       value: 
-      objectReference: {fileID: 7511521384345649979, guid: 883cb7e45a59c490b8fd11c0e6ba0776, type: 3}
+      objectReference: {fileID: 4302390928170618414, guid: ed964aa48248f5d4692a1f1bb579bdfa, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[2]
       value: 
-      objectReference: {fileID: 5106333268775429570, guid: 701fd4e528a5346a6bc1fadda49a6130, type: 3}
+      objectReference: {fileID: 5651301684290632972, guid: 71152746c131e7646aa1955a91392d57, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[3]
       value: 
-      objectReference: {fileID: 7906852455259625630, guid: f14cc53e14885440d8a669efd12b859e, type: 3}
+      objectReference: {fileID: 5726583291997248554, guid: 6df825af958a1434fb4fc4ef64610316, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[4]
       value: 
-      objectReference: {fileID: 4176180306455292242, guid: 146a82b3fdb57479dbfa4dc9c138d223, type: 3}
+      objectReference: {fileID: 5726583291997248554, guid: 6df825af958a1434fb4fc4ef64610316, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[5]
       value: 
@@ -679,7 +683,7 @@ PrefabInstance:
       objectReference: {fileID: 919132149155446097, guid: 4c94dde561c388d488678bc3939e75d6, type: 3}
     - target: {fileID: 310855717209966750, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 310855717209966750, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_LocalScale.x

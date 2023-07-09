@@ -55,7 +55,8 @@ public class VisualObjs : MonoBehaviour
     [FormerlySerializedAs("_scaleFactor")] public float _objScale;
     
     private GameObject tableInst;
-    private string[] _sceneType = ["train","test", "val","EOF"];
+    private string[] _sceneType = {"train","test", "val","EOF"};
+    private int _sceneTypeCounter = 0;
     int maxFileCounter;
 
 
@@ -64,9 +65,9 @@ public class VisualObjs : MonoBehaviour
     {
         // path control
         _assetsPath = Application.dataPath + "/";
-
         _useType = "train";
-
+        _sceneTypeCounter += 1;
+        
         _rootDatasetPath = _assetsPath + "/../Datasets/";
 
 
@@ -155,17 +156,16 @@ public class VisualObjs : MonoBehaviour
             // exit the program
             if (_ruleFileCounter >= _files.Length)
             {
-                if (_sceneType == "EOF")
+                _useType = _sceneType[_sceneTypeCounter];
+                _sceneTypeCounter += 1;
+                // update the scene type and reset parameters
+                _fileCounter = 0;
+                _rules =  LoadNewRule(_files[0].FullName);
+                _ruleFileCounter = 1;
+                
+                if (_useType == "EOF")
                 {
                     UnityEditor.EditorApplication.isPlaying = false;    
-                }
-                else
-                {
-                    // update the scene type and reset parameters
-                    _fileCounter = 0;
-                    _rules =  LoadNewRule(_files[0].FullName);
-                    _ruleFileCounter = 1;
-
                 }
             }
             else
