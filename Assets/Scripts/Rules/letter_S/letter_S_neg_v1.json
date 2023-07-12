@@ -1,0 +1,58 @@
+{
+  "rule_objs_per_scene": 9,
+  "random_objs_per_scene": 0,
+  "scene_num": 10,
+  "scene_type": "negative",
+  "random_position": false,
+  "min_shape_variation": 1,
+  "max_shape_variation": 1,
+  "min_color_variation": 1,
+  "max_color_variation": 3,
+  "objs": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "z": 0.6
+    },
+    {
+      "x": -0.8,
+      "y": 0,
+      "z": 1.7
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 2
+    },
+    {
+      "x": -0.8,
+      "y": 0,
+      "z": -0.5
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": -0.8
+    },
+    {
+      "x": 0.9,
+      "y": 0,
+      "z": -1.8
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -2
+    },
+    {
+      "x": -0.8,
+      "y": 0,
+      "z": -1.4
+    }
+  ]
+}
