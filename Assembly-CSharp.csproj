@@ -78,16 +78,18 @@
      <Folder Include="Assets/Scripts/Rules/three_same" />
      <Folder Include="Assets/Materials" />
      <Folder Include="Assets/Materials/food_avocado" />
+     <None Include="Assets/Scripts/Rules/letter_G/letter_G_neg_v2.json" />
      <None Include="Assets/Scripts/Rules/triangle_same/triangle_false_color.json" />
      <None Include="Assets/DepthShader.shader" />
-     <None Include="Assets/Scripts/Rules/letter_G/letter_G_neg_v1.json" />
      <None Include="Assets/Scripts/Rules/letter_I/letter_I_neg_v1.json" />
      <Folder Include="Assets/3DModels" />
      <Folder Include="Assets/Scripts/utils" />
      <None Include="Assets/Scripts/Rules/two_pairs/two_pairs_false.json" />
      <Folder Include="Assets/Scripts/Rules" />
      <None Include="Assets/Scripts/Rules/check_mark_same/check_mark_color.json" />
+     <None Include="Assets/Scripts/Rules/letter_G/letter_G_neg_v3.json" />
      <None Include="Assets/Scripts/Rules/check_mark/check_mark_false_line.json" />
+     <None Include="Assets/Scripts/Rules/letter_G/letter_G_neg_v1.json" />
      <Folder Include="Assets/PhysMaterials" />
      <Folder Include="Assets/EnvMaps/Materials" />
      <Folder Include="Assets/Materials/food_lime/Materials" />
@@ -95,7 +97,6 @@
      <Folder Include="Assets/Scripts/Rules/cross_same" />
      <None Include="Assets/Scripts/Rules/check_mark/check_mark_2.json" />
      <None Include="Assets/Scripts/Rules/check_mark/check_mark.json" />
-     <None Include="Assets/Scripts/Rules/letter_G/letter_G_false_shape.json" />
      <None Include="Assets/Scripts/Rules/three_same/three_same_true.json" />
      <Folder Include="Assets/Scenes" />
      <Folder Include="Assets/Scripts" />

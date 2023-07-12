@@ -449,7 +449,7 @@ Camera:
   m_FOVAxisMode: 0
   m_SensorSize: {x: 512, y: 512}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 345.96417
+  m_FocalLength: 340.341
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -458,10 +458,10 @@ Camera:
     height: 1
   near clip plane: 0.13
   far clip plane: 27.4
-  field of view: 73
+  field of view: 73.9
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 3.88
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -585,15 +585,15 @@ PrefabInstance:
       objectReference: {fileID: 2008057318401078053, guid: 21b4f89cf9866df48ad399c2b4443ac4, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: expName
-      value: letter_I
+      value: letter_G
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: objScale
-      value: 0.6
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: posScale
-      value: 0.85
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: _objScale
