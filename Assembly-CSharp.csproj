@@ -66,6 +66,7 @@
      <None Include="Assets/Scripts/Rules/triangle_same/triangle_true.json" />
      <None Include="Assets/Scripts/Rules/letter_S/letter_S_neg_v2.json" />
      <None Include="Assets/NormalShader.shader" />
+     <None Include="Assets\Scripts\Rules\letter_A\letter_A_neg_random.json" />
      <Folder Include="Assets/EnvMaps" />
      <None Include="Assets/Scripts/Rules/letter_U/letter_U_neg_v3.json" />
      <Folder Include="Assets/Scripts/Rules/letter_I" />
@@ -105,6 +106,7 @@
      <None Include="Assets/Scripts/Rules/two_pairs/two_pairs_false.json" />
      <Folder Include="Assets/Scripts/Rules" />
      <None Include="Assets/Scripts/Rules/check_mark_same/check_mark_color.json" />
+     <Folder Include="Assets/Scripts/Rules/letter_A" />
      <None Include="Assets/Scripts/Rules/letter_G/letter_G_neg_v3.json" />
      <None Include="Assets/Scripts/Rules/letter_S/letter_S_pos_v1.json" />
      <None Include="Assets/Scripts/Rules/check_mark/check_mark_false_line.json" />
@@ -118,6 +120,7 @@
      <None Include="Assets/Scripts/Rules/check_mark/check_mark.json" />
      <None Include="Assets/Scripts/Rules/three_same/three_same_true.json" />
      <Folder Include="Assets/Scenes" />
+     <None Include="Assets/Scripts/Rules/letter_A/letter_A_pos_v1.json" />
      <None Include="Assets/Scripts/Rules/letter_S/letter_S_neg_v1.json" />
      <Folder Include="Assets/Scripts" />
      <None Include="Assets/Scripts/Rules/letter_I/letter_I_pos_v1.json" />
