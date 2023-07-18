@@ -5,6 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Serialization;
+using DirectoryInfo = System.IO.DirectoryInfo;
 
 
 public class VisualObjs : MonoBehaviour
@@ -20,18 +21,21 @@ public class VisualObjs : MonoBehaviour
 
     // useful private variables
     private string _assetsPath;
+    private string _dataGroupPath;
     private string _datasetPath;
 
     private string _rootDatasetPath;
     // private string _subDatasetName;
 
     private string _rulePath;
+
+    private string _groupPath;
     // private string _savePath;
 
     private string _filePrefix;
     private int _frames;
     private int _ruleFileCounter;
-    private RuleJson _rules;
+    private RuleJson[] _rules;
     private int _fileCounter;
     private List<GameObject> _objInstances;
     private List<MeshRenderer> _modelRenderers;
@@ -48,11 +52,15 @@ public class VisualObjs : MonoBehaviour
     private const float MinimumObjDist = (float)0.1;
     private float _tableLength;
     private float _tableWidth;
+
     private float _tableHeight;
-    private FileInfo[] _files;
+    // private FileInfo[] _negRuleFiles;
+    // private FileInfo[] _posRuleFiles;
 
     private string _useType;
     private string _sceneSign;
+    public int sceneNum;
+    public String groupSize;
     public String expName;
     public float tableScale;
     public float objScale;
@@ -72,10 +80,10 @@ public class VisualObjs : MonoBehaviour
         _useType = "train";
         _sceneTypeCounter += 1;
 
-        _rootDatasetPath = _assetsPath + "/../Datasets/";
+        _rootDatasetPath = _assetsPath + "../Datasets/";
 
-
-        _rulePath = _assetsPath + "/Scripts/Rules/" + expName + "/";
+        _groupPath = _assetsPath + "Scripts/Rules/" + groupSize + "/";
+        _rulePath = _groupPath + expName + "/";
         _datasetPath = _rootDatasetPath + expName + "/";
 
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
@@ -97,14 +105,56 @@ public class VisualObjs : MonoBehaviour
         System.IO.Directory.CreateDirectory(_datasetPath + "val" + "/" + "true");
 
 
-        // get all rule files
-        DirectoryInfo d = new DirectoryInfo(_rulePath);
-        _files = d.GetFiles("*.json"); // Getting Rule files
+        // get positive rule files
+        String positiveRulePath = _groupPath + expName;
+        DirectoryInfo posD = new DirectoryInfo(positiveRulePath);
+        FileInfo[] posRuleFiles = posD.GetFiles("*.json"); // Getting Rule files
+        RuleJson[] posRules = new RuleJson[posRuleFiles.Length];
+        for (int i = 0; i < posRuleFiles.Length; i++)
+        {
+            posRules[i] = LoadNewRule(posRuleFiles[i].FullName);
+            posRules[i].SceneType = "positive";
+            posRules[i].SceneNum = sceneNum;
+        }
 
-        // load a new rule
-        _rules = LoadNewRule(_files[_ruleFileCounter].FullName);
+        // get negative rule files
+        DirectoryInfo groupD = new DirectoryInfo(_groupPath);
+        FileInfo[] randomRules = groupD.GetFiles("*.json"); // Getting Rule files
+        var groupLatterPaths = Directory.GetDirectories(_groupPath);
+        FileInfo[] negRuleFiles = new FileInfo[groupLatterPaths.Length - 1];
+        int negRuleCounter = 0;
+        for (int i = 0; i < groupLatterPaths.Length; i++)
+        {
+            if (groupLatterPaths[i] == positiveRulePath)
+            {
+                continue;
+            }
+
+            DirectoryInfo negD = new DirectoryInfo(groupLatterPaths[i]);
+            negRuleFiles[negRuleCounter] = negD.GetFiles("*_pos_*.json")[0]; // Getting Rule files
+            negRuleCounter += 1;
+        }
+
+        RuleJson[] negRules = new RuleJson[negRuleFiles.Length + 1];
+        for (int i = 0; i < negRuleFiles.Length; i++)
+        {
+            negRules[i] = LoadNewRule(negRuleFiles[i].FullName);
+            negRules[i].SceneType = "negative";
+            negRules[i].SceneNum = sceneNum / (negRuleFiles.Length + 1);
+        }
+
+        negRules[negRuleFiles.Length] = LoadNewRule(randomRules[0].FullName);
+        negRules[negRuleFiles.Length].SceneType = "negative";
+        negRules[negRuleFiles.Length].SceneNum = sceneNum / (negRuleFiles.Length + 1);
+
+
+        // concatenate all negative rules to one single array
+        _rules = new RuleJson[posRules.Length + negRules.Length];
+        posRules.CopyTo(_rules, 0);
+        negRules.CopyTo(_rules, posRules.Length);
+
         _fileCounter = 0;
-        _ruleFileCounter++;
+        _ruleFileCounter = 0;
         // _objInstances = GetNewInstances(_rules);
         // UpdateModels(_rules);
 
@@ -128,13 +178,13 @@ public class VisualObjs : MonoBehaviour
         // render the scene
         if (_frames % FrameLoop == 0)
         {
-            RenderNewScene(_rules, sphereModels, cubeModels);
+            RenderNewScene(_rules[_ruleFileCounter], sphereModels, cubeModels);
         }
 
         // save the scene data if it is a new scene
         if (_frames % FrameLoop == FrameLoop - 1)
         {
-            if (_rules.SceneType == "positive")
+            if (_rules[_ruleFileCounter].SceneType == "positive")
             {
                 _filePrefix = _datasetPath + _useType + "/true/" + _ruleFileCounter.ToString("D2") + "." +
                               _fileCounter.ToString("D5");
@@ -153,19 +203,18 @@ public class VisualObjs : MonoBehaviour
 
 
         // load a new rule file
-        if (RuleFinished(_rules, _fileCounter))
+        if (RuleFinished(_rules[_ruleFileCounter], _fileCounter))
         {
             DestroyObjs(_objInstances);
 
             // exit the program
-            if (_ruleFileCounter >= _files.Length)
+            if (_ruleFileCounter >= _rules.Length - 1)
             {
                 _useType = _sceneType[_sceneTypeCounter];
                 _sceneTypeCounter += 1;
                 // update the scene type and reset parameters
                 _fileCounter = 0;
-                _rules = LoadNewRule(_files[0].FullName);
-                _ruleFileCounter = 1;
+                _ruleFileCounter = 0;
 
                 if (_useType == "EOF")
                 {
@@ -174,8 +223,7 @@ public class VisualObjs : MonoBehaviour
             }
             else
             {
-                // load new rules
-                _rules = LoadNewRule(_files[_ruleFileCounter].FullName);
+                // set parameters for loading new rules
                 _fileCounter = 0;
                 _ruleFileCounter++;
             }
