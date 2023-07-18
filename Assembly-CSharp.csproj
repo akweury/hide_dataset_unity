@@ -153,6 +153,8 @@
      <None Include="Assets\Scripts\Rules\group_12\letter_D\letter_D_pos_v1.json" />
      <None Include="Assets\Scripts\Rules\group_12\letter_G\letter_G_pos_v1.json" />
      <None Include="Assets\Scripts\Rules\group_12\letter_H\letter_H_pos_v1.json" />
+     <None Include="Assets\Scripts\Rules\group_12\letter_Q\letter_Q_pos_v1.json" />
+     <None Include="Assets\Scripts\Rules\group_12\letter_R\letter_R_pos_v1.json" />
      <Reference Include="UnityEngine">
      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
