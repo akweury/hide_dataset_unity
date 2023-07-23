@@ -131,7 +131,7 @@ public class VisualObjs : MonoBehaviour
             }
 
             DirectoryInfo negD = new DirectoryInfo(groupLatterPaths[i]);
-            negRuleFiles[negRuleCounter] = negD.GetFiles("*_pos_*.json")[0]; // Getting Rule files
+            negRuleFiles[negRuleCounter] = negD.GetFiles("*.json")[0]; // Getting Rule files
             negRuleCounter += 1;
         }
 
