@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Serialization;
 using DirectoryInfo = System.IO.DirectoryInfo;
+using Random = System.Random;
 
 
 public class VisualObjs : MonoBehaviour
@@ -306,21 +307,57 @@ public class VisualObjs : MonoBehaviour
         string[] randomMaterialIDs = new string[rules.RuleObjPerScene];
         string[] randomShapeIDs = new string[rules.RuleObjPerScene];
 
-        int ruleShapeId = UnityEngine.Random.Range(0, 2);
-        string objShapes = "";
-        if (ruleShapeId == 0)
-        {
-            objShapes = "cube";
-        }
-        else if (ruleShapeId == 1)
-        {
-            objShapes = "sphere";
-        }
-
+        Random rnd = new Random();
+        int[] totalColorID = new int[] { 0, 1, 2 };
+        int[] randomColorID = totalColorID.OrderBy(x => rnd.Next()).ToArray();
         string[] objColors = new string[rules.RuleObjPerScene];
+        int[] colorIDs = new int[rules.RuleObjPerScene];
+        IEnumerable<int> uniqueColorItems;
+        do
+        {
+            for (int i = 0; i < rules.RuleObjPerScene; i++)
+            {
+                int randomColorIndex = UnityEngine.Random.Range(0, rules.MaxColorVariation);
+                colorIDs[i] = randomColorID[randomColorIndex];
+            }
+
+            uniqueColorItems = colorIDs.Distinct<int>();
+        } while (uniqueColorItems.Count() < rules.MinColorVariation);
+
+        int[] totalShapeID = new int[] { 0, 1 };
+        int[] randomShapeID = totalShapeID.OrderBy(x => rnd.Next()).ToArray();
+        string[] objShapes = new string[rules.RuleObjPerScene];
+        int[] shapeIDs = new int[rules.RuleObjPerScene];
+        IEnumerable<int> uniqueShapeItems;
+        do
+        {
+            for (int i = 0; i < rules.RuleObjPerScene; i++)
+            {
+                int randomShapeIndex = UnityEngine.Random.Range(0, rules.MaxShapeVariation);
+                shapeIDs[i] = randomShapeID[randomShapeIndex];
+            }
+
+            uniqueShapeItems = shapeIDs.Distinct<int>();
+        } while (uniqueShapeItems.Count() < rules.MinShapeVariation);
+
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
-            int colorID = UnityEngine.Random.Range(0, 3);
+            int randomShapeIndex = UnityEngine.Random.Range(0, rules.MaxShapeVariation);
+            int shapeID = randomShapeID[randomShapeIndex];
+            if (shapeID == 0)
+            {
+                objShapes[i] = "cube";
+            }
+            else if (shapeID == 1)
+            {
+                objShapes[i] = "sphere";
+            }
+        }
+
+        for (int i = 0; i < rules.RuleObjPerScene; i++)
+        {
+            int randomColorIndex = UnityEngine.Random.Range(0, rules.MaxColorVariation);
+            int colorID = randomColorID[randomColorIndex];
             if (colorID == 0)
             {
                 objColors[i] = "red";
@@ -339,7 +376,7 @@ public class VisualObjs : MonoBehaviour
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {
             obj = rules.Objs[i];
-            string objShape = objShapes;
+            string objShape = objShapes[i];
             string objColor = objColors[i];
             sceneData[objId] = new ObjectStruct(objId, objShape, objColor, objScale);
             objId++;
