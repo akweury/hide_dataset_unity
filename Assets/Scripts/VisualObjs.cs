@@ -15,6 +15,8 @@ public class VisualObjs : MonoBehaviour
     public GameObject table; // https://www.cgtrader.com/items/1875799/download-page
     public List<GameObject> sphereModels;
     public List<GameObject> cubeModels;
+    public List<GameObject> coneModels;
+    public List<GameObject> cylinderModels;
     public RenderTexture texture;
 
     public Shader depthShader;
@@ -179,7 +181,7 @@ public class VisualObjs : MonoBehaviour
         // render the scene
         if (_frames % FrameLoop == 0)
         {
-            RenderNewScene(_rules[_ruleFileCounter], sphereModels, cubeModels);
+            RenderNewScene(_rules[_ruleFileCounter], sphereModels, cubeModels, coneModels, cylinderModels);
         }
 
         // save the scene data if it is a new scene
@@ -235,13 +237,14 @@ public class VisualObjs : MonoBehaviour
         _frames++;
     }
 
-    void RenderNewScene(RuleJson rules, List<GameObject> spheres, List<GameObject> cubes)
+    void RenderNewScene(RuleJson rules, List<GameObject> spheres, List<GameObject> cubes, List<GameObject> cones,
+        List<GameObject> cylinders)
     {
         int objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
         _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
         _objInstances = new List<GameObject>(new GameObject[objNum]);
 
-        _sceneData = FillSceneData(rules, _sceneData, spheres, cubes);
+        _sceneData = FillSceneData(rules, _sceneData, spheres, cubes, cones, cylinders);
         _sceneData = FillObjsPositions(rules, _sceneData);
 
         int objId = 0;
@@ -275,6 +278,28 @@ public class VisualObjs : MonoBehaviour
                     }
                 }
             }
+            else if (sceneObj.Shape == "cone")
+            {
+                foreach (GameObject cone in cones)
+                {
+                    if (cone.name.Contains(sceneObj.Material))
+                    {
+                        objModel = cone;
+                        break;
+                    }
+                }
+            }
+            else if (sceneObj.Shape == "cylinder")
+            {
+                foreach (GameObject cylinder in cylinders)
+                {
+                    if (cylinder.name.Contains(sceneObj.Material))
+                    {
+                        objModel = cylinder;
+                        break;
+                    }
+                }
+            }
 
             _objInstances[objId] = NewObjectInstantiate(objSize * 2, sceneObj.Position, objModel);
             objId++;
@@ -300,7 +325,7 @@ public class VisualObjs : MonoBehaviour
     // }
 
     List<ObjectStruct> FillSceneData(RuleJson rules, List<ObjectStruct> sceneData, List<GameObject> spheres,
-        List<GameObject> cubes)
+        List<GameObject> cubes, List<GameObject> cones, List<GameObject> cylinders)
     {
         RuleJson.ObjProp obj;
         int objId = 0;
@@ -324,7 +349,7 @@ public class VisualObjs : MonoBehaviour
             uniqueColorItems = colorIDs.Distinct<int>();
         } while (uniqueColorItems.Count() < rules.MinColorVariation);
 
-        int[] totalShapeID = new int[] { 0, 1 };
+        int[] totalShapeID = new int[] { 0, 1, 2, 3 };
         int[] randomShapeID = totalShapeID.OrderBy(x => rnd.Next()).ToArray();
         string[] objShapes = new string[rules.RuleObjPerScene];
         int[] shapeIDs = new int[rules.RuleObjPerScene];
@@ -351,6 +376,14 @@ public class VisualObjs : MonoBehaviour
             else if (shapeID == 1)
             {
                 objShapes[i] = "sphere";
+            }
+            else if (shapeID == 2)
+            {
+                objShapes[i] = "cone";
+            }
+            else if (shapeID == 3)
+            {
+                objShapes[i] = "cylinder";
             }
         }
 
@@ -405,11 +438,23 @@ public class VisualObjs : MonoBehaviour
                 int cubeId = UnityEngine.Random.Range(0, cubes.Count);
                 material = cubes[cubeId].name;
             }
-            else
+            else if (shapeId == 1)
             {
                 shape = "sphere";
                 int sphereId = UnityEngine.Random.Range(0, spheres.Count);
                 material = spheres[sphereId].name;
+            }
+            else if (shapeId == 2)
+            {
+                shape = "cone";
+                int coneId = UnityEngine.Random.Range(0, cones.Count);
+                material = cones[coneId].name;
+            }
+            else
+            {
+                shape = "cylinder";
+                int cylinderId = UnityEngine.Random.Range(0, cylinders.Count);
+                material = cylinders[cylinderId].name;
             }
 
             sceneData[objId] = new ObjectStruct(objId, shape, material, size);

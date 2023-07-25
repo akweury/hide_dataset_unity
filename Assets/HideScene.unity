@@ -585,7 +585,7 @@ PrefabInstance:
       objectReference: {fileID: 2008057318401078053, guid: 21b4f89cf9866df48ad399c2b4443ac4, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: expName
-      value: letter_A
+      value: letter_B
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: objScale
@@ -593,11 +593,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: posScale
-      value: 0.7
+      value: 0.76
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sceneNum
-      value: 300
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: _objScale
@@ -605,7 +605,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: groupSize
-      value: group_11
+      value: group_12
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_Enabled
@@ -622,6 +622,10 @@ PrefabInstance:
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: materials.Array.size
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: coneModels.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.size
@@ -676,6 +680,18 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: coneModels.Array.data[0]
+      value: 
+      objectReference: {fileID: 1489421553030711868, guid: 52295d7f17b8145bdb7739642f603529, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: coneModels.Array.data[1]
+      value: 
+      objectReference: {fileID: 179836640834892126, guid: 91613f728e19b4fda948a01799fc0ef0, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: coneModels.Array.data[2]
+      value: 
+      objectReference: {fileID: 6722895929570748330, guid: badb91701ba5a4ba59d76c4fb9aa50e1, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.data[0]
       value: 
       objectReference: {fileID: 5105161876819932642, guid: c4317810eb84a437683c41133767e586, type: 3}
@@ -723,6 +739,10 @@ PrefabInstance:
       propertyPath: testModels.Array.data[5]
       value: 
       objectReference: {fileID: 3630839703144744730, guid: 12b0b376668d945c095d857efb75ecc8, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: cylinderModels.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: test_models.Array.data[0]
       value: 
@@ -799,6 +819,18 @@ PrefabInstance:
       propertyPath: train_models.Array.data[6]
       value: 
       objectReference: {fileID: 919132149155446097, guid: 4c94dde561c388d488678bc3939e75d6, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: cylinderModels.Array.data[0]
+      value: 
+      objectReference: {fileID: 803313868679334158, guid: 45b21e9731a9744dca9f5e902ef34f63, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: cylinderModels.Array.data[1]
+      value: 
+      objectReference: {fileID: 3913009881849086123, guid: 684559283b04c4b8ca74289b73536d05, type: 3}
+    - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
+      propertyPath: cylinderModels.Array.data[2]
+      value: 
+      objectReference: {fileID: 394725301618089077, guid: 96f6ab9a5cc8749178d715d405278a00, type: 3}
     - target: {fileID: 310855717209966750, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_RootOrder
       value: 1
