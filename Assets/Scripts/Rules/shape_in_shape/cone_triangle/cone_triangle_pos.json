@@ -1,5 +1,5 @@
 {
-  "rule_objs_per_scene": 9,
+  "rule_objs_per_scene": 8,
   "random_objs_per_scene": 0,
   "scene_num": 2,
   "scene_type": "positive",
@@ -8,33 +8,27 @@
   "max_shape_variation": 1,
   "min_color_variation": 1,
   "max_color_variation": 3,
-  "shape_type": "random",
-  
+  "shape_type": "cone",
   "objs": [
     {
-      "x": -1,
-      "y": 0,
-      "z": 2
-    },
-    {
       "x": 0,
       "y": 0,
       "z": 2
     },
     {
-      "x": 1,
-      "y": 0,
-      "z": 2
-    },
-    {
-      "x": 0,
+      "x": -0.66,
       "y": 0,
       "z": 1
     },
     {
-      "x": 0,
+      "x": -1.32,
       "y": 0,
       "z": 0
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -1
     },
     {
       "x": 0,
@@ -42,19 +36,19 @@
       "z": -1
     },
     {
-      "x": 0,
+      "x": 2,
       "y": 0,
-      "z": -2
+      "z": -1
     },
     {
-      "x": -0.8,
+      "x": 1.32,
       "y": 0,
-      "z": -2.1
+      "z": 0
     },
     {
-      "x": -1.5,
+      "x": 0.66,
       "y": 0,
-      "z": -1.9
+      "z": 1
     }
   ]
-}
+}             

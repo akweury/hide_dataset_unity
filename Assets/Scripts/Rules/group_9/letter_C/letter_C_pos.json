@@ -7,7 +7,8 @@
   "min_shape_variation": 1,
   "max_shape_variation": 1,
   "min_color_variation": 1,
-  "max_color_variation": 3,
+  "max_color_variation": 3, 
+  "shape_type": "random",
   "objs": [
     {
       "x": 2,

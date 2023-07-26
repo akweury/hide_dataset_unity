@@ -63,6 +63,7 @@ public class VisualObjs : MonoBehaviour
     private string _useType;
     private string _sceneSign;
     public int sceneNum;
+    public String expGroup;
     public String groupSize;
     public String expName;
     public float tableScale;
@@ -83,7 +84,7 @@ public class VisualObjs : MonoBehaviour
         _useType = "train";
         _sceneTypeCounter += 1;
 
-        _rootDatasetPath = _assetsPath + "../Datasets/";
+        _rootDatasetPath = _assetsPath + "../../../storage/" + expGroup + "/";
 
         _groupPath = _assetsPath + "Scripts/Rules/" + groupSize + "/";
         _rulePath = _groupPath + expName + "/";
@@ -329,8 +330,7 @@ public class VisualObjs : MonoBehaviour
     {
         RuleJson.ObjProp obj;
         int objId = 0;
-        string[] randomMaterialIDs = new string[rules.RuleObjPerScene];
-        string[] randomShapeIDs = new string[rules.RuleObjPerScene];
+        string[] objShapes = new string[rules.RuleObjPerScene];
 
         Random rnd = new Random();
         int[] totalColorID = new int[] { 0, 1, 2 };
@@ -349,43 +349,54 @@ public class VisualObjs : MonoBehaviour
             uniqueColorItems = colorIDs.Distinct<int>();
         } while (uniqueColorItems.Count() < rules.MinColorVariation);
 
-        int[] totalShapeID = new int[] { 0, 1, 2, 3 };
-        int[] randomShapeID = totalShapeID.OrderBy(x => rnd.Next()).ToArray();
-        string[] objShapes = new string[rules.RuleObjPerScene];
-        int[] shapeIDs = new int[rules.RuleObjPerScene];
-        IEnumerable<int> uniqueShapeItems;
-        do
+
+        if (rules.ShapeType == "random")
         {
+            int[] totalShapeID = new int[] { 0, 1, 2, 3 };
+            int[] randomShapeID = totalShapeID.OrderBy(x => rnd.Next()).ToArray();
+            int[] shapeIDs = new int[rules.RuleObjPerScene];
+            IEnumerable<int> uniqueShapeItems;
+            do
+            {
+                for (int i = 0; i < rules.RuleObjPerScene; i++)
+                {
+                    int randomShapeIndex = UnityEngine.Random.Range(0, rules.MaxShapeVariation);
+                    shapeIDs[i] = randomShapeID[randomShapeIndex];
+                }
+
+                uniqueShapeItems = shapeIDs.Distinct<int>();
+            } while (uniqueShapeItems.Count() < rules.MinShapeVariation);
+
             for (int i = 0; i < rules.RuleObjPerScene; i++)
             {
                 int randomShapeIndex = UnityEngine.Random.Range(0, rules.MaxShapeVariation);
-                shapeIDs[i] = randomShapeID[randomShapeIndex];
-            }
-
-            uniqueShapeItems = shapeIDs.Distinct<int>();
-        } while (uniqueShapeItems.Count() < rules.MinShapeVariation);
-
-        for (int i = 0; i < rules.RuleObjPerScene; i++)
-        {
-            int randomShapeIndex = UnityEngine.Random.Range(0, rules.MaxShapeVariation);
-            int shapeID = randomShapeID[randomShapeIndex];
-            if (shapeID == 0)
-            {
-                objShapes[i] = "cube";
-            }
-            else if (shapeID == 1)
-            {
-                objShapes[i] = "sphere";
-            }
-            else if (shapeID == 2)
-            {
-                objShapes[i] = "cone";
-            }
-            else if (shapeID == 3)
-            {
-                objShapes[i] = "cylinder";
+                int shapeID = randomShapeID[randomShapeIndex];
+                if (shapeID == 0)
+                {
+                    objShapes[i] = "cube";
+                }
+                else if (shapeID == 1)
+                {
+                    objShapes[i] = "sphere";
+                }
+                else if (shapeID == 2)
+                {
+                    objShapes[i] = "cone";
+                }
+                else if (shapeID == 3)
+                {
+                    objShapes[i] = "cylinder";
+                }
             }
         }
+        else
+        {
+            for (int i = 0; i < rules.RuleObjPerScene; i++)
+            {
+                objShapes[i] = rules.ShapeType;
+            }
+        }
+
 
         for (int i = 0; i < rules.RuleObjPerScene; i++)
         {

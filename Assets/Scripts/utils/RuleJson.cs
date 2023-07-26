@@ -25,6 +25,7 @@ public class RuleJson
     [JsonProperty("max_shape_variation")] public int MaxShapeVariation;
     [JsonProperty("min_color_variation")] public int MinColorVariation;
     [JsonProperty("max_color_variation")] public int MaxColorVariation;
+    [JsonProperty("shape_type")] public string ShapeType;
 
     public struct ObjProp
     {
