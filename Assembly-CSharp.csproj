@@ -73,7 +73,9 @@
      <Folder Include="Assets/Scripts/Rules/group_12/letter_R" />
      <Folder Include="Assets/Scripts/Rules/check_mark_5/line_5" />
      <None Include="Assets/Scripts/Rules/group_9/letter_V/letter_V_pos.json" />
+     <Folder Include="Assets/Scripts/Rules/randomTrain" />
      <Folder Include="Assets/Scripts/Rules/check_mark_4" />
+     <None Include="Assets/Scripts/Rules/randomTrain/random_neg_random.json" />
      <None Include="Assets/Scripts/Rules/group_12/letter_D/letter_D_pos_v1.json" />
      <None Include="Assets/NormalShader.shader" />
      <None Include="Assets/Scripts/Rules/group_10/group_10_neg_random.json" />
@@ -121,6 +123,8 @@
      <Folder Include="Assets/Scripts/Rules/group_12" />
      <Folder Include="Assets/Materials/food_avocado" />
      <Folder Include="Assets/Scripts/Rules/group_9/letter_I" />
+     <None Include="Assets/Scripts/Rules/randomTrain/random/random_pos.json" />
+     <Folder Include="Assets/Scripts/Rules/randomTrain/random" />
      <Folder Include="Assets/Scripts/Rules/group_10/letter_P" />
      <Folder Include="Assets/Scripts/Rules/shape_in_shape/sphere_circle" />
      <None Include="Assets/Scripts/Rules/group_10/letter_O/letter_O_pos_v1.json" />
