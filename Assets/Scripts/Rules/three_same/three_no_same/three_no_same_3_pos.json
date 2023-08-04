@@ -3,7 +3,7 @@
   "random_objs_per_scene": 0,
   "scene_num": 2,
   "scene_type": "positive",
-  "random_position": false,
+  "random_position": true,
   "min_shape_variation": 2,
   "max_shape_variation": 3,
   "min_color_variation": 2,
