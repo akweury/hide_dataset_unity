@@ -68,7 +68,9 @@
      <Folder Include="Assets/Prefabs" />
      <Folder Include="Assets/HideScene" />
      <None Include="Assets/Scripts/Rules/group_11/group_11_neg_random.json" />
+     <None Include="Assets/Scripts/Rules/three_same/three_same_color_3/three_same_color_3_pos.json" />
      <None Include="Assets/Scripts/Rules/group_12/group_12_neg_random.json" />
+     <Folder Include="Assets/Scripts/Rules/three_same/three_same_color_3" />
      <None Include="Assets/Scripts/Rules/ten_same_10/ten_same_10_neg_random.json" />
      <Folder Include="Assets/Scripts/Rules/group_12/letter_R" />
      <Folder Include="Assets/Scripts/Rules/check_mark_5/line_5" />
@@ -83,6 +85,7 @@
      <None Include="Assets/Scripts/Rules/check_mark_5/line_5/line_5_pos.json" />
      <None Include="Assets/Scripts/Rules/check_mark_5/check_mark_5_neg_random.json" />
      <Folder Include="Assets/Scripts/Rules/group_9/letter_X" />
+     <None Include="Assets/Scripts/Rules/three_same/three_no_same/three_no_same_3_pos.json" />
      <None Include="Assets/Scripts/Rules/group_9/letter_T/letter_T_pos.json" />
      <Folder Include="Assets/Scripts/Rules/group_11/letter_F" />
      <None Include="Assets/Scripts/Rules/shape_in_shape/cube_square/cube_square_pos.json" />
@@ -90,6 +93,7 @@
      <None Include="Assets/Scripts/Rules/six_same_6/six_same_shape_6/six_same_shape_6_pos.json" />
      <Folder Include="Assets/Scripts/Rules/group_12/letter_D" />
      <None Include="Assets/Scripts/Rules/ten_same_10/ten_same_color_10/ten_same_color_10_pos.json" />
+     <Folder Include="Assets/Scripts/Rules/three_same" />
      <Folder Include="Assets/Scripts/Rules/check_mark_5" />
      <Folder Include="Assets/Scripts/Rules/group_7/letter_L" />
      <None Include="Assets/Scripts/Rules/ten_same_10/ten_same_10/ten_same_10_pos.json" />
@@ -120,6 +124,7 @@
      <None Include="Assets/Scripts/Rules/group_11/letter_E/letter_E_pos_v1.json" />
      <Folder Include="Assets/Scripts/Rules/check_mark_4/check_mark_4" />
      <Folder Include="Assets/Scripts/Rules/group_11/letter_M" />
+     <None Include="Assets/Scripts/Rules/three_same/three_same_3/three_same_pos.json" />
      <Folder Include="Assets/Scripts/Rules/group_12" />
      <Folder Include="Assets/Materials/food_avocado" />
      <Folder Include="Assets/Scripts/Rules/group_9/letter_I" />
@@ -133,6 +138,7 @@
      <Folder Include="Assets/Scripts/Rules/group_9" />
      <None Include="Assets/Scripts/Rules/group_11/letter_M/letter_M_pos_v1.json" />
      <Folder Include="Assets/Scripts/Rules/group_10/letter_O" />
+     <Folder Include="Assets/Scripts/Rules/three_same/three_same_shape_3" />
      <None Include="Assets/DepthShader.shader" />
      <None Include="Assets/Scripts/Rules/group_10/letter_P/letter_P_pos_v1.json" />
      <None Include="Assets/Scripts/Rules/check_mark_5/check_mark_5/check_mark_5_pos.json" />
@@ -150,6 +156,8 @@
      <Folder Include="Assets/Scripts/Rules" />
      <None Include="Assets/Scripts/Rules/shape_in_shape/sphere_circle/sphere_circle_pos.json" />
      <Folder Include="Assets/Scripts/Rules/six_same_6/six_same_6" />
+     <Folder Include="Assets/Scripts/Rules/three_same/three_same_3" />
+     <Folder Include="Assets/Scripts/Rules/three_same/three_no_same" />
      <None Include="Assets/Scripts/Rules/group_11/letter_S/letter_S_pos_v1.json" />
      <Folder Include="Assets/Scripts/Rules/group_11/letter_A" />
      <Folder Include="Assets/Scripts/Rules/group_9/letter_C" />
@@ -191,6 +199,8 @@
      <None Include="Assets/Scripts/Rules/group_7/group_7_neg_random.json" />
      <Folder Include="Assets/Scripts/Rules/shape_in_shape/cube_square" />
      <None Include="Assets/Scripts/Rules/check_mark_6/line_5/line_6_pos.json" />
+     <None Include="Assets/Scripts/Rules/three_same/three_same_shape_3/three_same_shape_3_pos.json" />
+     <None Include="Assets/Scripts/Rules/three_same/three_same_neg_random.json" />
      <Reference Include="UnityEngine">
      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>

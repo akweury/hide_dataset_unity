@@ -1,0 +1,29 @@
+{
+  "rule_objs_per_scene": 3,
+  "random_objs_per_scene": 0,
+  "scene_num": 2,
+  "scene_type": "positive",
+  "random_position": false,
+  "min_shape_variation": 1,
+  "max_shape_variation": 1,
+  "min_color_variation": 1,
+  "max_color_variation": 1,
+  "shape_type": "random",
+  "objs": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 0
+    }
+  ]
+}
