@@ -86,7 +86,7 @@ public class VisualObjs : MonoBehaviour
         _useType = "train";
         _sceneTypeCounter += 1;
 
-        _rootDatasetPath = _assetsPath + "../../../storage/" + expGroup + "/";
+        _rootDatasetPath = _assetsPath + "../../storage/" + expGroup + "/";
 
         _groupPath = _assetsPath + "Scripts/Rules/" + groupSize + "/";
         _rulePath = _groupPath + expName + "/";
