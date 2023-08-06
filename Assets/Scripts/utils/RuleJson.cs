@@ -29,9 +29,9 @@ public class RuleJson
 
     public struct ObjProp
     {
-        [JsonProperty("x")] public float x;
-        [JsonProperty("y")] public float y;
-        [JsonProperty("z")] public float z;
+        [JsonProperty("x")] public float X;
+        [JsonProperty("y")] public float Y;
+        [JsonProperty("z")] public float Z;
     }
 
     public static Dictionary<string, float> strFloMapping = new()

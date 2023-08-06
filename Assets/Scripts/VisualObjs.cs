@@ -97,7 +97,6 @@ public class VisualObjs : MonoBehaviour
         _depthCamera.Cam.targetTexture = texture;
         RenderSettings.ambientLight = Color.gray;
 
-
         System.IO.Directory.CreateDirectory(_rootDatasetPath);
         System.IO.Directory.CreateDirectory(_datasetPath);
         System.IO.Directory.CreateDirectory(_datasetPath + "test");
@@ -242,12 +241,28 @@ public class VisualObjs : MonoBehaviour
 
     void RenderNewScene(RuleJson rules, List<GameObject> spheres, List<GameObject> cubes, List<GameObject> cylinders)
     {
-        int objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
+        var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
         _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
         _objInstances = new List<GameObject>(new GameObject[objNum]);
 
-        _sceneData = FillSceneData(rules, _sceneData, spheres, cubes, cylinders);
-        _sceneData = FillObjsPositions(rules, _sceneData);
+        if (expGroup == "custom_scenes")
+        {
+            var position = table.transform.position;
+            var centerPoint = new Vector3(position[0], position[1] + _tableHeight * 0.5F, position[2]);
+            var customScenes = new CustomScenes(_sceneData, objScale, centerPoint, _tableWidth);
+
+            if (expName == "diagonal")
+            {
+                _sceneData = customScenes.DiagScene(rules.ShapeType);    
+            }
+            
+        }
+        else
+        {
+            _sceneData = FillSceneData(rules, _sceneData, spheres, cubes, cylinders);
+            _sceneData = FillObjsPositions(rules, _sceneData);
+        }
+
 
         int objId = 0;
         foreach (var sceneObj in _sceneData)
@@ -595,15 +610,15 @@ public class VisualObjs : MonoBehaviour
             // choose a proper position
             bool pos_good = true;
             // give a random position for the target object
-            if (objProp.x == 0F && objProp.z == 0F)
+            if (objProp.X == 0F && objProp.Z == 0F)
             {
                 obj_pos = new Vector3(center[0], center[1] + obj_radius, center[2]);
             }
             // give a position for the rest rule objects based on target object position and info from the json file
             else
             {
-                obj_pos = new Vector3(objProp.x * posScale + center[0], objProp.y + center[1] + obj_radius,
-                    objProp.z * posScale + center[2]);
+                obj_pos = new Vector3(objProp.X * posScale + center[0], objProp.Y + center[1] + obj_radius,
+                    objProp.Z * posScale + center[2]);
 
                 // check if new position locates in the area of table
                 if (obj_pos[0] < -(float)(_tableWidth / 2) + obj_radius ||

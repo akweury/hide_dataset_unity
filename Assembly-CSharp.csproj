@@ -41,6 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\CustomScenes.cs" />
      <Compile Include="Assets\Scripts\utils\RuleJson.cs" />
      <Compile Include="Assets\Scripts\utils\ObjectStruct.cs" />
      <Compile Include="Assets\Scripts\utils\SceneEngine.cs" />
@@ -112,6 +113,7 @@
      <None Include="Assets\Scripts\Rules\six_same_6\six_no_same_6\six_no_same_6_pos.json" />
      <Folder Include="Assets\Scripts\Rules\check_mark_4\cross_4" />
      <Folder Include="Assets\Scripts\Rules\group_10\letter_Z" />
+     <None Include="Assets\Scripts\Rules\diagonal\diagonal\diagonal_pos.json" />
      <Folder Include="Assets\Scripts\Rules\group_9\letter_V" />
      <None Include="Assets\Scripts\Rules\group_10\letter_N\letter_N_pos_v1.json" />
      <Folder Include="Assets\Materials" />
@@ -135,11 +137,13 @@
      <Folder Include="Assets\Scripts\Rules\three_same\three_same_shape_3" />
      <None Include="Assets\DepthShader.shader" />
      <None Include="Assets\Scripts\Rules\group_10\letter_P\letter_P_pos_v1.json" />
+     <Folder Include="Assets\Scripts\Rules\diagonal\diagonal" />
      <None Include="Assets\Scripts\Rules\check_mark_5\check_mark_5\check_mark_5_pos.json" />
      <None Include="Assets\Scripts\Rules\group_10\letter_U\letter_U_pos_v1.json" />
      <Folder Include="Assets\3DModels" />
      <Folder Include="Assets\Scripts\Rules\ten_same_10\ten_same_color_10" />
      <Folder Include="Assets\Scripts\Rules\group_12\letter_Q" />
+     <None Include="Assets\Scripts\Rules\diagonal\diagonal_neg.json" />
      <None Include="Assets\Scripts\Rules\check_mark_4\cross_4\cross_4_pos.json" />
      <Folder Include="Assets\Scripts\utils" />
      <Folder Include="Assets\Scripts\Rules\check_mark_5\cross_5" />
@@ -166,6 +170,7 @@
      <Folder Include="Assets\EnvMaps\Materials" />
      <Folder Include="Assets\Scripts\Rules\group_10\letter_K" />
      <Folder Include="Assets\Scripts\Rules\check_mark_5" />
+     <Folder Include="Assets\Scripts\Rules\diagonal" />
      <Folder Include="Assets\Scripts\Rules\group_10\letter_N" />
      <Folder Include="Assets\Scripts\Rules\group_11\letter_W" />
      <None Include="Assets\Scripts\Rules\group_9\letter_I\letter_I_pos.json" />
