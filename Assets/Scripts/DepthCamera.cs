@@ -247,9 +247,9 @@ public class DepthCamera
                           "\"size\":" + sceneData[i].Size + "," +
                           "\"material\":\"" + sceneData[i].Material + "\"" + "," +
                           "\"position\":[" +
-                          (float)sceneData[i].Position[0] + "," +
-                          (float)sceneData[i].Position[1] + "," +
-                          (float)sceneData[i].Position[2] +
+                          sceneData[i].Position[0].ToString() + "," +
+                          sceneData[i].Position[1].ToString() + "," +
+                          sceneData[i].Position[2].ToString() +
                           "]" + "," +
                           "\"screenPosition\":[" +
                           screenPos[0] + "," +
