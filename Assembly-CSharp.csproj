@@ -47,17 +47,22 @@
      <Compile Include="Assets/Scripts/utils/SceneEngine.cs" />
      <Compile Include="Assets/Scripts/DepthCamera.cs" />
      <Compile Include="Assets/Scripts/utils/SceneJson.cs" />
+     <Compile Include="Assets/Scripts/CustomScenes.cs" />
      <Compile Include="Assets/Scripts/VisualObjs.cs" />
      <Folder Include="Assets" />
+     <Folder Include="Assets/Scripts/Rules/close" />
      <Folder Include="Assets/Scripts/Rules/ten_same_10/ten_no_same_10" />
      <Folder Include="Assets/Scripts/Rules/group_9/letter_T" />
      <None Include="Assets/Scripts/Rules/group_7/letter_L/letter_L_pos.json" />
      <None Include="Assets/Scripts/Rules/group_12/letter_G/letter_G_pos_v1.json" />
      <Folder Include="Assets/3DModels/BasicModels" />
+     <None Include="Assets/Scripts/Rules/exist/no_red_cube_and_no_sphere_neg.json" />
      <None Include="Assets/Scripts/Rules/group_9/letter_X/letter_X_pos.json" />
      <Folder Include="Assets/Scripts/Rules/six_same_6" />
+     <Folder Include="Assets/Scripts/Rules/diagonal" />
      <None Include="Assets/Scripts/Rules/group_9/group_9_neg_random.json" />
      <None Include="Assets/PhaseShader.shader" />
+     <None Include="Assets/Scripts/Rules/diagonal/diagonal_neg.json" />
      <Folder Include="Assets/Scripts/Rules/six_same_6/six_same_shape_6" />
      <None Include="Assets/Scripts/Rules/check_mark_6/check_mark_6_neg_random.json" />
      <Folder Include="Assets/Scripts/Rules/check_mark_6/check_mark_6" />
@@ -71,6 +76,7 @@
      <None Include="Assets/Scripts/Rules/three_same/three_same_color_3/three_same_color_3_pos.json" />
      <None Include="Assets/Scripts/Rules/group_12/group_12_neg_random.json" />
      <Folder Include="Assets/Scripts/Rules/three_same/three_same_color_3" />
+     <None Include="Assets/Scripts/Rules/exist/red_cube_and_no_sphere/red_cube_and_no_sphere.json" />
      <None Include="Assets/Scripts/Rules/ten_same_10/ten_same_10_neg_random.json" />
      <Folder Include="Assets/Scripts/Rules/group_12/letter_R" />
      <Folder Include="Assets/Scripts/Rules/check_mark_5/line_5" />
@@ -80,6 +86,7 @@
      <None Include="Assets/Scripts/Rules/randomTrain/random_neg_random.json" />
      <None Include="Assets/Scripts/Rules/group_12/letter_D/letter_D_pos_v1.json" />
      <None Include="Assets/NormalShader.shader" />
+     <Folder Include="Assets/Scripts/Rules/exist" />
      <None Include="Assets/Scripts/Rules/group_10/group_10_neg_random.json" />
      <Folder Include="Assets/EnvMaps" />
      <None Include="Assets/Scripts/Rules/check_mark_5/line_5/line_5_pos.json" />
@@ -91,6 +98,7 @@
      <None Include="Assets/Scripts/Rules/shape_in_shape/cube_square/cube_square_pos.json" />
      <Folder Include="Assets/Scripts/Rules/two_pairs" />
      <None Include="Assets/Scripts/Rules/six_same_6/six_same_shape_6/six_same_shape_6_pos.json" />
+     <Folder Include="Assets/Scripts/Rules/exist/red_cube_and_no_sphere" />
      <Folder Include="Assets/Scripts/Rules/group_12/letter_D" />
      <None Include="Assets/Scripts/Rules/ten_same_10/ten_same_color_10/ten_same_color_10_pos.json" />
      <Folder Include="Assets/Scripts/Rules/three_same" />
@@ -99,6 +107,7 @@
      <None Include="Assets/Scripts/Rules/ten_same_10/ten_same_10/ten_same_10_pos.json" />
      <Folder Include="Assets/Scripts/Rules/group_10" />
      <Folder Include="Assets/Scripts/Rules/ten_same_10/ten_same_shape_10" />
+     <Folder Include="Assets/Scripts/Rules/close/close" />
      <Folder Include="Assets/Scripts/Rules/group_11/letter_E" />
      <Folder Include="Assets/Scripts/Rules/check_mark_6/line_5" />
      <None Include="Assets/Scripts/Rules/group_12/letter_H/letter_H_pos_v1.json" />
@@ -106,6 +115,8 @@
      <None Include="Assets/Scripts/Rules/group_11/letter_F/letter_F_pos_v1.json" />
      <None Include="Assets/Scripts/Rules/group_10/letter_K/letter_K_pos_v1.json" />
      <Folder Include="Assets/Scripts/Rules/group_7/letter_Y" />
+     <Folder Include="Assets/Scripts/Rules/exist/red_cube_and_random_sphere" />
+     <None Include="Assets/Scripts/Rules/diagonal/diagonal/diagonal_pos.json" />
      <None Include="Assets/Scripts/Rules/group_10/letter_Z/letter_Z_pos_v1.json" />
      <Folder Include="Assets/Scripts/Rules/six_same_6/six_no_same_6" />
      <None Include="Assets/Scripts/Rules/shape_in_shape/shape_in_shape_neg_random.json" />
@@ -117,6 +128,7 @@
      <Folder Include="Assets/Materials/food_lime" />
      <Folder Include="Assets/Scripts/Rules/check_mark_4/cross_4" />
      <Folder Include="Assets/Scripts/Rules/group_10/letter_Z" />
+     <None Include="Assets/Scripts/Rules/close/close_neg.json" />
      <Folder Include="Assets/Scripts/Rules/group_9/letter_V" />
      <None Include="Assets/Scripts/Rules/group_10/letter_N/letter_N_pos_v1.json" />
      <Folder Include="Assets/Materials" />
@@ -124,6 +136,7 @@
      <None Include="Assets/Scripts/Rules/group_11/letter_E/letter_E_pos_v1.json" />
      <Folder Include="Assets/Scripts/Rules/check_mark_4/check_mark_4" />
      <Folder Include="Assets/Scripts/Rules/group_11/letter_M" />
+     <Folder Include="Assets/Scripts/Rules/exist/no_red_cube_and_random_sphere" />
      <None Include="Assets/Scripts/Rules/three_same/three_same_3/three_same_pos.json" />
      <Folder Include="Assets/Scripts/Rules/group_12" />
      <Folder Include="Assets/Materials/food_avocado" />
@@ -132,6 +145,7 @@
      <Folder Include="Assets/Scripts/Rules/randomTrain/random" />
      <Folder Include="Assets/Scripts/Rules/group_10/letter_P" />
      <Folder Include="Assets/Scripts/Rules/shape_in_shape/sphere_circle" />
+     <None Include="Assets/Scripts/Rules/close/close/close_pos.json" />
      <None Include="Assets/Scripts/Rules/group_10/letter_O/letter_O_pos_v1.json" />
      <Folder Include="Assets/Scripts/Rules/check_mark_4/line_4" />
      <None Include="Assets/Scripts/Rules/group_9/letter_J/letter_J_pos.json" />
@@ -164,6 +178,7 @@
      <None Include="Assets/Scripts/Rules/check_mark_4/check_mark_4/check_mark_4_pos.json" />
      <None Include="Assets/Scripts/Rules/check_mark_6/check_mark_6/check_mark_6_pos.json" />
      <None Include="Assets/Scripts/Rules/group_12/letter_R/letter_R_pos_v1.json" />
+     <None Include="Assets/Scripts/Rules/exist/red_cube_and_random_sphere/red_cube_and_random_sphere.json" />
      <Folder Include="Assets/Scripts/Rules/group_12/letter_B" />
      <Folder Include="Assets/PhysMaterials" />
      <None Include="Assets/Scripts/Rules/group_12/letter_Q/letter_Q_pos_v1.json" />
@@ -182,12 +197,14 @@
      <Folder Include="Assets/Scripts" />
      <None Include="Assets/Scripts/Rules/six_same_6/six_same_6_neg_random.json" />
      <None Include="Assets/Scripts/Rules/check_mark_6/cross_6/cross_6_pos.json" />
+     <Folder Include="Assets/Scripts/Rules/diagonal/diagonal" />
      <None Include="Assets/Scripts/Rules/group_12/letter_B/letter_B_pos_v1.json" />
      <None Include="Assets/Scripts/Rules/ten_same_10/ten_same_shape_10/ten_same_shape_10_pos.json" />
      <Folder Include="Assets/Scripts/Rules/shape_in_shape/cone_triangle" />
      <Folder Include="Assets/Scripts/Rules/group_12/letter_G" />
      <None Include="Assets/Scripts/Rules/group_7/letter_Y/letter_Y_pos.json" />
      <None Include="Assets/Scripts/Rules/ten_same_10/ten_no_same_10/ten_no_same_10_pos.json" />
+     <None Include="Assets/Scripts/Rules/exist/no_red_cube_and_random_sphere/no_red_cube_and_random_sphere.json" />
      <Folder Include="Assets/Scripts/Rules/ten_same_10" />
      <Folder Include="Assets/Scripts/Rules/group_11/letter_S" />
      <Folder Include="Assets/Materials/Materials" />
@@ -448,13 +465,13 @@
      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEditor.UnityConnectModule.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/PackageCache/com.unity.visualscripting@1.7.8/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/PackageCache/com.unity.visualscripting@1.7.8/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
      </Reference>
      <Reference Include="ReportGeneratorMerged">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/PackageCache/com.unity.testtools.codecoverage@1.0.1/lib/ReportGenerator/ReportGeneratorMerged.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/PackageCache/com.unity.testtools.codecoverage@1.0.1/lib/ReportGenerator/ReportGeneratorMerged.dll</HintPath>
      </Reference>
      <Reference Include="Newtonsoft.Json">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/PackageCache/com.unity.nuget.newtonsoft-json@3.0.2/Runtime/Newtonsoft.Json.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/PackageCache/com.unity.nuget.newtonsoft-json@3.0.2/Runtime/Newtonsoft.Json.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>/Applications/Unity/Unity.app/Contents/NetStandard/ref/2.1.0/netstandard.dll</HintPath>
@@ -823,82 +840,82 @@
      <HintPath>/Applications/Unity/Unity.app/Contents/NetStandard/compat/2.1.0/shims/netfx/mscorlib.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.Flow.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Flow.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Flow.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VSCode.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.TextMeshPro.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Performance.Profile-Analyzer.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.Performance.Profile-Analyzer.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.Performance.Profile-Analyzer.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Model">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.TestTools.CodeCoverage.Editor.OpenCover.Model.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.TestTools.CodeCoverage.Editor.OpenCover.Model.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualStudio.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Timeline">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.Core.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Core.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Core.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.TextMeshPro">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.State.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.State.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.State.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.Flow">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Flow.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Flow.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.UI">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
      </Reference>
      <Reference Include="Unity.PlasticSCM.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Rider.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.UI">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Services.Core">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.Services.Core.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.Services.Core.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.Core">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Core.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Core.dll</HintPath>
      </Reference>
      <Reference Include="Unity.EditorCoroutines.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.EditorCoroutines.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.EditorCoroutines.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Services.Core.Analytics">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.Services.Core.Analytics.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.Services.Core.Analytics.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.Shared.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Shared.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.Shared.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Services.Core.Environments">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.Services.Core.Environments.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.Services.Core.Environments.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Timeline.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.TestTools.CodeCoverage.Editor">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.TestTools.CodeCoverage.Editor.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.TestTools.CodeCoverage.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.State">
-     <HintPath>/Users/jing/PycharmProjects/SpatialRelationProject/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.State.dll</HintPath>
+     <HintPath>/Users/jing/PycharmProjects/hide_dataset_unity/Library/ScriptAssemblies/Unity.VisualScripting.State.dll</HintPath>
      </Reference>
   </ItemGroup>
   <ItemGroup>

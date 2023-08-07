@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -249,13 +250,15 @@ public class VisualObjs : MonoBehaviour
         {
             var position = table.transform.position;
             var centerPoint = new Vector3(position[0], position[1] + _tableHeight * 0.5F, position[2]);
-            var customScenes = new CustomScenes(_sceneData, objScale, centerPoint, _tableWidth);
+            var customScenes = new CustomScenes(_sceneData, objScale, centerPoint, _tableWidth, UnifyRadius);
 
-            if (expName == "diagonal")
+            _sceneData = expName switch
             {
-                _sceneData = customScenes.DiagScene(rules.ShapeType);    
-            }
-            
+                "diagonal" => customScenes.DiagScene(rules.ShapeType),
+                "close" => customScenes.CloseScene(rules.ShapeType),
+                "red_cube_and_random_sphere" => customScenes.ExistScene(rules.ShapeType),
+                _ => _sceneData
+            };
         }
         else
         {
