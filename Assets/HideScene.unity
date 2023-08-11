@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.21228011, g: 0.21228011, b: 0.21228011, a: 1}
+  m_IndirectSpecularColor: {r: 0.20837422, g: 0.21215841, b: 0.20837422, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -585,11 +585,11 @@ PrefabInstance:
       objectReference: {fileID: 2008057318401078053, guid: 21b4f89cf9866df48ad399c2b4443ac4, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: expName
-      value: red_cube_and_random_sphere
+      value: letter_W
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: expGroup
-      value: custom_scenes
+      value: alphabet
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: objScale
@@ -597,11 +597,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: posScale
-      value: 0.8
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sceneNum
-      value: 40
+      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: _objScale
@@ -609,7 +609,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: groupSize
-      value: exist
+      value: group_all
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_Enabled
@@ -698,15 +698,15 @@ PrefabInstance:
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.data[0]
       value: 
-      objectReference: {fileID: 5105161876819932642, guid: c4317810eb84a437683c41133767e586, type: 3}
+      objectReference: {fileID: 2653593239239676703, guid: 5d914ab0c8c7a194abc23c5da75fe3db, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.data[1]
       value: 
-      objectReference: {fileID: 5246011121959925047, guid: e3caedc6c96544a768e49cd9aea5cd29, type: 3}
+      objectReference: {fileID: 5246011121959925047, guid: b8b1f77d4484d3346b042a48595051fb, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.data[2]
       value: 
-      objectReference: {fileID: 2653593239239676703, guid: 180cf09287fe04c69aebef7c8dae93d0, type: 3}
+      objectReference: {fileID: 5105161876819932642, guid: cb41e31549a9e4e3895cf07a267b1e71, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cubeModels.Array.data[3]
       value: 
@@ -790,15 +790,15 @@ PrefabInstance:
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[0]
       value: 
-      objectReference: {fileID: 8740907846074378234, guid: 364c854aa0c57419c96db3a485bfbf7f, type: 3}
+      objectReference: {fileID: 5651301684290632972, guid: 71152746c131e7646aa1955a91392d57, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[1]
       value: 
-      objectReference: {fileID: 5651301684290632972, guid: 6ff564af71a2643038e579bba5d3d6d1, type: 3}
+      objectReference: {fileID: 4302390928170618414, guid: ed964aa48248f5d4692a1f1bb579bdfa, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[2]
       value: 
-      objectReference: {fileID: 4302390928170618414, guid: 6e8d93547d1414936910144f948e0499, type: 3}
+      objectReference: {fileID: 8740907846074378234, guid: 097999a095ec16e4c8c6f4360ef88465, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sphereModels.Array.data[3]
       value: 
@@ -826,15 +826,15 @@ PrefabInstance:
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cylinderModels.Array.data[0]
       value: 
-      objectReference: {fileID: 803313868679334158, guid: 45b21e9731a9744dca9f5e902ef34f63, type: 3}
+      objectReference: {fileID: 394725301618089077, guid: b5c018ced8bfe31498a86eaee75e4c89, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cylinderModels.Array.data[1]
       value: 
-      objectReference: {fileID: 3913009881849086123, guid: 684559283b04c4b8ca74289b73536d05, type: 3}
+      objectReference: {fileID: 3913009881849086123, guid: 41949944ecd140f48a4b500160eddf03, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: cylinderModels.Array.data[2]
       value: 
-      objectReference: {fileID: 394725301618089077, guid: 96f6ab9a5cc8749178d715d405278a00, type: 3}
+      objectReference: {fileID: 803313868679334158, guid: ba560673b40f90d478e4f524c27bc293, type: 3}
     - target: {fileID: 310855717209966750, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -898,6 +898,6 @@ PrefabInstance:
     - target: {fileID: 1572531353772041240, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: e30bfee83be1a488dbae4d093f538f17, type: 2}
+      objectReference: {fileID: 2100000, guid: 96eca905fa162fb478a3d5f195b6c049, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}

@@ -255,6 +255,7 @@ public class VisualObjs : MonoBehaviour
             _sceneData = expName switch
             {
                 "diagonal" => customScenes.DiagScene(rules.ShapeType),
+                "diagonal_high_res" => customScenes.DiagScene(rules.ShapeType),
                 "close" => customScenes.CloseScene(rules.ShapeType),
                 "red_cube_and_random_sphere" => customScenes.ExistScene(rules.ShapeType),
                 _ => _sceneData
@@ -608,7 +609,7 @@ public class VisualObjs : MonoBehaviour
         {
             // exceed the maximum trying time
             num_tries += 1;
-            if (num_tries > MaxNumTry) return obj;
+            if (num_tries > MaxNumTry) throw new IndexOutOfRangeException();
 
             // choose a proper position
             bool pos_good = true;
