@@ -120,7 +120,7 @@ public class VisualObjs : MonoBehaviour
         {
             posRules[i] = LoadNewRule(posRuleFiles[i].FullName);
             posRules[i].SceneType = "positive";
-            posRules[i].SceneNum = sceneNum;
+            posRules[i].SceneNum = sceneNum / posRuleFiles.Length;
         }
 
         // get negative rule files
@@ -538,7 +538,6 @@ public class VisualObjs : MonoBehaviour
                 table.transform.position[2] /* + UnityEngine.Random.Range(-(_tableLength / 5), (_tableLength / 5)) */);
 
             // add rule objects
-
             for (int i = 0; i < rules.RuleObjPerScene; i++)
             {
                 if (rules.IsRandomPosition)
@@ -572,6 +571,16 @@ public class VisualObjs : MonoBehaviour
                     objIdx++;
                 }
             }
+
+            // rotate a random degree
+            // var rotateRadians = UnityEngine.Random.Range(-0.17f, 0.17f); // 0.17 radians == 10 degrees
+            // foreach (var obj in sceneData)
+            // {
+            //     obj.Position.x = Mathf.Cos(rotateRadians) * obj.Position.x -
+            //                    Mathf.Sin(rotateRadians) * obj.Position.z;
+            //     obj.Position.z = Mathf.Sin(rotateRadians) * obj.Position.x +
+            //                    Mathf.Cos(rotateRadians) * obj.Position.z;
+            // }
 
 
             layoutFinished = CheckScene(sceneData);
