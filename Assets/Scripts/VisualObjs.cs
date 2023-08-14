@@ -634,10 +634,10 @@ public class VisualObjs : MonoBehaviour
                     objProp.Z * posScale + center[2]);
 
                 // check if new position locates in the area of table
-                if (obj_pos[0] < -(float)(_tableWidth / 2) + obj_radius ||
-                    obj_pos[0] > (float)(_tableWidth / 2) - obj_radius ||
-                    obj_pos[2] < -(float)(_tableLength / 2) + obj_radius ||
-                    obj_pos[2] > (float)(_tableLength / 2) - obj_radius
+                if (obj_pos[0] < -(_tableWidth / 2) + obj_radius ||
+                    // obj_pos[0] > (_tableWidth / 2) - obj_radius ||
+                    obj_pos[2] < -(_tableLength / 2) + obj_radius ||
+                    obj_pos[2] > (_tableLength / 2) - obj_radius
                    )
                 {
                     pos_good = false;
