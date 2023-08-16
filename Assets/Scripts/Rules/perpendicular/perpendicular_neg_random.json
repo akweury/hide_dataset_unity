@@ -1,9 +1,9 @@
 {
-  "rule_objs_per_scene": 21,
+  "rule_objs_per_scene": 10,
   "random_objs_per_scene": 0,
   "scene_num": 2,
   "scene_type": "positive",
-  "random_position": false,
+  "random_position": true,
   "min_shape_variation": 1,
   "max_shape_variation": 1,
   "min_color_variation": 1,
@@ -59,64 +59,6 @@
       "x": -2.2,
       "y": 0,
       "z": -0.6
-    },
-    {
-      "x": -1.4,
-      "y": 0,
-      "z": -0.6
-    },
-    
-    
-    
-    {
-      "x": 0.7,
-      "y": 0,
-      "z": 2
-    },
-    {
-      "x": 0.7,
-      "y": 0,
-      "z": 1
-    },
-    {
-      "x": 0.7,
-      "y": 0,
-      "z": 0
-    },
-    {
-      "x": 0.7,
-      "y": 0,
-      "z": -1
-    },
-    {
-      "x": 0.7,
-      "y": 0,
-      "z": -2
-    },
-    {
-      "x": 1.7,
-      "y": 0,
-      "z": 2
-    },
-    {
-      "x": 2.5,
-      "y": 0,
-      "z": 1.1
-    },
-    {
-      "x": 2.7,
-      "y": 0,
-      "z": 0
-    },
-    {
-      "x": 2.5,
-      "y": 0,
-      "z": -1.1
-    },
-    {
-      "x": 1.7,
-      "y": 0,
-      "z": -2
     }
   ]
 }

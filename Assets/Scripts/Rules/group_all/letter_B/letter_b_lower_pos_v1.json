@@ -1,5 +1,5 @@
 {
-  "rule_objs_per_scene": 12,
+  "rule_objs_per_scene": 9,
   "random_objs_per_scene": 0,
   "scene_num": 2,
   "scene_type": "positive",
@@ -34,21 +34,6 @@
       "x": 0,
       "y": 0,
       "z": -2
-    },
-    {
-      "x": 1,
-      "y": 0,
-      "z": 2
-    },
-    {
-      "x": 1.7,
-      "y": 0,
-      "z": 1.6
-    },
-    {
-      "x": 1.7,
-      "y": 0,
-      "z": 0.6
     },
     {
       "x": 1,

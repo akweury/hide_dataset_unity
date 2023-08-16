@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 using Random = System.Random;
 
 
@@ -148,9 +149,9 @@ public static class SceneUtils
     {
         var objPositions = new Vector3[totalObjNum];
         var numTries = 0;
-        const float minObjDist = 0.1f;
+        const float minObjDist = 0.2f;
         const int maxNumTry = 50;
-        float shiftMax = tableWidth / 3;
+        float shiftMax = tableWidth / 3f;
 
         // find a 3D position for the new object
 
@@ -198,6 +199,23 @@ public static class SceneUtils
         }
 
         return sceneData;
+    }
+
+    public static Vector3[] RotatePositions(float rotateScale, Vector3 rotateCenter, Vector3[] points)
+    {
+        // rotate a random degree
+        var rotateRadians = UnityEngine.Random.Range(0, rotateScale); // 0.17 radians == 10 degrees
+        var alpha = rotateCenter.x;
+        var beta = rotateCenter.z;
+        for (var i = 0; i < points.Length; i++)
+        {
+            points[i].x = alpha + Mathf.Cos(rotateRadians) * (points[i].x - alpha) -
+                          Mathf.Sin(rotateRadians) * (points[i].z - beta);
+            points[i].z = beta + Mathf.Sin(rotateRadians) * (points[i].x - alpha) +
+                          Mathf.Cos(rotateRadians) * (points[i].z - beta);
+        }
+
+        return points;
     }
 }
 
@@ -411,6 +429,71 @@ public class CustomScenes
         // if (sceneData[objIdx].Shape == "cube") objRadius *= (float)Math.Sqrt(2);
         // add rule object
         _sceneData = SceneUtils.IntegrateData(_sceneData, objShapes, objColors, objPositions, totalObjNum, _objScale);
+        return _sceneData;
+    }
+
+
+    public List<ObjectStruct> CrossScene(string positionType)
+    {
+        /* There are always a red cube and a random color sphere in the image. In addition, there are two other objects.*/
+        const int totalClusters = 3;
+        const int totalObjNum = 5;
+        var objShapes = new string[totalObjNum * totalClusters];
+        var objColors = new string[totalObjNum * totalClusters];
+        var objPositions = new Vector3[totalObjNum * totalClusters];
+        // setup object colors and shapes 
+        for (var clusterIndex = 0; clusterIndex < totalClusters; clusterIndex++)
+        {
+            for (var objIndex = 0; objIndex < totalObjNum; objIndex++)
+            {
+                var randomShapeIndex = UnityEngine.Random.Range(0, MaxShapeNum);
+
+                objShapes[clusterIndex * totalObjNum + objIndex] = randomShapeIndex switch
+                {
+                    0 => "cube",
+                    1 => "sphere",
+                    _ => "cylinder"
+                };
+                var randomColorIndex = UnityEngine.Random.Range(0, MaxColorNum);
+                objColors[clusterIndex * totalObjNum + objIndex] = randomColorIndex switch
+                {
+                    0 => "red",
+                    1 => "green",
+                    _ => "blue"
+                };
+            }
+        }
+
+        // setup object positions
+        float clusterRadius = _objRadius * 5;
+        float distScale = 0.5f;
+        // rotate a random degree
+        Vector3[] clusterCenters = SceneUtils.RandomPositions(_centerPoint, clusterRadius, _tableWidth, totalClusters);
+
+        for (var clusterIndex = 0; clusterIndex < totalClusters; clusterIndex++)
+        {
+            Vector3[] clusterPositions = new Vector3[totalObjNum];
+            clusterPositions[0] = clusterCenters[clusterIndex] + new Vector3(0, 0, 0);
+            clusterPositions[1] = clusterCenters[clusterIndex] + new Vector3(distScale, 0, 0);
+            clusterPositions[2] = clusterCenters[clusterIndex] + new Vector3(0, 0, distScale);
+            clusterPositions[3] = clusterCenters[clusterIndex] + new Vector3(-distScale, 0, 0);
+            clusterPositions[4] = clusterCenters[clusterIndex] + new Vector3(0, 0, -distScale);
+            // clusterPositions = SceneUtils.RotatePositions(1f, clusterCenters[clusterIndex], clusterPositions);
+
+            int clusterBaseIndex = clusterIndex * totalObjNum;
+            objPositions[clusterBaseIndex + 0] = clusterPositions[0];
+            objPositions[clusterBaseIndex + 1] = clusterPositions[1];
+            objPositions[clusterBaseIndex + 2] = clusterPositions[2];
+            objPositions[clusterBaseIndex + 3] = clusterPositions[3];
+            objPositions[clusterBaseIndex + 4] = clusterPositions[4];
+        }
+
+
+        // for cubes, adjust its radius
+        // if (sceneData[objIdx].Shape == "cube") objRadius *= (float)Math.Sqrt(2);
+        // add rule object
+        _sceneData = SceneUtils.IntegrateData(_sceneData, objShapes, objColors, objPositions,
+            totalClusters * totalObjNum, _objScale);
         return _sceneData;
     }
 }

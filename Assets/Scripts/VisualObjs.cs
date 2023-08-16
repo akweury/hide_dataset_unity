@@ -74,7 +74,11 @@ public class VisualObjs : MonoBehaviour
     public float posScale;
 
     private GameObject tableInst;
-    private string[] _sceneType = { "train", "test", "val", "EOF" };
+
+    // private string[] _sceneType = { "train", "EOF" };
+    // private string[] _sceneType = { "val", "EOF" };
+    private string[] _sceneType = { "test", "EOF" };
+
     private int _sceneTypeCounter = 0;
     int maxFileCounter;
 
@@ -84,7 +88,7 @@ public class VisualObjs : MonoBehaviour
     {
         // path control
         _assetsPath = Application.dataPath + "/";
-        _useType = "train";
+        _useType = "test";
         _sceneTypeCounter += 1;
 
         _rootDatasetPath = _assetsPath + "../../storage/" + expGroup + "/";
@@ -258,6 +262,7 @@ public class VisualObjs : MonoBehaviour
                 "diagonal_high_res" => customScenes.DiagScene(rules.ShapeType),
                 "close" => customScenes.CloseScene(rules.ShapeType),
                 "red_cube_and_random_sphere" => customScenes.ExistScene(rules.ShapeType),
+                "cluster_T" => customScenes.CrossScene(rules.ShapeType),
                 _ => _sceneData
             };
         }
@@ -574,12 +579,14 @@ public class VisualObjs : MonoBehaviour
 
             // rotate a random degree
             // var rotateRadians = UnityEngine.Random.Range(-0.17f, 0.17f); // 0.17 radians == 10 degrees
+            // var alpha = randomCenter.x;
+            // var beta = randomCenter.z;
             // foreach (var obj in sceneData)
             // {
-            //     obj.Position.x = Mathf.Cos(rotateRadians) * obj.Position.x -
-            //                    Mathf.Sin(rotateRadians) * obj.Position.z;
-            //     obj.Position.z = Mathf.Sin(rotateRadians) * obj.Position.x +
-            //                    Mathf.Cos(rotateRadians) * obj.Position.z;
+            //     obj.Position.x = alpha + Mathf.Cos(rotateRadians) * (obj.Position.x - alpha) -
+            //                      Mathf.Sin(rotateRadians) * (obj.Position.z - beta);
+            //     obj.Position.z = beta + Mathf.Sin(rotateRadians) * (obj.Position.x - alpha) +
+            //                      Mathf.Cos(rotateRadians) * (obj.Position.z - beta);
             // }
 
 
