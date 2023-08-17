@@ -63,7 +63,7 @@ public class VisualObjs : MonoBehaviour
     // private FileInfo[] _negRuleFiles;
     // private FileInfo[] _posRuleFiles;
 
-    private string _useType;
+    public string _useType;
     private string _sceneSign;
     public int sceneNum;
     public String expGroup;
@@ -81,14 +81,13 @@ public class VisualObjs : MonoBehaviour
 
     private int _sceneTypeCounter = 0;
     int maxFileCounter;
-
-
+    
     // Start is called before the first frame update
     void Start()
     {
         // path control
         _assetsPath = Application.dataPath + "/";
-        _useType = "test";
+        // _useType = "test";
         _sceneTypeCounter += 1;
 
         _rootDatasetPath = _assetsPath + "../../storage/" + expGroup + "/";
@@ -246,15 +245,19 @@ public class VisualObjs : MonoBehaviour
 
     void RenderNewScene(RuleJson rules, List<GameObject> spheres, List<GameObject> cubes, List<GameObject> cylinders)
     {
-        var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
-        _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
-        _objInstances = new List<GameObject>(new GameObject[objNum]);
+        // var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
+        // _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
+        // _objInstances = new List<GameObject>(new GameObject[objNum]);
 
         if (expGroup == "custom_scenes")
         {
+            // var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
+            // _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
+            
+            
             var position = table.transform.position;
             var centerPoint = new Vector3(position[0], position[1] + _tableHeight * 0.5F, position[2]);
-            var customScenes = new CustomScenes(_sceneData, objScale, centerPoint, _tableWidth, UnifyRadius);
+            var customScenes = new CustomScenes(objScale, centerPoint, _tableWidth, UnifyRadius);
 
             _sceneData = expName switch
             {
@@ -262,12 +265,17 @@ public class VisualObjs : MonoBehaviour
                 "diagonal_high_res" => customScenes.DiagScene(rules.ShapeType),
                 "close" => customScenes.CloseScene(rules.ShapeType),
                 "red_cube_and_random_sphere" => customScenes.ExistScene(rules.ShapeType),
-                "cluster_T" => customScenes.CrossScene(rules.ShapeType),
-                _ => _sceneData
+                "square" => customScenes.SquareScene(rules.ShapeType),
+                _ => customScenes.SquareScene(rules.ShapeType),
             };
+            _objInstances = new List<GameObject>(new GameObject[customScenes.objTotalNum]);
         }
         else
         {
+            var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
+            _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
+            _objInstances = new List<GameObject>(new GameObject[objNum]);
+            
             _sceneData = FillSceneData(rules, _sceneData, spheres, cubes, cylinders);
             _sceneData = FillObjsPositions(rules, _sceneData);
         }

@@ -230,11 +230,11 @@ public class CustomScenes
     private const int MaxShapeNum = 3;
     private readonly float _unifyScale;
     private readonly float _objRadius;
+    public int objTotalNum;
 
-    public CustomScenes(List<ObjectStruct> sceneData, float objScale, Vector3 centerPoint, float tableWidth,
+    public CustomScenes(float objScale, Vector3 centerPoint, float tableWidth,
         float unifyScale)
     {
-        _sceneData = sceneData;
         _objScale = objScale;
         _centerPoint = centerPoint;
         _tableWidth = tableWidth;
@@ -432,68 +432,151 @@ public class CustomScenes
         return _sceneData;
     }
 
-
-    public List<ObjectStruct> CrossScene(string positionType)
+    
+    public List<ObjectStruct> SquareScene(string positionType)
     {
-        /* There are always a red cube and a random color sphere in the image. In addition, there are two other objects.*/
-        const int totalClusters = 3;
-        const int totalObjNum = 5;
-        var objShapes = new string[totalObjNum * totalClusters];
-        var objColors = new string[totalObjNum * totalClusters];
-        var objPositions = new Vector3[totalObjNum * totalClusters];
-        // setup object colors and shapes 
-        for (var clusterIndex = 0; clusterIndex < totalClusters; clusterIndex++)
+        string[] objShapes;
+        string[] objColors;
+        Vector3[] objPositions;
+        if (positionType == "square")
         {
-            for (var objIndex = 0; objIndex < totalObjNum; objIndex++)
+            /* There are always a square with side length from 3 to 5. */
+            int sideSize = UnityEngine.Random.Range(3, 6);
+            objTotalNum = sideSize * 4 - 4;
+            _sceneData = new List<ObjectStruct>(new ObjectStruct[objTotalNum]);
+            objShapes = new string[objTotalNum];
+            objColors = new string[objTotalNum];
+
+            // setup object colors and shapes 
+            for (var objIndex = 0; objIndex < objTotalNum; objIndex++)
             {
                 var randomShapeIndex = UnityEngine.Random.Range(0, MaxShapeNum);
 
-                objShapes[clusterIndex * totalObjNum + objIndex] = randomShapeIndex switch
+                objShapes[objIndex] = randomShapeIndex switch
                 {
                     0 => "cube",
                     1 => "sphere",
                     _ => "cylinder"
                 };
                 var randomColorIndex = UnityEngine.Random.Range(0, MaxColorNum);
-                objColors[clusterIndex * totalObjNum + objIndex] = randomColorIndex switch
+                objColors[objIndex] = randomColorIndex switch
                 {
                     0 => "red",
                     1 => "green",
                     _ => "blue"
                 };
             }
+
+            // setup object positions
+            float distScale = 1.1f;
+            // rotate a random degree
+            // Vector3[] clusterCenters = SceneUtils.RandomPositions(_centerPoint, clusterRadius, _tableWidth, totalClusters);
+            float shiftScale = 3f;
+            objPositions = new Vector3[objTotalNum];
+            objPositions[0] = new Vector3(
+                _centerPoint[0] + UnityEngine.Random.Range(-shiftScale + _objScale, -1.3f),
+                _centerPoint[1] + _objScale * _unifyScale,
+                _centerPoint[2] + UnityEngine.Random.Range(1.3f, shiftScale - _objScale));
+
+            for (var objIndex = 0; objIndex < sideSize - 1; objIndex++)
+            {
+                // upper horizontal side
+                objPositions[1 + objIndex] = objPositions[0] + new Vector3(distScale * (objIndex + 1), 0, 0);
+                // left vertical side
+                objPositions[objIndex + sideSize - 1 + 1] =
+                    objPositions[0] + new Vector3(0, 0, -distScale * (objIndex + 1));
+                // right vertical side
+                objPositions[objIndex + 2 * sideSize - 2 + 1] =
+                    objPositions[0] + new Vector3(distScale * (sideSize - 1), 0, -distScale * (objIndex + 1));
+                // lower horizontal side
+                if (objIndex != 0)
+                {
+                    objPositions[3 * sideSize - 3 + 1 + objIndex - 1] =
+                        objPositions[0] + new Vector3(distScale * (objIndex), 0, -distScale * (sideSize - 1));
+                }
+            }
         }
-
-        // setup object positions
-        float clusterRadius = _objRadius * 5;
-        float distScale = 0.5f;
-        // rotate a random degree
-        Vector3[] clusterCenters = SceneUtils.RandomPositions(_centerPoint, clusterRadius, _tableWidth, totalClusters);
-
-        for (var clusterIndex = 0; clusterIndex < totalClusters; clusterIndex++)
+        else
         {
-            Vector3[] clusterPositions = new Vector3[totalObjNum];
-            clusterPositions[0] = clusterCenters[clusterIndex] + new Vector3(0, 0, 0);
-            clusterPositions[1] = clusterCenters[clusterIndex] + new Vector3(distScale, 0, 0);
-            clusterPositions[2] = clusterCenters[clusterIndex] + new Vector3(0, 0, distScale);
-            clusterPositions[3] = clusterCenters[clusterIndex] + new Vector3(-distScale, 0, 0);
-            clusterPositions[4] = clusterCenters[clusterIndex] + new Vector3(0, 0, -distScale);
-            // clusterPositions = SceneUtils.RotatePositions(1f, clusterCenters[clusterIndex], clusterPositions);
+            /* There are always a square with side length from 3 to 5. */
+            var sideType = UnityEngine.Random.Range(0, 2);
+            int sideLengthA;
+            int sideLengthB;
+            if (sideType == 0)
+            {
+                sideLengthA = UnityEngine.Random.Range(3, 4);
+                sideLengthB = UnityEngine.Random.Range(4, 6);                
+            }
+            else
+            {
+                sideLengthB = UnityEngine.Random.Range(3, 4);
+                sideLengthA = UnityEngine.Random.Range(4, 6);
+            }
 
-            int clusterBaseIndex = clusterIndex * totalObjNum;
-            objPositions[clusterBaseIndex + 0] = clusterPositions[0];
-            objPositions[clusterBaseIndex + 1] = clusterPositions[1];
-            objPositions[clusterBaseIndex + 2] = clusterPositions[2];
-            objPositions[clusterBaseIndex + 3] = clusterPositions[3];
-            objPositions[clusterBaseIndex + 4] = clusterPositions[4];
+            objTotalNum = sideLengthA * 2 + sideLengthB * 2 - 4;
+            _sceneData = new List<ObjectStruct>(new ObjectStruct[objTotalNum]);
+            objShapes = new string[objTotalNum];
+            objColors = new string[objTotalNum];
+
+            // setup object colors and shapes 
+            for (var objIndex = 0; objIndex < objTotalNum; objIndex++)
+            {
+                var randomShapeIndex = UnityEngine.Random.Range(0, MaxShapeNum);
+
+                objShapes[objIndex] = randomShapeIndex switch
+                {
+                    0 => "cube",
+                    1 => "sphere",
+                    _ => "cylinder"
+                };
+                var randomColorIndex = UnityEngine.Random.Range(0, MaxColorNum);
+                objColors[objIndex] = randomColorIndex switch
+                {
+                    0 => "red",
+                    1 => "green",
+                    _ => "blue"
+                };
+            }
+
+            // setup object positions
+            float distScale = 1.1f;
+            // rotate a random degree
+            // Vector3[] clusterCenters = SceneUtils.RandomPositions(_centerPoint, clusterRadius, _tableWidth, totalClusters);
+            float shiftScale = 3f;
+            objPositions = new Vector3[objTotalNum];
+            objPositions[0] = new Vector3(
+                _centerPoint[0] + UnityEngine.Random.Range(-shiftScale + _objScale, -1.3f),
+                _centerPoint[1] + _objScale * _unifyScale,
+                _centerPoint[2] + UnityEngine.Random.Range(1.3f, shiftScale - _objScale));
+
+            for (var objIndex = 0; objIndex < sideLengthA - 1; objIndex++)
+            {
+                // upper horizontal side
+                objPositions[1 + objIndex] = objPositions[0] + new Vector3(distScale * (objIndex + 1), 0, 0);
+                // lower horizontal side
+                if (objIndex != 0)
+                {
+                    objPositions[2 * sideLengthB + sideLengthA - 3 + 1 + objIndex - 1] =
+                        objPositions[0] + new Vector3(distScale * (objIndex), 0, -distScale * (sideLengthB - 1));
+                }
+            }
+
+            for (var objIndex = 0; objIndex < sideLengthB - 1; objIndex++)
+            {
+                // left vertical side
+                objPositions[objIndex + sideLengthA - 1 + 1] =
+                    objPositions[0] + new Vector3(0, 0, -distScale * (objIndex + 1));
+                // right vertical side
+                objPositions[objIndex + sideLengthA + sideLengthB - 2 + 1] =
+                    objPositions[0] + new Vector3(distScale * (sideLengthA - 1), 0, -distScale * (objIndex + 1));
+            }
         }
 
 
         // for cubes, adjust its radius
         // if (sceneData[objIdx].Shape == "cube") objRadius *= (float)Math.Sqrt(2);
         // add rule object
-        _sceneData = SceneUtils.IntegrateData(_sceneData, objShapes, objColors, objPositions,
-            totalClusters * totalObjNum, _objScale);
+        _sceneData = SceneUtils.IntegrateData(_sceneData, objShapes, objColors, objPositions, objTotalNum, _objScale);
         return _sceneData;
     }
 }
