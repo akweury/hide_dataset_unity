@@ -257,7 +257,7 @@ public class VisualObjs : MonoBehaviour
             
             var position = table.transform.position;
             var centerPoint = new Vector3(position[0], position[1] + _tableHeight * 0.5F, position[2]);
-            var customScenes = new CustomScenes(objScale, centerPoint, _tableWidth, UnifyRadius);
+            var customScenes = new SceneUtils.CustomScenes(objScale, centerPoint, _tableWidth, UnifyRadius);
 
             _sceneData = expName switch
             {
@@ -266,6 +266,8 @@ public class VisualObjs : MonoBehaviour
                 "close" => customScenes.CloseScene(rules.ShapeType),
                 "red_cube_and_random_sphere" => customScenes.ExistScene(rules.ShapeType),
                 "square" => customScenes.SquareScene(rules.ShapeType),
+                "perpendicular" => customScenes.PerpendicularScene(rules.ShapeType),
+                "parallel" => customScenes.ParallelScene(rules.ShapeType),
                 _ => customScenes.SquareScene(rules.ShapeType),
             };
             _objInstances = new List<GameObject>(new GameObject[customScenes.objTotalNum]);
