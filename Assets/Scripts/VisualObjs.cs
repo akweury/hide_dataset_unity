@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using DirectoryInfo = System.IO.DirectoryInfo;
@@ -127,11 +128,8 @@ public class VisualObjs : MonoBehaviour
         }
 
         // get negative rule files
-        DirectoryInfo groupD = new DirectoryInfo(_groupPath);
-        FileInfo[] randomRules = groupD.GetFiles("*.json"); // Getting Rule files
         var groupLatterPaths = Directory.GetDirectories(_groupPath);
-        FileInfo[] negRuleFiles = new FileInfo[groupLatterPaths.Length - 1];
-        int negRuleCounter = 0;
+        FileInfo[] negRuleFiles = Array.Empty<FileInfo>();
         for (int i = 0; i < groupLatterPaths.Length; i++)
         {
             if (groupLatterPaths[i] == positiveRulePath)
@@ -140,24 +138,19 @@ public class VisualObjs : MonoBehaviour
             }
 
             DirectoryInfo negD = new DirectoryInfo(groupLatterPaths[i]);
-            negRuleFiles[negRuleCounter] = negD.GetFiles("*.json")[0]; // Getting Rule files
-            negRuleCounter += 1;
+            var ruleFiles= negD.GetFiles("*.json"); // Getting Rule files
+            negRuleFiles = negRuleFiles.Concat(ruleFiles).ToArray();
         }
 
-        RuleJson[] negRules = new RuleJson[negRuleFiles.Length + 1];
+        RuleJson[] negRules = new RuleJson[negRuleFiles.Length ];
         for (int i = 0; i < negRuleFiles.Length; i++)
         {
             negRules[i] = LoadNewRule(negRuleFiles[i].FullName);
             negRules[i].SceneType = "negative";
-            negRules[i].SceneNum = sceneNum / (negRuleFiles.Length + 1);
+            negRules[i].SceneNum = sceneNum / (negRuleFiles.Length);
         }
 
-        negRules[negRuleFiles.Length] = LoadNewRule(randomRules[0].FullName);
-        negRules[negRuleFiles.Length].SceneType = "negative";
-        negRules[negRuleFiles.Length].SceneNum = sceneNum / (negRuleFiles.Length + 1);
-
-
-        // concatenate all negative rules to one single array
+        // concatenate all rules to one single array
         _rules = new RuleJson[posRules.Length + negRules.Length];
         posRules.CopyTo(_rules, 0);
         negRules.CopyTo(_rules, posRules.Length);
