@@ -440,6 +440,94 @@ public static class SceneUtils
             return _sceneData;
         }
 
+        public List<ObjectStruct> TwoPairsScene(string positionType)
+        {
+            /* There are always 4 objects in the image. In addition, they are two pairs of objects.*/
+            objTotalNum = 4;
+            const int totalObjNum = 4;
+            _sceneData = new List<ObjectStruct>(new ObjectStruct[totalObjNum]);
+            
+            string[] objShapes = new string[totalObjNum];
+            string[] objColors = new string[totalObjNum];
+            Vector3[] objPositions = new Vector3[totalObjNum];
+            var colors = new[] { "red", "green", "blue" };
+            var shapes = new[] { "cube", "sphere", "cylinder" };
+            // setup objects
+            if (positionType == "two_pairs")
+            {
+                // chose object shapes and colors
+                bool sameShape;
+                bool sameColor;
+                int shape1;
+                int shape2;
+                int color1;
+                int color2;
+                do
+                {
+                    shape1 = UnityEngine.Random.Range(0, MaxShapeNum);
+                    color1 = UnityEngine.Random.Range(0, MaxColorNum);
+
+                    shape2 = UnityEngine.Random.Range(0, MaxShapeNum);
+                    color2 = UnityEngine.Random.Range(0, MaxColorNum);
+
+                    sameShape = shape1 == shape2;
+                    sameColor = color1 == color2;
+                } while (sameShape || sameColor);
+
+                objShapes[0] = shapes[shape1];
+                objShapes[1] = shapes[shape1];
+                objShapes[2] = shapes[shape2];
+                objShapes[3] = shapes[shape2];
+
+                objColors[0] = colors[color1];
+                objColors[1] = colors[color1];
+                objColors[2] = colors[color2];
+                objColors[3] = colors[color2];
+
+                objPositions =  SceneUtils.RandomPositions(_centerPoint, _objRadius, _tableWidth, totalObjNum);
+            }
+            else
+            {
+                // chose object shapes and colors
+                int[] shapeIDs = new int[4];
+                int[] colorIDs = new int[4];
+                int uniqueShapes;
+                int uniqueColors;
+                do
+                {
+                    shapeIDs[0] = UnityEngine.Random.Range(0, MaxShapeNum);
+                    shapeIDs[1] = UnityEngine.Random.Range(0, MaxShapeNum);
+                    shapeIDs[2] = UnityEngine.Random.Range(0, MaxShapeNum);
+                    shapeIDs[3] = UnityEngine.Random.Range(0, MaxShapeNum);
+
+                    colorIDs[0] = UnityEngine.Random.Range(0, MaxColorNum);
+                    colorIDs[1] = UnityEngine.Random.Range(0, MaxColorNum);
+                    colorIDs[2] = UnityEngine.Random.Range(0, MaxColorNum);
+                    colorIDs[3] = UnityEngine.Random.Range(0, MaxColorNum);
+                    uniqueShapes = shapeIDs.Distinct<int>().Count();
+                    uniqueColors = colorIDs.Distinct<int>().Count();
+                } while (uniqueShapes == 2 && uniqueColors == 2);
+
+                objShapes[0] = shapes[shapeIDs[0]];
+                objShapes[1] = shapes[shapeIDs[1]];
+                objShapes[2] = shapes[shapeIDs[2]];
+                objShapes[3] = shapes[shapeIDs[3]];
+
+                objColors[0] = colors[colorIDs[0]];
+                objColors[1] = colors[colorIDs[1]];
+                objColors[2] = colors[colorIDs[2]];
+                objColors[3] = colors[colorIDs[3]];
+
+                objPositions = RandomPositions(_centerPoint, _objRadius, _tableWidth, totalObjNum);
+            }
+
+            // for cubes, adjust its radius
+            // if (sceneData[objIdx].Shape == "cube") objRadius *= (float)Math.Sqrt(2);
+            // add rule object
+            _sceneData = SceneUtils.IntegrateData(_sceneData, objShapes, objColors, objPositions, totalObjNum, _objScale);
+            return _sceneData;
+        }
+
 
         public List<ObjectStruct> SquareScene(string positionType)
         {
@@ -782,6 +870,128 @@ public static class SceneUtils
                 for (var objIndex = 1; objIndex < lineSizeB; objIndex++)
                 {
                     objPosLineB[objIndex] = objPosLineB[0] + shiftVectorB * objIndex;
+                }
+
+                objPositions = objPosLineA.Concat(objPosLineB).ToArray();
+            }
+
+            // add rule object
+            _sceneData = IntegrateData(_sceneData, objShapes, objColors, objPositions, objTotalNum, _objScale);
+            return _sceneData;
+        }
+
+
+        public List<ObjectStruct> CheckMarkScene(string positionType)
+        {
+            /*
+             * There are always two lines in the image.
+             * Positive: Line A and Line B form the shape of a check mark.
+             * Negative: Line A and Line B form the shape of a cross.
+             */
+
+            string[] objShapes;
+            string[] objColors;
+            Vector3[] objPositions;
+            const float distScale = 1.2f;
+            if (positionType == "check_mark")
+            {
+                /* Store data to two lists, and concatenate them later. */
+                /* The length of Lines are between 3 to 5. */
+                int lineSizeA = UnityEngine.Random.Range(3, 6);
+                int lineSizeB = UnityEngine.Random.Range(1, 3);
+                objTotalNum = lineSizeA + lineSizeB;
+
+                /* The shapes and colors are randomly selected. */
+                _sceneData = new List<ObjectStruct>(new ObjectStruct[objTotalNum]);
+                objShapes = RandomShapes(objTotalNum, 3);
+                objColors = RandomColors(objTotalNum, 3);
+
+
+                Vector3[] objPosLineA = new Vector3[lineSizeA];
+                Vector3[] objPosLineB = new Vector3[lineSizeB];
+
+                // rotate a random degree
+                var slopeAngle = UnityEngine.Random.Range(0.5f, 1.3f);
+                Vector3 shiftVectorA = new Vector3(Mathf.Cos(slopeAngle) * distScale, 0, Mathf.Sin(slopeAngle) * distScale);
+                Vector3 shiftVectorB;
+                float angleFactor = 1.7f;
+                if (slopeAngle > 0)
+                {
+                    shiftVectorB =
+                        new Vector3(Mathf.Cos(Mathf.PI / angleFactor - slopeAngle) * distScale, 0,
+                            -Mathf.Sin(Mathf.PI / angleFactor - slopeAngle) * distScale);
+                }
+                else
+                {
+                    shiftVectorB =
+                        new Vector3(Mathf.Cos(Mathf.PI / angleFactor + slopeAngle) * distScale, 0,
+                            Mathf.Sin(Mathf.PI / angleFactor + slopeAngle) * distScale);
+                }
+
+
+                /* Define Line A. */
+                objPosLineA[0] = ShiftRandomPosition(_centerPoint, _objScale, -2f, 0.2f, -1f, -1.5f);
+                for (var objIndex = 1; objIndex < lineSizeA; objIndex++)
+                {
+                    objPosLineA[objIndex] = objPosLineA[0] + shiftVectorA * objIndex;
+                }
+
+                /* Define Line B. */
+                // objPosLineB[0] = objPosLineA[0] + shiftVectorB;
+                // objPosLineB[0] = ShiftRandomPosition(objPosLineA[0], _objScale, 0f, 0.5f, -2.5f, -3f);
+                for (var objIndex = 0; objIndex < lineSizeB; objIndex++)
+                {
+                    objPosLineB[objIndex] = objPosLineA[0] - shiftVectorB * (objIndex + 1);
+                }
+
+                objPositions = objPosLineA.Concat(objPosLineB).ToArray();
+            }
+            else
+            {
+                /* The length of Lines are between 3 to 5. */
+                int lineSizeA = UnityEngine.Random.Range(3, 5);
+                int lineSizeB = UnityEngine.Random.Range(2, 5);
+                objTotalNum = lineSizeA + lineSizeB;
+
+                /* The shapes and colors are randomly selected. */
+                _sceneData = new List<ObjectStruct>(new ObjectStruct[objTotalNum]);
+                objShapes = RandomShapes(objTotalNum, 3);
+                objColors = RandomColors(objTotalNum, 3);
+
+                /* Store data to two lists, and concatenate them later. */
+                Vector3[] objPosLineA = new Vector3[lineSizeA];
+                Vector3[] objPosLineB = new Vector3[lineSizeB];
+
+                float angleFactor = 1.7f;
+                // rotate a random degree
+                var slopeAngle = UnityEngine.Random.Range(0.5f, 1.3f);
+                Vector3 shiftVectorA = new Vector3(Mathf.Cos(slopeAngle) * distScale, 0, Mathf.Sin(slopeAngle) * distScale);
+                Vector3 shiftVectorB;
+                if (slopeAngle > 0)
+                {
+                    shiftVectorB =
+                        new Vector3(Mathf.Cos(Mathf.PI / angleFactor - slopeAngle) * distScale, 0,
+                            -Mathf.Sin(Mathf.PI / angleFactor - slopeAngle) * distScale);
+                }
+                else
+                {
+                    shiftVectorB =
+                        new Vector3(Mathf.Cos(Mathf.PI / angleFactor + slopeAngle) * distScale, 0,
+                            Mathf.Sin(Mathf.PI / angleFactor + slopeAngle) * distScale);
+                }
+
+                /* Define Line A. */
+                objPosLineA[0] = ShiftRandomPosition(_centerPoint, _objScale, -2f, 0.2f, -1f, -1.5f);
+                for (var objIndex = 1; objIndex < lineSizeA; objIndex++)
+                {
+                    objPosLineA[objIndex] = objPosLineA[0] + shiftVectorA * objIndex;
+                }
+
+                /* Define Line B. */
+                objPosLineB[0] = objPosLineA[UnityEngine.Random.Range(1, lineSizeA)] - shiftVectorB;
+                for (var objIndex = 1; objIndex < lineSizeB; objIndex++)
+                {
+                    objPosLineB[objIndex] = objPosLineB[0] + shiftVectorB * (objIndex + 1);
                 }
 
                 objPositions = objPosLineA.Concat(objPosLineB).ToArray();

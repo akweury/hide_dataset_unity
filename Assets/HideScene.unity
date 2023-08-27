@@ -585,15 +585,15 @@ PrefabInstance:
       objectReference: {fileID: 2008057318401078053, guid: 21b4f89cf9866df48ad399c2b4443ac4, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: expName
-      value: letter_Z
+      value: two_pairs
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: _useType
-      value: val
+      value: train
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: expGroup
-      value: alphabet_new
+      value: custom_scenes
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: objScale
@@ -613,7 +613,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: groupSize
-      value: group_all
+      value: two_pairs
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_Enabled

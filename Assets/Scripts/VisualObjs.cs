@@ -259,8 +259,10 @@ public class VisualObjs : MonoBehaviour
                 "close" => customScenes.CloseScene(rules.ShapeType),
                 "red_cube_and_random_sphere" => customScenes.ExistScene(rules.ShapeType),
                 "square" => customScenes.SquareScene(rules.ShapeType),
+                "check_mark" => customScenes.CheckMarkScene(rules.ShapeType),
                 "perpendicular" => customScenes.PerpendicularScene(rules.ShapeType),
                 "parallel" => customScenes.ParallelScene(rules.ShapeType),
+                "two_pairs" =>customScenes.TwoPairsScene(rules.ShapeType),
                 _ => customScenes.SquareScene(rules.ShapeType),
             };
             _objInstances = new List<GameObject>(new GameObject[customScenes.objTotalNum]);

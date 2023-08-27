@@ -56,6 +56,8 @@
      <Folder Include="Assets\Scripts\Rules\group_9\letter_T" />
      <None Include="Assets\Scripts\Rules\group_7\letter_L\letter_L_pos.json" />
      <Folder Include="Assets\Scripts\Rules\group_all\letter_O" />
+     <None Include="Assets\Scripts\Rules\check_mark\check_mark\check_mark_pos.json" />
+     <Folder Include="Assets\Scripts\Rules\check_mark" />
      <Folder Include="Assets\Scripts\Rules\letter_G\letter_G_diff_color" />
      <None Include="Assets\Scripts\Rules\group_12\letter_G\letter_G_pos_v1.json" />
      <None Include="Assets\Scripts\Rules\group_all\letter_A\letter_A_pos_v1.json" />
@@ -73,11 +75,13 @@
      <None Include="Assets\Scripts\Rules\group_all\letter_R\letter_r_pos_v2.json" />
      <None Include="Assets\Scripts\Rules\group_9\group_9_neg_random.json" />
      <None Include="Assets\Scripts\Rules\group_all\letter_P\letter_P_pos_v1.json" />
+     <None Include="Assets\Scripts\Rules\check_mark\cross\cross_pos.json" />
      <Folder Include="Assets\Scripts\Rules\letter_E\letter_E_color_diff" />
      <None Include="Assets\PhaseShader.shader" />
      <Folder Include="Assets\Scripts\Rules\six_same_6\six_same_shape_6" />
      <None Include="Assets\Scripts\Rules\check_mark_6\check_mark_6_neg_random.json" />
      <Folder Include="Assets\Scripts\Rules\check_mark_6\check_mark_6" />
+     <Folder Include="Assets\Scripts\Rules\two_pairs\no_two_pairs" />
      <None Include="Assets\Scripts\Rules\group_11\letter_W\letter_W_pos_v1.json" />
      <Folder Include="Assets\Scripts\Rules\check_mark_6\cross_6" />
      <Folder Include="Assets\Scripts\Rules\group_9\letter_J" />
@@ -109,6 +113,7 @@
      <None Include="Assets\Scripts\Rules\archive\letter_Z\letter_Z_pos_v1.json" />
      <Folder Include="Assets\Scripts\Rules\randomTrain" />
      <Folder Include="Assets\Scripts\Rules\archive\letter_M" />
+     <Folder Include="Assets\Scripts\Rules\check_mark\check_mark" />
      <Folder Include="Assets\Scripts\Rules\group_all\letter_Z" />
      <Folder Include="Assets\Scripts\Rules\check_mark_4" />
      <None Include="Assets\Scripts\Rules\randomTrain\random_neg_random.json" />
@@ -176,6 +181,7 @@
      <None Include="Assets\Scripts\Rules\ten_same_10\ten_same_10\ten_same_10_pos.json" />
      <None Include="Assets\Scripts\Rules\archive\letter_H\letter_H_pos_v1.json" />
      <Folder Include="Assets\Scripts\Rules\group_10" />
+     <Folder Include="Assets\Scripts\Rules\check_mark\cross" />
      <Folder Include="Assets\Scripts\Rules\archive\letter_Z" />
      <Folder Include="Assets\Scripts\Rules\ten_same_10\ten_same_shape_10" />
      <Folder Include="Assets\Scripts\Rules\perpendicular" />
@@ -265,9 +271,11 @@
      <None Include="Assets\Scripts\Rules\group_all\letter_A\letter_a_lower_pos_v1.json" />
      <None Include="Assets\Scripts\Rules\group_all\letter_S\letter_s_pos_v2.json" />
      <Folder Include="Assets\Scripts\Rules\check_mark_4\line_4" />
+     <Folder Include="Assets\Scripts\Rules\two_pairs" />
      <None Include="Assets\Scripts\Rules\letter_C\letter_C_diff\letter_C_diff_pos.json" />
      <None Include="Assets\Scripts\Rules\group_all\letter_J\letter_j_pos_v2.json" />
      <None Include="Assets\Scripts\Rules\group_all\letter_Y\letter_Y._pos_v1.json" />
+     <None Include="Assets\Scripts\Rules\two_pairs\no_two_pairs\no_two_pairs_pos.json" />
      <Folder Include="Assets\Scripts\Rules\group_all\letter_N" />
      <Folder Include="Assets\Scripts\Rules\archive\letter_S" />
      <None Include="Assets\Scripts\Rules\group_9\letter_J\letter_J_pos.json" />
@@ -317,6 +325,7 @@
      <None Include="Assets\Scripts\Rules\shape_in_shape\sphere_circle\sphere_circle_pos.json" />
      <None Include="Assets\Scripts\Rules\cluster_T\cluster_T\cluster_T_pos.json" />
      <Folder Include="Assets\Scripts\Rules\six_same_6\six_same_6" />
+     <None Include="Assets\Scripts\Rules\two_pairs\two_pairs\two_pairs_pos.json" />
      <None Include="Assets\Scripts\Rules\group_all\letter_O\letter_o_pos_v2.json" />
      <None Include="Assets\Scripts\Rules\perpendicular\perpendicular_neg_random.json" />
      <Folder Include="Assets\Scripts\Rules\group_all\letter_D" />
@@ -359,6 +368,7 @@
      <Folder Include="Assets\Scripts\Rules\group_all\letter_J" />
      <Folder Include="Assets\Scripts\Rules\group_10\letter_N" />
      <Folder Include="Assets\Scripts\Rules\cluster_T\cluster_T" />
+     <Folder Include="Assets\Scripts\Rules\two_pairs\two_pairs" />
      <None Include="Assets\Scripts\Rules\group_all\letter_L\letter_l_pos_v2.json" />
      <None Include="Assets\Scripts\Rules\archive\letter_Q\letter_Q_pos_v1.json" />
      <Folder Include="Assets\Scripts\Rules\letter_A\letter_A" />
