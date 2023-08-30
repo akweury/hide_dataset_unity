@@ -112,6 +112,7 @@
      <Folder Include="Assets\Scripts\Rules\letter_D\letter_D_shape_diff" />
      <None Include="Assets\Scripts\Rules\archive\letter_Z\letter_Z_pos_v1.json" />
      <Folder Include="Assets\Scripts\Rules\randomTrain" />
+     <Folder Include="Assets\Scripts\Rules\square\rectangle" />
      <Folder Include="Assets\Scripts\Rules\archive\letter_M" />
      <Folder Include="Assets\Scripts\Rules\check_mark\check_mark" />
      <Folder Include="Assets\Scripts\Rules\group_all\letter_Z" />
@@ -153,6 +154,7 @@
      <None Include="Assets\Scripts\Rules\shape_in_shape\cube_square\cube_square_pos.json" />
      <None Include="Assets\Scripts\Rules\group_all\letter_T\letter_T_pos_v1.json" />
      <Folder Include="Assets\Scripts\Rules\archive\letter_I" />
+     <None Include="Assets\Scripts\Rules\square\rectangle\rectangle_pos.json" />
      <None Include="Assets\Scripts\Rules\group_all\letter_K\letter_k_pos_v2.json" />
      <Folder Include="Assets\Scripts\Rules\group_all" />
      <None Include="Assets\Scripts\Rules\group_all\letter_G\letter_g_lower_pos_v1.json" />

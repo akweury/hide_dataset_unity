@@ -446,7 +446,7 @@ public static class SceneUtils
             objTotalNum = 4;
             const int totalObjNum = 4;
             _sceneData = new List<ObjectStruct>(new ObjectStruct[totalObjNum]);
-            
+
             string[] objShapes = new string[totalObjNum];
             string[] objColors = new string[totalObjNum];
             Vector3[] objPositions = new Vector3[totalObjNum];
@@ -484,7 +484,7 @@ public static class SceneUtils
                 objColors[2] = colors[color2];
                 objColors[3] = colors[color2];
 
-                objPositions =  SceneUtils.RandomPositions(_centerPoint, _objRadius, _tableWidth, totalObjNum);
+                objPositions = SceneUtils.RandomPositions(_centerPoint, _objRadius, _tableWidth, totalObjNum);
             }
             else
             {
@@ -543,11 +543,11 @@ public static class SceneUtils
                 objShapes = new string[objTotalNum];
                 objColors = new string[objTotalNum];
 
-                // setup object colors and shapes 
+                // setup object colors and shapes
+                var randomShapeIndex = UnityEngine.Random.Range(0, MaxShapeNum);
+
                 for (var objIndex = 0; objIndex < objTotalNum; objIndex++)
                 {
-                    var randomShapeIndex = UnityEngine.Random.Range(0, MaxShapeNum);
-
                     objShapes[objIndex] = randomShapeIndex switch
                     {
                         0 => "cube",
@@ -601,12 +601,12 @@ public static class SceneUtils
                 if (sideType == 0)
                 {
                     sideLengthA = UnityEngine.Random.Range(3, 4);
-                    sideLengthB = UnityEngine.Random.Range(4, 6);
+                    sideLengthB = UnityEngine.Random.Range(5, 6);
                 }
                 else
                 {
                     sideLengthB = UnityEngine.Random.Range(3, 4);
-                    sideLengthA = UnityEngine.Random.Range(4, 6);
+                    sideLengthA = UnityEngine.Random.Range(5, 6);
                 }
 
                 objTotalNum = sideLengthA * 2 + sideLengthB * 2 - 4;
@@ -614,11 +614,11 @@ public static class SceneUtils
                 objShapes = new string[objTotalNum];
                 objColors = new string[objTotalNum];
 
+                var randomShapeIndex = UnityEngine.Random.Range(0, MaxShapeNum);
+
                 // setup object colors and shapes 
                 for (var objIndex = 0; objIndex < objTotalNum; objIndex++)
                 {
-                    var randomShapeIndex = UnityEngine.Random.Range(0, MaxShapeNum);
-
                     objShapes[objIndex] = randomShapeIndex switch
                     {
                         0 => "cube",
@@ -898,7 +898,7 @@ public static class SceneUtils
                 /* Store data to two lists, and concatenate them later. */
                 /* The length of Lines are between 3 to 5. */
                 int lineSizeA = UnityEngine.Random.Range(3, 6);
-                int lineSizeB = UnityEngine.Random.Range(1, 3);
+                int lineSizeB = UnityEngine.Random.Range(2, 3);
                 objTotalNum = lineSizeA + lineSizeB;
 
                 /* The shapes and colors are randomly selected. */
