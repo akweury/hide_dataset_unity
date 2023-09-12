@@ -73,7 +73,9 @@ public class VisualObjs : MonoBehaviour
     public float tableScale;
     public float objScale;
     public float posScale;
-
+    public bool robustExp;
+    public int randomObjNum;
+    
     private GameObject tableInst;
 
     // private string[] _sceneType = { "train", "EOF" };
@@ -95,7 +97,16 @@ public class VisualObjs : MonoBehaviour
 
         _groupPath = _assetsPath + "Scripts/Rules/" + groupSize + "/";
         _rulePath = _groupPath + expName + "/";
-        _datasetPath = _rootDatasetPath + expName + "/";
+
+        if (robustExp)
+        {
+            _datasetPath = _rootDatasetPath + expName + "_" + randomObjNum + "/";
+        }
+        else
+        {
+            _datasetPath = _rootDatasetPath + expName + "/";    
+        }
+        
 
         Camera cam = Instantiate(Camera.main, Camera.main.transform.position, Camera.main.transform.rotation);
         _depthCamera = new DepthCamera(cam, depthShader, normalShader);
@@ -148,6 +159,12 @@ public class VisualObjs : MonoBehaviour
             negRules[i] = LoadNewRule(negRuleFiles[i].FullName);
             negRules[i].SceneType = "negative";
             negRules[i].SceneNum = sceneNum / (negRuleFiles.Length);
+
+            if (robustExp)
+            {
+                negRules[i].RuleObjPerScene -= randomObjNum;
+                negRules[i].RandomObjPerScene = randomObjNum;
+            }
         }
 
         // concatenate all rules to one single array
@@ -242,6 +259,9 @@ public class VisualObjs : MonoBehaviour
         // _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
         // _objInstances = new List<GameObject>(new GameObject[objNum]);
 
+        var rnd = new Random();
+        rules.Objs = rules.Objs.OrderBy(item => rnd.Next()).ToList();
+        
         if (expGroup == "custom_scenes")
         {
             // var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
@@ -525,13 +545,17 @@ public class VisualObjs : MonoBehaviour
 
         return false;
     }
-
+    
 
     RuleJson LoadNewRule(string ruleFileName)
     {
         StreamReader streamReader = new StreamReader(ruleFileName);
         string json = streamReader.ReadToEnd();
         RuleJson rulesJson = JsonConvert.DeserializeObject<RuleJson>(json);
+        
+        // randomize the object positions, so that the last object changes every time. Random remove one object can be simply done by remove the last object
+        var rnd = new Random();
+        rulesJson.Objs = rulesJson.Objs.OrderBy(item => rnd.Next()).ToList();
         return rulesJson;
     }
 
