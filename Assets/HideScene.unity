@@ -585,7 +585,7 @@ PrefabInstance:
       objectReference: {fileID: 2008057318401078053, guid: 21b4f89cf9866df48ad399c2b4443ac4, type: 3}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: expName
-      value: letter_A
+      value: parallel
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: _useType
@@ -593,7 +593,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: expGroup
-      value: alphabet_robust
+      value: custom_scenes
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: objScale
@@ -605,7 +605,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: sceneNum
-      value: 30
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: _objScale
@@ -613,7 +613,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: groupSize
-      value: letter_A_robust
+      value: parallel
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: m_Enabled
@@ -633,7 +633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: randomObjNum
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 277772773380541739, guid: 31fdda014dda87a4d9a9d4d0fe273ff0, type: 3}
       propertyPath: materials.Array.size

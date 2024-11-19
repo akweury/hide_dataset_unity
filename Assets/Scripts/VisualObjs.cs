@@ -163,7 +163,7 @@ public class VisualObjs : MonoBehaviour
             if (robustExp)
             {
                 negRules[i].RuleObjPerScene -= randomObjNum;
-                negRules[i].RandomObjPerScene = randomObjNum;
+                // negRules[i].RandomObjPerScene = randomObjNum;
             }
         }
 
@@ -188,6 +188,7 @@ public class VisualObjs : MonoBehaviour
             UnityEngine.Random.Range((float)-150, (float)0), UnityEngine.Random.Range((float)-0, (float)0));
 
         table.transform.localScale = new Vector3(_tableLength, _tableHeight, _tableWidth);
+
         // environmentMap.SetTexture("_Tex", danceRoomEnvironment);
     }
 
@@ -255,12 +256,16 @@ public class VisualObjs : MonoBehaviour
 
     void RenderNewScene(RuleJson rules, List<GameObject> spheres, List<GameObject> cubes, List<GameObject> cylinders)
     {
-        // var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
-        // _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
-        // _objInstances = new List<GameObject>(new GameObject[objNum]);
+        var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
+        // _sceneData = new List<ObjectStruct>();
+        // _objInstances = new List<GameObject>();
 
         var rnd = new Random();
-        rules.Objs = rules.Objs.OrderBy(item => rnd.Next()).ToList();
+        if (rules.Objs is not null)
+        {
+            rules.Objs = rules.Objs.OrderBy(item => rnd.Next()).ToList();    
+        }
+        
         
         if (expGroup == "custom_scenes")
         {
@@ -280,6 +285,7 @@ public class VisualObjs : MonoBehaviour
                 "red_cube_and_random_sphere" => customScenes.ExistScene(rules.ShapeType),
                 "square" => customScenes.SquareScene(rules.ShapeType),
                 "check_mark" => customScenes.CheckMarkScene(rules.ShapeType),
+                "check_mark_2" => customScenes.CheckMarkScene_2(rules.ShapeType),
                 "perpendicular" => customScenes.PerpendicularScene(rules.ShapeType),
                 "parallel" => customScenes.ParallelScene(rules.ShapeType),
                 "two_pairs" =>customScenes.TwoPairsScene(rules.ShapeType),
@@ -289,7 +295,7 @@ public class VisualObjs : MonoBehaviour
         }
         else
         {
-            var objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
+            objNum = rules.RandomObjPerScene + rules.RuleObjPerScene;
             _sceneData = new List<ObjectStruct>(new ObjectStruct[objNum]);
             _objInstances = new List<GameObject>(new GameObject[objNum]);
             
@@ -518,7 +524,7 @@ public class VisualObjs : MonoBehaviour
                 material = cylinders[cylinderId].name;
             }
 
-            sceneData[objId] = new ObjectStruct(objId, shape, material, size);
+            sceneData[objId] = new ObjectStruct(objId, shape, material, objScale);
 
             // sceneData[objId].SetProperty(objId, shape, material, size);
             objId++;
@@ -555,7 +561,10 @@ public class VisualObjs : MonoBehaviour
         
         // randomize the object positions, so that the last object changes every time. Random remove one object can be simply done by remove the last object
         var rnd = new Random();
-        rulesJson.Objs = rulesJson.Objs.OrderBy(item => rnd.Next()).ToList();
+        if (rulesJson.Objs is not null)
+        {
+            rulesJson.Objs = rulesJson.Objs.OrderBy(item => rnd.Next()).ToList();    
+        }
         return rulesJson;
     }
 
